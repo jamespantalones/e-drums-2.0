@@ -1,16 +1,24 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  @apply text-gray-500;
+  @apply bg-pink-200;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+main {
+  @apply p-4;
 }
 
-* {
-  box-sizing: border-box;
+.button {
+  @apply border;
+  @apply border-gray-500;
+  @apply m-auto;
+  @apply px-4;
+  @apply rounded;
+  @apply active:bg-black;
+  @apply active:text-pink-200;
+  @apply shadow;
+  @apply disabled:opacity-50;
 }
