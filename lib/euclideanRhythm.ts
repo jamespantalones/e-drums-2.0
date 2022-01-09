@@ -3,7 +3,7 @@ import { group } from "console";
 function compareArrays(a: any[], b: any[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
-export function euclideanRhythm(onNotes: number, totalNotes: number): any[] {
+export function euclideanRhythm(onNotes: number, totalNotes: number): number[] {
   let groups = [] as any[];
 
   for (let i = 0; i < totalNotes; i += 1) {
