@@ -125,6 +125,9 @@ export class Sequencer {
     Tone.Transport.start();
   }
 
+  public setBpm(val: number) {
+    Tone.Transport.bpm.value = val;
+  }
   public pub(msg: string) {
     console.log(`broadcast: ${msg}`);
   }
