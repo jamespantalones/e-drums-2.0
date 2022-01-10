@@ -7,14 +7,7 @@ import {
 } from "../../lib/Sequencer";
 import { generateId } from "../../utils";
 
-const initialRhythms: SequencerRhythm[] = [
-  {
-    onNotes: 4,
-    totalNotes: 16,
-    note: 200,
-    id: generateId(),
-  },
-];
+const initialRhythms: SequencerRhythm[] = [];
 
 export function useSequencer() {
   const [bpm, setBpm] = React.useState(100);
@@ -45,6 +38,12 @@ export function useSequencer() {
     };
   }, []);
 
+  const deleteTrack = React.useCallback((rhythm: SequencerRhythm) => {
+    return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
+      pubsub.emit(SequencerEvents.REMOVE_RHYTHM, rhythm.id);
+    };
+  }, []);
+
   const changeFrequency = React.useCallback((rhythm: SequencerRhythm) => {
     return function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
       pubsub.emit(SequencerEvents.FREQUENCY_CHANGE, {
@@ -58,6 +57,11 @@ export function useSequencer() {
     return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
       pubsub.emit(SequencerEvents.INCREMENT_TICK, rhythm.id);
     };
+  }, []);
+
+  const toggleTick = React.useCallback((id: string, index: number) => {
+    console.log("ID:", id, "INDEX:", index);
+    pubsub.emit(SequencerEvents.TOGGLE_TICK, { id, index });
   }, []);
 
   const play = React.useCallback(async () => {
@@ -83,7 +87,7 @@ export function useSequencer() {
       id: generateId(),
       onNotes: 2,
       totalNotes: 4,
-      note: 420,
+      note: 120,
     };
     pubsub.emit(SequencerEvents.ADD_NEW_RHYTHM, rhythm);
   }, []);
@@ -113,11 +117,13 @@ export function useSequencer() {
     ctx,
     rhythms,
     tick,
+    deleteTrack,
     decrementBeat,
     decrementTick,
     incrementBeat,
     incrementTick,
     createNewTrack,
     changeFrequency,
+    toggleTick,
   };
 }

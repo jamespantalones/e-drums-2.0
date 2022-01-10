@@ -2,10 +2,9 @@
 import 'chart.js/auto';
 import type { NextPage } from 'next';
 import * as React from 'react';
-import { Chart, Doughnut, } from 'react-chartjs-2';
+import { Doughnut, } from 'react-chartjs-2';
 import { useSequencer } from '../components/hooks/useSequencer';
-import { euclideanRhythm } from '../lib/euclideanRhythm';
-import { getBeats, Sequencer } from '../lib/Sequencer';
+import { getBeats, SequencerRhythm, } from '../lib/Sequencer';
 
 const data = {
   labels: [],
@@ -34,7 +33,17 @@ const Home: NextPage = () => {
     incrementTick,
     createNewTrack,
     changeFrequency,
+    deleteTrack,
+    toggleTick
   } = useSequencer();
+
+  const handleClick = React.useCallback((rhythm: SequencerRhythm) => {
+    return function onClick(ev: any, items: any){
+      const [item] = items;
+      toggleTick(rhythm.id, item.index)
+      console.log(item);
+    }
+  },[]);
 
 
   return (
@@ -42,57 +51,92 @@ const Home: NextPage = () => {
     <button onClick={play} className="button">Play</button>
     <input type="range" min={50} max={240} value={bpm} onChange={handleBpmChange} />
     <p>{bpm}</p>
+    <section className="flex flex-wrap items-start justify-start">
+      
+      {rhythms.map((rhythm, index) => {
+        const beats = getBeats(rhythm);
 
-    {rhythms.map((rhythm, index) => {
-      const beats = getBeats(rhythm);
+        return (
+          <div key={rhythm.id} className="w-1/3 p-2 flex-grow-0">
+            <div className="border-2 border-white p-2">
+              <div className="w-64 h-64 cursor-pointer">
+                <Doughnut 
+                  key={rhythm.id}
+                  width={12}
+                  height={12}
+                  data={{
+                    ...data,
+                    labels: [],
+                    
+                    datasets: [{
+                      data: new Array(beats.length).fill(100 / beats.length),
+                      animation: false,
+                      borderColor: 'black',
+                      borderWidth: 1,
+                      parsing: false,
+                      offset: 0,
+                      backgroundColor: new Array(beats.length).fill(0).map((val, i) => {
+                        if ((tick % beats.length) === i && !beats[i]){
+                          return 'rgb(255,150,150)';
+                        }
 
-      return (
-        <div key={rhythm.id}>
-          <div className="w-32 h-32">
-            <Doughnut 
-            
-            key={rhythm.id} width={12} height={12} data={{
-              ...data,
-              labels: [],
-              datasets: [{
-                data: new Array(beats.length).fill(100 / beats.length),
-                animation: false,
-                backgroundColor: new Array(beats.length).fill(0).map((val, i) => {
-                  if ((tick % beats.length) === i && !beats[i]){
-                    return 'yellow';
-                  }
+                        if ((tick % beats.length) === i && beats[i]){
+                          return 'limegreen';
+                        }
+                        if (beats[i]){
+                          return 'rgb(255,50,150)';
+                        }
+                        return 'rgb(251,207,232)';
+                      }),
+          
+                    }]
+                  }}
 
-                  if ((tick % beats.length) === i && beats[i]){
-                    return 'red';
-                  }
-                  if (beats[i]){
-                    return 'black';
-                  }
-                  return 'gray';
-                }),
-    
-              }]
-            }}/>
+                  options={{
+                    cutout: '70%',
+                    radius: 100,
+                    events: ['click'],
+                    onClick: handleClick(rhythm),
+                    animation: {
+                      animateRotate: false,
+                    },
+                    
+                    plugins: {
+                      tooltip: {
+                        enabled: false,
+                        mode: 'nearest',
+                      }
+                    },
+                    hover: {
+                      mode: undefined
+                    }
+                  }}
+                />
+              </div>
+              <div className="my-2 mx-auto text-center">
+                <label>Ticks</label>
+                <button className="button x-auto" onClick={decrementTick(rhythm)}>-</button>
+                <button className="button mx-auto" onClick={incrementTick(rhythm)}>+</button>
+              </div>
+              {/* <div className="my-2 mx-auto text-center">
+                <label>Beats</label>
+                <button className="button x-auto" onClick={decrementBeat(rhythm)}>-</button>
+                <button className="button mx-auto" onClick={incrementBeat(rhythm)}>+</button>
+              </div> */}
+              <div>
+                <input type="range" min={0} max={500} defaultValue={rhythm.note} onChange={changeFrequency(rhythm)}/>
+              </div>
+              <div>
+                <button onClick={deleteTrack(rhythm)}>Delete</button>
+              </div>
+            </div>
           </div>
-          <div className="my-2 mx-auto text-center">
-            <label>Ticks</label>
-            <button className="button x-auto" onClick={decrementTick(rhythm)}>-</button>
-            <button className="button mx-auto" onClick={incrementTick(rhythm)}>+</button>
-          </div>
-          <div className="my-2 mx-auto text-center">
-            <label>Beats</label>
-            <button className="button x-auto" onClick={decrementBeat(rhythm)}>-</button>
-            <button className="button mx-auto" onClick={incrementBeat(rhythm)}>+</button>
-          </div>
-          <div>
-            <input type="range" min={20} max={1000} onChange={changeFrequency(rhythm)}/>
-          </div>
-        </div>
-      )
-    })}
+        )
+      })}
+    </section>
 
     <button className="button" onClick={createNewTrack}>New Track</button>
-
+    
   </main>
   );
 }

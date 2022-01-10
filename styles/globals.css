@@ -5,6 +5,8 @@
 :root {
   @apply text-gray-500;
   @apply bg-pink-200;
+  --color-primary: black;
+  --color-secondary: rgb(251, 207, 232);
 }
 
 main {

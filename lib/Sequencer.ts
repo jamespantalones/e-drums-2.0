@@ -19,7 +19,10 @@ export enum SequencerEvents {
 
   INCREMENT_TICK = "INCREMENT_TICK",
 
+  REMOVE_RHYTHM = "REMOVE_RHYTHM",
+
   RHYTHM_CHANGE = "RHYTHM_CHANGE",
+  TOGGLE_TICK = "TOGGLE_TICK",
 
   FREQUENCY_CHANGE = "FREQUENCY_CHANGE",
 }
@@ -28,11 +31,24 @@ export interface SequencerRhythm {
   onNotes: number;
   totalNotes: number;
 
+  synth?:
+    | Tone.Synth
+    | Tone.MonoSynth
+    | Tone.PluckSynth
+    | Tone.MembraneSynth
+    | Tone.MetalSynth;
+
   note: number;
   id: string;
+
+  // has user clicked to edit
+  pattern?: number[];
 }
 
 export const getBeats = (rhythm: SequencerRhythm): number[] => {
+  if (rhythm.pattern) {
+    return rhythm.pattern;
+  }
   return euclideanRhythm(rhythm.onNotes, rhythm.totalNotes);
 };
 
@@ -63,11 +79,12 @@ export interface SequencerOpts {
 }
 
 export class Sequencer {
-  private audio: {
-    synth1: Tone.Synth | null;
-    synth2: Tone.Synth | null;
-    synth3: Tone.Synth | null;
-  };
+  public synths: (
+    | Tone.Synth
+    | Tone.MonoSynth
+    | Tone.NoiseSynth
+    | Tone.PluckSynth
+  )[];
 
   private state: {
     rhythmIndex: number;
@@ -79,11 +96,7 @@ export class Sequencer {
   playState: SequencerPlayState;
 
   constructor(opts: SequencerOpts) {
-    this.audio = {
-      synth1: null,
-      synth2: null,
-      synth3: null,
-    };
+    this.synths = [];
 
     this.isInit = false;
 
@@ -102,17 +115,24 @@ export class Sequencer {
   async start() {
     if (!this.isInit) {
       await Tone.start();
-      this.audio.synth1 = new Tone.MembraneSynth().toDestination();
-      this.audio.synth2 = new Tone.MembraneSynth().toDestination();
-      this.audio.synth3 = new Tone.MembraneSynth().toDestination();
+      const reverb = new Tone.Reverb().toDestination();
+      reverb.wet.value = 0.05;
+
+      this.synths = [
+        new Tone.MonoSynth().connect(reverb),
+        new Tone.MonoSynth().connect(reverb),
+        new Tone.NoiseSynth().connect(reverb),
+        new Tone.PluckSynth().connect(reverb),
+        new Tone.MembraneSynth().connect(reverb),
+      ];
       this.isInit = true;
 
       pubsub.on(SequencerEvents.INCREMENT_BEAT, (id: string) => {
-        console.log(`INCREMENT_BEAT`, id);
         this.state.rhythms = this.state.rhythms.map((r) => {
           if (r.id === id) {
             return {
               ...r,
+              pattern: undefined,
               onNotes:
                 r.onNotes + 1 <= r.totalNotes ? r.onNotes + 1 : r.onNotes,
             };
@@ -127,6 +147,7 @@ export class Sequencer {
           if (r.id === id) {
             return {
               ...r,
+              pattern: undefined,
               onNotes: r.onNotes - 1 >= 0 ? r.onNotes - 1 : r.onNotes,
             };
           }
@@ -140,6 +161,7 @@ export class Sequencer {
           if (r.id === id) {
             return {
               ...r,
+              pattern: undefined,
               totalNotes:
                 r.totalNotes + 1 <= 256 ? r.totalNotes + 1 : r.totalNotes,
             };
@@ -154,6 +176,7 @@ export class Sequencer {
           if (r.id === id) {
             return {
               ...r,
+              pattern: undefined,
               totalNotes:
                 r.totalNotes - 1 >= 0 ? r.totalNotes - 1 : r.totalNotes,
             };
@@ -179,41 +202,78 @@ export class Sequencer {
       );
 
       pubsub.on(SequencerEvents.ADD_NEW_RHYTHM, (rhythm: SequencerRhythm) => {
-        this.state.rhythms = this.state.rhythms.concat(rhythm);
+        this.state.rhythms = this.state.rhythms.concat([
+          {
+            ...rhythm,
+            // @ts-ignore
+            synth: this.synths[Math.floor(Math.random() * this.synths.length)],
+          },
+        ]);
       });
+
+      pubsub.on(SequencerEvents.REMOVE_RHYTHM, (id: string) => {
+        this.state.rhythms = this.state.rhythms.filter((r) => r.id !== id);
+      });
+
+      pubsub.on(
+        SequencerEvents.TOGGLE_TICK,
+        ({ id, index }: { id: string; index: number }) => {
+          this.state.rhythms = this.state.rhythms.map((rhythm) => {
+            // if we have a target
+            if (rhythm.id === id) {
+              // if we already have a pattern
+              if (rhythm.pattern) {
+                return {
+                  ...rhythm,
+                  pattern: rhythm.pattern.map((p, i) => {
+                    if (i === index) {
+                      return 1 - p;
+                    }
+                    return p;
+                  }),
+                };
+              }
+
+              // otherwise, turn the euclidean version into a pattern and edit
+              return {
+                ...rhythm,
+                pattern: getBeats(rhythm).map((p, i) => {
+                  if (i === index) {
+                    return 1 - p;
+                  }
+                  return p;
+                }),
+              };
+            }
+
+            return rhythm;
+          });
+        }
+      );
     }
 
     const _loop = Tone.Transport.scheduleRepeat((time) => {
-      if (!this.audio.synth1) {
-        return;
-      }
+      Tone.Draw.schedule(() => {
+        // increment rhythm index
+        this.state.rhythmIndex++;
+      }, time);
 
-      // increment rhythm index
-      this.state.rhythmIndex++;
+      let nextIndex = this.state.rhythmIndex + 1;
 
-      pubsub.emit<SequencerEvents>(
-        SequencerEvents.TICK,
-        this.state.rhythmIndex
-      );
+      // run the draw update here
 
       this.state.rhythms.forEach((rhythm, index) => {
         const beats = getBeats(rhythm);
-        if (beats[this.state.rhythmIndex % beats.length]) {
-          if (index === 0) {
-            this.audio.synth2!.triggerAttackRelease(rhythm.note, "32n", time);
-            return;
-          }
-          if (index === 2) {
-            this.audio.synth3!.triggerAttackRelease(rhythm.note, "32n", time);
-            return;
-          }
-          this.audio.synth1!.triggerAttackRelease(rhythm.note, "32n", time);
+        if (beats[nextIndex % beats.length]) {
+          rhythm.synth!.triggerAttackRelease(rhythm.note, "32n", time);
         }
+        return;
       });
       // use the callback time to schedule events
     }, "16n");
 
     Tone.Transport.bpm.value = 69;
+    Tone.Transport.swing = 0.05;
     Tone.Transport.start();
   }
 
