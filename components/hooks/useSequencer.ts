@@ -1,50 +1,49 @@
 import * as React from "react";
 import { pubsub } from "../../lib/pubsub";
-import {
-  Sequencer,
-  SequencerEvents,
-  SequencerRhythm,
-} from "../../lib/Sequencer";
+import { SequencerEvents } from "../../lib/schema";
+import { Sequencer } from "../../lib/Sequencer";
+import { Track } from "../../lib/Track";
 import { generateId } from "../../utils";
 
-const initialRhythms: SequencerRhythm[] = [];
+const initialTracks: Track[] = [];
 
 export function useSequencer() {
   const [bpm, setBpm] = React.useState(100);
-  const [rhythms, setRhythms] = React.useState(initialRhythms);
+  const [tracks, setTracks] = React.useState(initialTracks);
   const [tick, setTick] = React.useState(-1);
+  const [isInit, setIsInit] = React.useState(false);
 
   const ctx = React.useRef<Sequencer | null>(
     new Sequencer({
-      initialRhythms,
+      initialTracks,
     })
   );
 
-  const decrementBeat = React.useCallback((rhythm: SequencerRhythm) => {
+  const decrementBeat = React.useCallback((track: Track) => {
     return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
-      pubsub.emit(SequencerEvents.DECREMENT_BEAT, rhythm.id);
+      pubsub.emit(SequencerEvents.DECREMENT_BEAT, track.id);
     };
   }, []);
 
-  const decrementTick = React.useCallback((rhythm: SequencerRhythm) => {
+  const decrementTick = React.useCallback((rhythm: Track) => {
     return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
       pubsub.emit(SequencerEvents.DECREMENT_TICK, rhythm.id);
     };
   }, []);
 
-  const incrementBeat = React.useCallback((rhythm: SequencerRhythm) => {
+  const incrementBeat = React.useCallback((rhythm: Track) => {
     return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
       pubsub.emit(SequencerEvents.INCREMENT_BEAT, rhythm.id);
     };
   }, []);
 
-  const deleteTrack = React.useCallback((rhythm: SequencerRhythm) => {
+  const deleteTrack = React.useCallback((rhythm: Track) => {
     return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
       pubsub.emit(SequencerEvents.REMOVE_RHYTHM, rhythm.id);
     };
   }, []);
 
-  const changeFrequency = React.useCallback((rhythm: SequencerRhythm) => {
+  const changeFrequency = React.useCallback((rhythm: Track) => {
     return function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
       pubsub.emit(SequencerEvents.FREQUENCY_CHANGE, {
         id: rhythm.id,
@@ -53,7 +52,7 @@ export function useSequencer() {
     };
   }, []);
 
-  const incrementTick = React.useCallback((rhythm: SequencerRhythm) => {
+  const incrementTick = React.useCallback((rhythm: Track) => {
     return function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
       pubsub.emit(SequencerEvents.INCREMENT_TICK, rhythm.id);
     };
@@ -92,14 +91,22 @@ export function useSequencer() {
     pubsub.emit(SequencerEvents.ADD_NEW_RHYTHM, rhythm);
   }, []);
 
+  const init = React.useCallback(async () => {
+    if (!ctx.current) {
+      return;
+    }
+    await ctx.current.init();
+    setIsInit(true);
+  }, []);
+
   // events
   React.useEffect(() => {
     function onTick(tick: number) {
       setTick((t) => (tick !== t ? tick : t));
     }
 
-    function onRhythmChange(rhythms: SequencerRhythm[]) {
-      setRhythms(rhythms);
+    function onRhythmChange(rhythms: Track[]) {
+      setTracks(rhythms);
     }
     pubsub.on(SequencerEvents.TICK, onTick);
     pubsub.on(SequencerEvents.RHYTHM_CHANGE, onRhythmChange);
@@ -115,7 +122,7 @@ export function useSequencer() {
     handleBpmChange,
     play,
     ctx,
-    rhythms,
+    tracks,
     tick,
     deleteTrack,
     decrementBeat,
@@ -125,5 +132,7 @@ export function useSequencer() {
     createNewTrack,
     changeFrequency,
     toggleTick,
+    init,
+    isInit,
   };
 }

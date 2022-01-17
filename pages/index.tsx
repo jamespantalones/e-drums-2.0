@@ -4,7 +4,9 @@ import type { NextPage } from 'next';
 import * as React from 'react';
 import { Doughnut, } from 'react-chartjs-2';
 import { useSequencer } from '../components/hooks/useSequencer';
-import { getBeats, SequencerRhythm, } from '../lib/Sequencer';
+import { StartModal } from '../components/StartModal';
+import { Track } from '../lib/Track';
+import { getBeats } from '../lib/utils';
 
 const data = {
   labels: [],
@@ -24,7 +26,7 @@ const Home: NextPage = () => {
   const {
     bpm,
     handleBpmChange,
-    rhythms,
+    tracks,
     play,
     tick,
     decrementBeat,
@@ -34,10 +36,12 @@ const Home: NextPage = () => {
     createNewTrack,
     changeFrequency,
     deleteTrack,
-    toggleTick
+    toggleTick,
+    init,
+    isInit,
   } = useSequencer();
 
-  const handleClick = React.useCallback((rhythm: SequencerRhythm) => {
+  const handleClick = React.useCallback((rhythm: Track) => {
     return function onClick(ev: any, items: any){
       const [item] = items;
       toggleTick(rhythm.id, item.index)
@@ -48,12 +52,13 @@ const Home: NextPage = () => {
 
   return (
   <main className="w-full h-screen">
+    <StartModal handleInit={init} visible={!isInit} />
     <button onClick={play} className="button">Play</button>
     <input type="range" min={50} max={240} value={bpm} onChange={handleBpmChange} />
     <p>{bpm}</p>
     <section className="flex flex-wrap items-start justify-start">
       
-      {rhythms.map((rhythm, index) => {
+      {tracks.map((rhythm, index) => {
         const beats = getBeats(rhythm);
 
         return (
@@ -118,11 +123,11 @@ const Home: NextPage = () => {
                 <button className="button x-auto" onClick={decrementTick(rhythm)}>-</button>
                 <button className="button mx-auto" onClick={incrementTick(rhythm)}>+</button>
               </div>
-              {/* <div className="my-2 mx-auto text-center">
+              <div className="my-2 mx-auto text-center">
                 <label>Beats</label>
                 <button className="button x-auto" onClick={decrementBeat(rhythm)}>-</button>
                 <button className="button mx-auto" onClick={incrementBeat(rhythm)}>+</button>
-              </div> */}
+              </div>
               <div>
                 <input type="range" min={0} max={500} defaultValue={rhythm.note} onChange={changeFrequency(rhythm)}/>
               </div>
