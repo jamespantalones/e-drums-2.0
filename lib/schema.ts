@@ -4,6 +4,7 @@ export enum SequencerPlayState {
 }
 
 export enum SequencerEvents {
+  ADJUST_TIME_SCALE = "ADJUST_TIME_SCALE",
   TICK = "TICK",
 
   ADD_NEW_RHYTHM = "ADD_NEW_RHYTHM",

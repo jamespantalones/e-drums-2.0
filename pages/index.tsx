@@ -5,8 +5,7 @@ import * as React from 'react';
 import { Doughnut, } from 'react-chartjs-2';
 import { useSequencer } from '../components/hooks/useSequencer';
 import { StartModal } from '../components/StartModal';
-import { Track } from '../lib/Track';
-import { getBeats } from '../lib/utils';
+import { Time, Track } from '../lib/Track';
 
 const data = {
   labels: [],
@@ -24,13 +23,12 @@ const data = {
 const Home: NextPage = () => {
   
   const {
+    adjustTimeScale,
     bpm,
     handleBpmChange,
     tracks,
     play,
     tick,
-    decrementBeat,
-    incrementBeat,
     decrementTick,
     incrementTick,
     createNewTrack,
@@ -49,6 +47,7 @@ const Home: NextPage = () => {
     }
   },[]);
 
+  
 
   return (
   <main className="w-full h-screen">
@@ -59,7 +58,8 @@ const Home: NextPage = () => {
     <section className="flex flex-wrap items-start justify-start">
       
       {tracks.map((rhythm, index) => {
-        const beats = getBeats(rhythm);
+
+        const length = rhythm.pattern.length;
 
         return (
           <div key={rhythm.id} className="w-1/3 p-2 flex-grow-0">
@@ -74,21 +74,21 @@ const Home: NextPage = () => {
                     labels: [],
                     
                     datasets: [{
-                      data: new Array(beats.length).fill(100 / beats.length),
+                      data: new Array(length).fill(100 / length),
                       animation: false,
                       borderColor: 'black',
                       borderWidth: 1,
                       parsing: false,
                       offset: 0,
-                      backgroundColor: new Array(beats.length).fill(0).map((val, i) => {
-                        if ((tick % beats.length) === i && !beats[i]){
+                      backgroundColor: new Array(length).fill(0).map((val, i) => {
+                        if ((tick % length) === i && !rhythm.pattern[i]){
                           return 'rgb(255,150,150)';
                         }
 
-                        if ((tick % beats.length) === i && beats[i]){
+                        if ((tick % length) === i && rhythm.pattern[i]){
                           return 'limegreen';
                         }
-                        if (beats[i]){
+                        if (rhythm.pattern[i]){
                           return 'rgb(255,50,150)';
                         }
                         return 'rgb(251,207,232)';
@@ -124,9 +124,10 @@ const Home: NextPage = () => {
                 <button className="button mx-auto" onClick={incrementTick(rhythm)}>+</button>
               </div>
               <div className="my-2 mx-auto text-center">
-                <label>Beats</label>
-                <button className="button x-auto" onClick={decrementBeat(rhythm)}>-</button>
-                <button className="button mx-auto" onClick={incrementBeat(rhythm)}>+</button>
+                <label>Time</label>
+                <button className="button x-auto" onClick={adjustTimeScale(rhythm, Time.HALF_TIME)}>HALF</button>
+                <button className="button x-auto" onClick={adjustTimeScale(rhythm, Time.NORMAL)}>HALF</button>
+                <button className="button mx-auto" onClick={adjustTimeScale(rhythm, Time.DOUBLE_TIME)}>DOUBLE</button>
               </div>
               <div>
                 <input type="range" min={0} max={500} defaultValue={rhythm.note} onChange={changeFrequency(rhythm)}/>

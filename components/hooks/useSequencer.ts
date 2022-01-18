@@ -2,13 +2,13 @@ import * as React from "react";
 import { pubsub } from "../../lib/pubsub";
 import { SequencerEvents } from "../../lib/schema";
 import { Sequencer } from "../../lib/Sequencer";
-import { Track } from "../../lib/Track";
+import { Time, Track } from "../../lib/Track";
 import { generateId } from "../../utils";
 
 const initialTracks: Track[] = [];
 
 export function useSequencer() {
-  const [bpm, setBpm] = React.useState(100);
+  const [bpm, setBpm] = React.useState(113);
   const [tracks, setTracks] = React.useState(initialTracks);
   const [tick, setTick] = React.useState(-1);
   const [isInit, setIsInit] = React.useState(false);
@@ -63,6 +63,17 @@ export function useSequencer() {
     pubsub.emit(SequencerEvents.TOGGLE_TICK, { id, index });
   }, []);
 
+  const adjustTimeScale = React.useCallback((rhythm: Track, time: Time) => {
+    return function onClick(ev: React.MouseEvent<HTMLButtonElement>) {
+      console.log(rhythm, time);
+      rhythm.time = time;
+      pubsub.emit(SequencerEvents.ADJUST_TIME_SCALE, {
+        id: rhythm.id,
+        value: time,
+      });
+    };
+  }, []);
+
   const play = React.useCallback(async () => {
     if (!ctx.current) {
       return;
@@ -82,11 +93,13 @@ export function useSequencer() {
   );
 
   const createNewTrack = React.useCallback(() => {
+    const random = Math.floor(Math.random() * 20) + 1;
+
     const rhythm = {
       id: generateId(),
-      onNotes: 2,
-      totalNotes: 4,
-      note: 120,
+      onNotes: Math.floor(random / 2),
+      totalNotes: random,
+      note: Math.floor(Math.random() * 400),
     };
     pubsub.emit(SequencerEvents.ADD_NEW_RHYTHM, rhythm);
   }, []);
@@ -118,6 +131,7 @@ export function useSequencer() {
   }, []);
 
   return {
+    adjustTimeScale,
     bpm,
     handleBpmChange,
     play,

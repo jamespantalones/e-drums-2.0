@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 import { pubsub } from "./pubsub";
 import { SequencerEvents, SequencerPlayState } from "./schema";
-import { Track } from "./Track";
+import { Time, Track } from "./Track";
 import { getBeats, handler } from "./utils";
 
 export interface SequencerOpts {
@@ -68,10 +68,6 @@ export class Sequencer {
         }
         return r;
       });
-
-      console.log("INTERNAL TrACKS", this.state.tracks);
-
-      console.log("UPDATE TRACKS", this.state.tracks);
     });
 
     pubsub.on(SequencerEvents.DECREMENT_TICK, (id: string) => {
@@ -100,6 +96,7 @@ export class Sequencer {
       const nextTrack = new Track({
         onNotes: rhythm.onNotes,
         totalNotes: rhythm.totalNotes,
+        note: rhythm.note,
       });
       nextTrack.audio.connect(this.chain);
 
@@ -120,6 +117,18 @@ export class Sequencer {
           }
 
           return rhythm;
+        });
+      }
+    );
+
+    pubsub.on(
+      SequencerEvents.ADJUST_TIME_SCALE,
+      ({ id, value }: { id: string; value: number }) => {
+        this.state.tracks = this.state.tracks.map((r) => {
+          if (r.id === id) {
+            return r.adjustTimeScale(value);
+          }
+          return r;
         });
       }
     );
@@ -150,15 +159,46 @@ export class Sequencer {
         this.state.rhythmIndex++;
       }, time);
 
+      // increment rhythm index
       let nextIndex = this.state.rhythmIndex + 1;
 
       // run the draw update here
 
       this.state.tracks.forEach((track, index) => {
-        const beats = getBeats(track);
-        if (beats[nextIndex % beats.length]) {
+        if (track.pattern[nextIndex % track.pattern.length]) {
+          // normal time
           track.play(time);
         }
+
+        return;
+
+        if (track.time === Time.NORMAL && nextIndex % 2 === 0) {
+          if (track.pattern[nextIndex % track.pattern.length]) {
+            // normal time
+            track.play(time);
+          }
+
+          return;
+        }
+
+        // half time
+        else if (track.time === Time.HALF_TIME && nextIndex % 4 === 0) {
+          if (track.pattern[nextIndex % track.pattern.length]) {
+            // normal time
+            track.play(time);
+          }
+          return;
+        }
+
+        // double time
+        else if (track.time === Time.DOUBLE_TIME) {
+          if (track.pattern[nextIndex % track.pattern.length]) {
+            // normal time
+            track.play(time);
+          }
+          return;
+        }
+
         return;
       });
       // use the callback time to schedule events
