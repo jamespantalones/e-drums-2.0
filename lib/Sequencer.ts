@@ -1,4 +1,5 @@
 import * as Tone from "tone";
+import { Transport } from "tone/build/esm/core/clock/Transport";
 import { pubsub } from "./pubsub";
 import { SequencerEvents, SequencerPlayState } from "./schema";
 import { Time, Track } from "./Track";
@@ -21,6 +22,8 @@ export class Sequencer {
 
   private reverb!: Tone.Reverb;
   private chain!: Tone.Gain;
+
+  private transport!: Transport;
 
   playState: SequencerPlayState;
 
@@ -135,24 +138,37 @@ export class Sequencer {
   }
 
   async init() {
-    await Tone.start();
+    try {
+      await Tone.start();
 
-    this.reverb = new Tone.Reverb();
-    this.reverb.wet.value = 0.05;
+      this.reverb = new Tone.Reverb();
+      this.reverb.wet.value = 0.05;
 
-    this.chain = new Tone.Gain();
-    this.chain.chain(this.reverb, Tone.Destination);
+      this.chain = new Tone.Gain();
+      this.chain.chain(this.reverb, Tone.Destination);
 
-    this._addListeners();
-    this.isInit = true;
+      this._addListeners();
+      this.isInit = true;
+    } catch (err) {
+      console.error('B', err);
+    }
+    
+  }
+
+  stop(){
+    if (this.transport){
+      this.transport.stop();
+    }
   }
 
   async start() {
     if (!this.isInit) {
-      throw new Error("Cannot start without initializing");
+      console.error("Cannot start without initializing");
     }
 
-    const _loop = Tone.Transport.scheduleRepeat((time) => {
+    this.transport = Tone.Transport;
+
+    this.transport.scheduleRepeat((time) => {
       // schedule UI update
       Tone.Draw.schedule(() => {
         // increment rhythm index

@@ -1,0 +1,13 @@
+.nav {
+  @apply border-b;
+  @apply border-black;
+  @apply z-50;
+  @apply p-2;
+}
+
+.section {
+  @apply my-3;
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+}

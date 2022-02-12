@@ -5,6 +5,7 @@
 :root {
   --color-primary: black;
   --color-secondary: rgb(251, 207, 232);
+  --color-tick-active-on: limegreen;
   @apply bg-gray-200;
 }
 
