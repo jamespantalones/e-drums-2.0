@@ -9,24 +9,13 @@ import { Time, Track } from '../lib/Track';
 
 const data = {
   labels: [],
-  datasets: [
-    {
-      data: [33, 33, 33],
-      backgroundColor: [
-        // 'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-      ],
-      hoverOffset: 2,
-    },
-  ],
+  datasets: [],
 };
 
 const Home: NextPage = () => {
   const { initialize } = useAudioContext();
   const {
     adjustTimeScale,
-    bpm,
-    handleBpmChange,
     tracks,
     play,
     tick,
@@ -36,7 +25,6 @@ const Home: NextPage = () => {
     changeFrequency,
     deleteTrack,
     toggleTick,
-    isInit,
   } = useSequencer();
 
   const handleClick = React.useCallback((rhythm: Track) => {
@@ -71,32 +59,29 @@ const Home: NextPage = () => {
                           {
                             data: new Array(length).fill(100 / length),
                             animation: false,
-                            borderColor: 'black',
-                            borderWidth: 1,
-                            parsing: false,
-                            offset: 0,
+
+                            offset: -1,
                             backgroundColor: new Array(length)
                               .fill(0)
                               .map((val, i) => {
                                 if (tick % length === i && !rhythm.pattern[i]) {
-                                  return 'rgb(255,150,150)';
+                                  return '#4066ff';
                                 }
 
                                 if (tick % length === i && rhythm.pattern[i]) {
-                                  return 'var(--color-secondary)';
-                                  return 'var(--color-tick-active-on)';
+                                  return 'rgb(234 100 200)';
                                 }
                                 if (rhythm.pattern[i]) {
-                                  return 'rgb(255,50,150)';
+                                  return 'rgb(150,150,150)';
                                 }
-                                return 'rgb(251,207,232)';
+                                return 'rgb(220,220,220)';
                               }),
                           },
                         ],
                       }}
                       options={{
-                        cutout: '70%',
-                        radius: 100,
+                        cutout: 0,
+                        radius: 120,
                         events: ['click'],
                         onClick: handleClick(rhythm),
                         animation: {
