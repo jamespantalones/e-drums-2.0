@@ -48,6 +48,13 @@ export function audioContextReducer(
       };
     }
 
+    case 'DELETE_TRACK': {
+      return {
+        ...state,
+        tracks: state.tracks.filter(t => t.id !== action.value),
+      }
+    }
+
     case 'UPDATE_TRACKS': {
       return {
         ...state,

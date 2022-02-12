@@ -103,16 +103,7 @@ export class Sequencer {
 
     
 
-    pubsub.on(SequencerEvents.REMOVE_RHYTHM, (id: string) => {
-      this.state.tracks = this.state.tracks.filter((r) => r.id !== id);
-    });
 
-    pubsub.on(
-      SequencerEvents.TOGGLE_TICK,
-      ({ id, index }: { id: string; index: number }) => {
-        
-      }
-    );
 
     pubsub.on(
       SequencerEvents.ADJUST_TIME_SCALE,
@@ -153,7 +144,6 @@ export class Sequencer {
 
   async start() {
     if (!this.isInit) {
-      console.error("Cannot start without initializing");
       await this.init();
     }
 
@@ -197,7 +187,6 @@ export class Sequencer {
   public async addNewRhythm(rhythm: Pick<Track, 'onNotes' | 'totalNotes' | 'note'>): Promise<Track>{
     
     if (!this.isInit) {
-      console.error("Cannot start without initializing");
       await this.init();
     }
     
@@ -206,6 +195,8 @@ export class Sequencer {
       totalNotes: rhythm.totalNotes,
       note: rhythm.note,
     });
+
+    await nextTrack.init();
 
     nextTrack.audio.connect(this.chain);
 
@@ -235,5 +226,10 @@ export class Sequencer {
 
   public setBpm(val: number) {
     Tone.Transport.bpm.value = val;
+  }
+
+  public deleteTrack(id: string): [string, Track[]]{
+    this.state.tracks = this.state.tracks.filter((r) => r.id !== id);
+    return [id, this.state.tracks];
   }
 }

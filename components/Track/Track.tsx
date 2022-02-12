@@ -1,16 +1,21 @@
+import DragHandle from '@mui/icons-material/DragHandle';
+import DeleteIcon from '@mui/icons-material/Close';
 import { ActiveElement, ChartEvent } from 'chart.js';
 import * as React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { neutral, yellow } from 'tailwindcss/colors';
+import Draggable from 'react-draggable';
+import { neutral, yellow, blue } from 'tailwindcss/colors';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
-
+import { IconButton } from '../IconButton/IconButton';
+import styles from './Track.module.css';
 export function TrackItem({ rhythm }: { rhythm: Track }) {
   const length = rhythm.pattern.length;
+  const nodeRef = React.useRef<HTMLDivElement | null>(null);
 
   const {
     state: { tick },
-    methods: { toggleTick },
+    methods: { toggleTick, deleteTrack },
   } = useAudioContext();
 
   const data = React.useMemo(() => {
@@ -20,7 +25,9 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
   const handleClick = React.useCallback(
     (_ev: ChartEvent, elements: ActiveElement[]) => {
       const [item] = elements;
-      toggleTick(rhythm.id, item.index);
+      if (rhythm && item) {
+        toggleTick(rhythm.id, item.index);
+      }
     },
     [rhythm, toggleTick]
   );
@@ -30,8 +37,6 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
       const active = tick % length === i;
       const enabled = rhythm.pattern[i];
 
-      console.log(yellow);
-
       // if slice is enabled, but not currently triggered
       if (active && !enabled) {
         return neutral['300'];
@@ -39,7 +44,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
 
       // if slice is enabled, and triggered
       if (active && enabled) {
-        return yellow['500'];
+        return blue['500'];
       }
 
       // enabled
@@ -64,41 +69,59 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
     ];
   }, [data, tick, length, rhythm.pattern]);
 
+  const handleDelete = React.useCallback(() => {
+    deleteTrack(rhythm.id);
+  }, [rhythm, deleteTrack]);
+
   return (
-    <div key={rhythm.id} className="w-auto p-2 flex-grow-0">
-      <div className="shadow-xl rounded-lg p-2 bg-gray-200">
-        <div className="w-64 h-64 cursor-pointer">
-          <Doughnut
-            width={12}
-            height={12}
-            data={{ labels: [], datasets }}
-            options={{
-              cutout: 0,
-              radius: 120,
-              events: ['click'],
-              onClick: handleClick,
-              borderColor: 'black',
-              borderWidth: 0.05,
-              borderAlign: 'inner',
-              hoverBorderWidth: 1,
+    <Draggable key={rhythm.id} handle=".handle">
+      <section key={rhythm.id} className={styles.section}>
+        <div className={styles.wrapper}>
+          <nav className={styles.nav}>
+            <div
+              ref={nodeRef}
+              className="handle flex items-center justify-center w-6 h-6 cursor-move text-neutral-500"
+            >
+              <DragHandle />
+            </div>
+            <div>
+              <IconButton small onClick={handleDelete} muted>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </div>
+          </nav>
+          <div className="w-64 h-64 cursor-pointer">
+            <Doughnut
+              width={12}
+              height={12}
+              data={{ labels: [], datasets }}
+              options={{
+                cutout: 0,
+                radius: 120,
+                events: ['click'],
+                onClick: handleClick,
+                borderColor: 'black',
+                borderWidth: 0.05,
+                borderAlign: 'inner',
+                hoverBorderWidth: 1,
 
-              animation: {
-                animateRotate: false,
-              },
-
-              plugins: {
-                tooltip: {
-                  enabled: false,
-                  mode: 'nearest',
+                animation: {
+                  animateRotate: false,
                 },
-              },
-              hover: {
-                mode: undefined,
-              },
-            }}
-          />
-        </div>
-        {/* <div className="my-2 mx-auto text-center">
+
+                plugins: {
+                  tooltip: {
+                    enabled: false,
+                    mode: 'nearest',
+                  },
+                },
+                hover: {
+                  mode: undefined,
+                },
+              }}
+            />
+          </div>
+          {/* <div className="my-2 mx-auto text-center">
           <label>Ticks</label>
           <button className="button x-auto" onClick={decrementTick(rhythm)}>
             -
@@ -106,9 +129,6 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
           <button className="button mx-auto" onClick={incrementTick(rhythm)}>
             +
           </button>
-        </div>
-        <div className="my-2 mx-auto text-center">
-          <label>Time</label>
         </div>
         <div>
           <input
@@ -122,7 +142,8 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
         <div>
           <button onClick={deleteTrack(rhythm)}>Delete</button>
         </div> */}
-      </div>
-    </div>
+        </div>
+      </section>
+    </Draggable>
   );
 }

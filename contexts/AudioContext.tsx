@@ -97,11 +97,18 @@ export function AudioContextProvider({
     [sequencer]
   );
 
+  const deleteTrack = React.useCallback((id: string) => {
+    const [_id, tracks] = sequencer.deleteTrack(id);
+    console.log('tracks', tracks);
+    dispatch({ type: 'DELETE_TRACK', value: id });
+  }, []);
+
   const value = {
     state,
     dispatch,
     initialize,
     methods: {
+      deleteTrack,
       play,
       stop,
       changeBpm,

@@ -1,0 +1,29 @@
+.section {
+  @apply flex-grow-0;
+  @apply flex-shrink-0;
+  @apply relative;
+  @apply mr-4;
+  @apply w-80;
+  @apply h-80;
+  @apply shadow;
+  @apply flex;
+  @apply bg-neutral-100;
+}
+
+.wrapper {
+  @apply w-full;
+  @apply flex;
+  @apply flex-col;
+  @apply items-center;
+}
+
+.nav {
+  @apply w-full;
+  @apply bg-neutral-300;
+  @apply shadow;
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply h-8;
+  @apply px-2;
+}

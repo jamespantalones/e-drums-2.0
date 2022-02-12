@@ -10,13 +10,9 @@ import { generateId } from '../../utils';
 export function Nav() {
   const { state, dispatch, initialize, methods } = useAudioContext();
 
-  const handleBpmChange = React.useCallback((bpm: number) => {
-    methods.changeBpm(bpm);
-  }, []);
-
   return (
     <nav className={styles.nav}>
-      <h1>E-Rhythms</h1>
+      <h1 className="text-xs uppercase">E-Rhythms 0.0.2</h1>
       <section className={styles.section}>
         <div>
           <IconButton onClick={methods.play}>
@@ -33,7 +29,6 @@ export function Nav() {
           </IconButton>
         </div>
       </section>
-      <TempoSlider bpm={state.bpm} onChange={handleBpmChange} />
     </nav>
   );
 }

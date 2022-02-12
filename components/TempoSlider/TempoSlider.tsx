@@ -27,9 +27,6 @@ export function TempoSlider({
   return (
     <div className="w-full font-mono text-xs">
       <label>
-        <Highlight>
-          <small className="text-xs">BPM: {formatBpm(bpm)}</small>
-        </Highlight>
         <input
           type="range"
           min="50"
@@ -39,6 +36,9 @@ export function TempoSlider({
           onChange={handleChange}
           className="w-full mt-2"
         />
+        <Highlight>
+          <small className="text-xs">BPM: {formatBpm(bpm)}</small>
+        </Highlight>
       </label>
     </div>
   );

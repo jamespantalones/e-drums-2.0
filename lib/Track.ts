@@ -1,7 +1,8 @@
 import * as Tone from "tone";
+import { SOUNDS } from "../config/config";
 import { generateId } from "../utils";
 import { euclideanRhythm } from "./euclideanRhythm";
-import { getBeats } from "./utils";
+import { getBeats, loadAudioAsync } from "./utils";
 
 const TOTAL_NOTES_MAX = 256;
 
@@ -11,39 +12,7 @@ export enum Time {
   "DOUBLE_TIME",
 }
 
-export const SOUNDS = [
-  "pops-bd-1.wav",
-  "pops-bd-2.wav",
-  "pops-bd-3.wav",
-  "pops-bd-4.wav",
-  "pops-clave1.wav",
-  "pops-clave2.wav",
-  "pops-clave5.wav",
-  "pops-clave6.wav",
-  "pops-con1.wav",
-  "pops-con2.wav",
-  "pops-con3.wav",
-  "pops-con4.wav",
-  "pops-hh-1.wav",
-  "pops-hh-2.wav",
-  "pops-hh-3.wav",
-  "pops-hh-4.wav",
-  "pops-hh-5.wav",
-  "pops-hh-6.wav",
-  "pops-hh-hho1.wav",
-  "pops-hh-hho2.wav",
-  "pops-mix-1.wav",
-  "pops-mix-2.wav",
-  "pops-rim1.wav",
-  "pops-rim2.wav",
-  "pops-rim3.wav",
-  "pops-rim4.wav",
-  "pops-sd-1.wav",
-  "pops-sd-2.wav",
-  "pops-sd-3.wav",
-  "pops-sd-4.wav",
-  "pops-sd-5.wav",
-];
+
 
 export class Track {
   public onNotes: number;
@@ -56,11 +25,13 @@ export class Track {
 
   public id: string;
 
-  public audio: Tone.Sampler;
+  public audio!: Tone.Sampler;
 
   public pattern: number[];
 
   public time: Time;
+
+  public isReady: boolean;
 
   constructor({
     onNotes,
@@ -74,6 +45,7 @@ export class Track {
     this.id = generateId();
     this.onNotes = onNotes;
     this.totalNotes = totalNotes;
+    this.isReady = false;
 
     this.time = Time.NORMAL;
     this.volume = 0.5;
@@ -81,22 +53,28 @@ export class Track {
     this.pattern = euclideanRhythm(this.onNotes, this.totalNotes);
     this.note = note || 400;
 
-    this.audio = new Tone.Sampler({
-      //C3: "/sounds/minipops/pops-clave1.wav",
-      C3: `/sounds/minipops/${
-        SOUNDS[Math.floor(Math.random() * SOUNDS.length)]
-      }`,
-    });
+
+    
+  }
+
+  public async init(): Promise<Track>{
+
+    const soundFile = `/sounds/minipops/${
+      SOUNDS[Math.floor(Math.random() * SOUNDS.length)]
+    }`;
+
+    this.audio = await loadAudioAsync(soundFile);
+
+    return this;
   }
 
   public play(time: number) {
-    if (this.audio) {
-      try {
-        this.audio.triggerAttack(this.note, time);
-      } catch (err) {
-        console.error(err);
-      }
+    if (!this.audio){
+      throw new Error('Audio file is not initialized. Did you forget to call .init() on the Track?')
     }
+
+    this.audio.triggerAttack(this.note, time);
+  
   }
 
   public adjustTimeScale(time: Time) {

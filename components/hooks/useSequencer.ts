@@ -59,7 +59,6 @@ export function useSequencer() {
   }, []);
 
   const toggleTick = React.useCallback((id: string, index: number) => {
-    console.log("ID:", id, "INDEX:", index);
     pubsub.emit(SequencerEvents.TOGGLE_TICK, { id, index });
   }, []);
 

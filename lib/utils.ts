@@ -1,3 +1,4 @@
+import * as Tone from "tone";
 import { euclideanRhythm } from "./euclideanRhythm";
 import { pubsub } from "./pubsub";
 import { SequencerEvents } from "./schema";
@@ -32,3 +33,19 @@ export const handler: ProxyHandler<{
     return true;
   },
 };
+
+
+export async function loadAudioAsync(file: string): Promise<Tone.Sampler>{
+  return new Promise((resolve, reject) => {
+
+    let audio: Tone.Sampler;
+
+    function onLoad(){
+      resolve(audio);
+    }
+
+    audio = new Tone.Sampler({
+      C3: file,
+    }, onLoad)
+  });
+}
