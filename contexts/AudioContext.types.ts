@@ -15,6 +15,8 @@ export type AudioContextReturnType = {
     play: () => Promise<void>;
     stop: () => void;
     changeBpm: (bpm: number) => void;
+    createTrack: () => void;
+    toggleTick: (id: string, index: number) => void;
   }
 }
 
@@ -29,9 +31,17 @@ export type AudioContextAction =
   | {
       type: '_STOP';
     }
+    | {
+      type: 'ADD_TRACK',
+      value: Track,
+    }
   | {
       type: 'INCREMENT_TICK';
+      value: number;
     } | {
       type: 'SET_BPM',
       value: number;
+    } | {
+      type: 'UPDATE_TRACKS',
+      value: Track[],
     };

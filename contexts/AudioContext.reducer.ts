@@ -13,10 +13,17 @@ export function audioContextReducer(
       };
     }
 
+    case 'ADD_TRACK': {
+      return {
+        ...state,
+        tracks: state.tracks.concat(action.value)
+      }
+    }
+
     case 'INCREMENT_TICK': {
       return {
         ...state,
-        tick: state.tick + 1,
+        tick: action.value,
       };
     }
 
@@ -39,6 +46,13 @@ export function audioContextReducer(
         ...state,
         playing: false,
       };
+    }
+
+    case 'UPDATE_TRACKS': {
+      return {
+        ...state,
+        tracks: action.value,
+      }
     }
 
     default: {

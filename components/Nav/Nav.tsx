@@ -6,6 +6,7 @@ import { IconButton } from '../IconButton/IconButton';
 import { TempoSlider } from '../TempoSlider/TempoSlider';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
+import { generateId } from '../../utils';
 export function Nav() {
   const { state, dispatch, initialize, methods } = useAudioContext();
 
@@ -15,19 +16,20 @@ export function Nav() {
 
   return (
     <nav className={styles.nav}>
+      <h1>E-Rhythms</h1>
       <section className={styles.section}>
-        <div>
-          <IconButton onClick={() => undefined}>
-            <NewIcon />
-          </IconButton>
-        </div>
-
         <div>
           <IconButton onClick={methods.play}>
             <PlayIcon />
           </IconButton>
           <IconButton onClick={methods.stop}>
             <StopIcon />
+          </IconButton>
+        </div>
+
+        <div>
+          <IconButton onClick={methods.createTrack}>
+            <NewIcon />
           </IconButton>
         </div>
       </section>

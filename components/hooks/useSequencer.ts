@@ -92,17 +92,7 @@ export function useSequencer() {
     []
   );
 
-  const createNewTrack = React.useCallback(() => {
-    const random = Math.floor(Math.random() * 20) + 1;
 
-    const rhythm = {
-      id: generateId(),
-      onNotes: Math.floor(random / 2),
-      totalNotes: random,
-      note: Math.floor(Math.random() * 400),
-    };
-    pubsub.emit(SequencerEvents.ADD_NEW_RHYTHM, rhythm);
-  }, []);
 
   const init = React.useCallback(async () => {
     if (!ctx.current) {
@@ -143,7 +133,6 @@ export function useSequencer() {
     decrementTick,
     incrementBeat,
     incrementTick,
-    createNewTrack,
     changeFrequency,
     toggleTick,
     init,

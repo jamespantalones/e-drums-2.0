@@ -7,6 +7,8 @@ import { getBeats, handler } from "./utils";
 
 export interface SequencerOpts {
   initialTracks?: Track[];
+
+  onTick: (tickVal: number) => void;
 }
 
 // ------------------------------------------------------------
@@ -17,6 +19,8 @@ export class Sequencer {
     rhythmIndex: number;
     tracks: Track[];
   };
+
+  public onTick: (tick: number) => void;
 
   public isInit: boolean;
 
@@ -29,6 +33,8 @@ export class Sequencer {
 
   constructor(opts: SequencerOpts) {
     this.isInit = false;
+
+    this.onTick = opts.onTick;
 
     this.state = new Proxy(
       {
@@ -95,16 +101,7 @@ export class Sequencer {
       }
     );
 
-    pubsub.on(SequencerEvents.ADD_NEW_RHYTHM, (rhythm: Track) => {
-      const nextTrack = new Track({
-        onNotes: rhythm.onNotes,
-        totalNotes: rhythm.totalNotes,
-        note: rhythm.note,
-      });
-      nextTrack.audio.connect(this.chain);
-
-      this.state.tracks = this.state.tracks.concat(nextTrack);
-    });
+    
 
     pubsub.on(SequencerEvents.REMOVE_RHYTHM, (id: string) => {
       this.state.tracks = this.state.tracks.filter((r) => r.id !== id);
@@ -113,14 +110,7 @@ export class Sequencer {
     pubsub.on(
       SequencerEvents.TOGGLE_TICK,
       ({ id, index }: { id: string; index: number }) => {
-        this.state.tracks = this.state.tracks.map((rhythm) => {
-          // if we have a target
-          if (rhythm.id === id) {
-            return rhythm.toggleNote(index, rhythm);
-          }
-
-          return rhythm;
-        });
+        
       }
     );
 
@@ -164,58 +154,36 @@ export class Sequencer {
   async start() {
     if (!this.isInit) {
       console.error("Cannot start without initializing");
+      await this.init();
     }
 
     this.transport = Tone.Transport;
 
+    // on every 16th note...
     this.transport.scheduleRepeat((time) => {
-      // schedule UI update
+      
+      
+      
+      // IMPORTANT: any UI updates need to be called
+      // here to not block main thread
       Tone.Draw.schedule(() => {
         // increment rhythm index
-        this.state.rhythmIndex++;
+        this.state.rhythmIndex = this.state.rhythmIndex + 1;
+
+        // call the current tick increment
+        this.onTick(this.state.rhythmIndex);
       }, time);
 
       // increment rhythm index
       let nextIndex = this.state.rhythmIndex + 1;
 
-      // run the draw update here
+      
 
       this.state.tracks.forEach((track, index) => {
         if (track.pattern[nextIndex % track.pattern.length]) {
           // normal time
           track.play(time);
         }
-
-        return;
-
-        if (track.time === Time.NORMAL && nextIndex % 2 === 0) {
-          if (track.pattern[nextIndex % track.pattern.length]) {
-            // normal time
-            track.play(time);
-          }
-
-          return;
-        }
-
-        // half time
-        else if (track.time === Time.HALF_TIME && nextIndex % 4 === 0) {
-          if (track.pattern[nextIndex % track.pattern.length]) {
-            // normal time
-            track.play(time);
-          }
-          return;
-        }
-
-        // double time
-        else if (track.time === Time.DOUBLE_TIME) {
-          if (track.pattern[nextIndex % track.pattern.length]) {
-            // normal time
-            track.play(time);
-          }
-          return;
-        }
-
-        return;
       });
       // use the callback time to schedule events
     }, "16n");
@@ -223,6 +191,46 @@ export class Sequencer {
     Tone.Transport.bpm.value = 69;
     Tone.Transport.swing = 0.05;
     Tone.Transport.start();
+  }
+
+
+  public async addNewRhythm(rhythm: Pick<Track, 'onNotes' | 'totalNotes' | 'note'>): Promise<Track>{
+    
+    if (!this.isInit) {
+      console.error("Cannot start without initializing");
+      await this.init();
+    }
+    
+    const nextTrack = new Track({
+      onNotes: rhythm.onNotes,
+      totalNotes: rhythm.totalNotes,
+      note: rhythm.note,
+    });
+
+    nextTrack.audio.connect(this.chain);
+
+    // add
+    this.state.tracks = this.state.tracks.concat(nextTrack);
+
+    return nextTrack;
+  }
+
+  public toggleTick(id: string, index: number): [Track | undefined, Track[]]{
+
+    let rhythmTarget: Track | undefined = undefined;
+
+    this.state.tracks = this.state.tracks.map((rhythm) => {
+      // if we have a target
+      if (rhythm.id === id) {
+        const track = rhythm.toggleNote(index, rhythm);
+        rhythmTarget = track;
+        return track;
+      }
+
+      return rhythm;
+    });
+
+    return [rhythmTarget, this.state.tracks];
   }
 
   public setBpm(val: number) {

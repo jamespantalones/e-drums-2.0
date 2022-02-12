@@ -150,7 +150,6 @@ export class Track {
       return p;
     });
 
-    console.log("this pattern", this.pattern);
     return this;
   }
 }

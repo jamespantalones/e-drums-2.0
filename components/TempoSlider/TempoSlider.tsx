@@ -33,7 +33,7 @@ export function TempoSlider({
         <input
           type="range"
           min="50"
-          max="220"
+          max="180"
           step={0.1}
           value={bpm}
           onChange={handleChange}
