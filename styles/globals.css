@@ -4,7 +4,7 @@
 
 :root {
   @apply bg-neutral-100;
-  @apply text-blue-500;
+  @apply text-neutral-500;
 }
 
 html {

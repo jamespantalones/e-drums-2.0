@@ -7,12 +7,15 @@ import { TempoSlider } from '../TempoSlider/TempoSlider';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { generateId } from '../../utils';
+import { Highlight } from '../Highlight/Highlight';
 export function Nav() {
   const { state, dispatch, initialize, methods } = useAudioContext();
 
   return (
     <nav className={styles.nav}>
-      <h1 className="text-xs uppercase">E-Rhythms 0.0.2</h1>
+      <Highlight>
+        <h1 className="text-xs uppercase">E-Rhythms 0.0.2</h1>
+      </Highlight>
       <section className={styles.section}>
         <div>
           <IconButton onClick={methods.play}>

@@ -62,6 +62,18 @@ export function audioContextReducer(
       }
     }
 
+    case 'UPDATE_TRACK': {
+      return {
+        ...state,
+        tracks: state.tracks.map(track => {
+          if (track.id == action.value.id){
+            return action.value;
+          }
+          return track;
+        })
+      }
+    }
+
     default: {
       // @ts-ignore
       throw new Error(`Unhandled action type: ${action.type}`);

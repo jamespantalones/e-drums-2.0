@@ -18,6 +18,7 @@ export type AudioContextReturnType = {
     changeBpm: (bpm: number) => void;
     createTrack: () => void;
     toggleTick: (id: string, index: number) => void;
+    setRhythmTicks: ({track: Track, ticks}: {track: Track, ticks: number}) => void;
   }
 }
 
@@ -49,4 +50,7 @@ export type AudioContextAction =
     } | {
       type: 'UPDATE_TRACKS',
       value: Track[],
+    } | {
+      type: 'UPDATE_TRACK',
+      value: Track,
     };

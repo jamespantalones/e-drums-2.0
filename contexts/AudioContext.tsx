@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Sequencer } from '../lib/Sequencer';
+import { Track } from '../lib/Track';
 import { generateId } from '../utils';
 import { audioContextReducer } from './AudioContext.reducer';
 import { AudioContextReturnType } from './AudioContext.types';
@@ -15,7 +16,7 @@ export function AudioContextProvider({
 }) {
   // audio state
   const [state, dispatch] = React.useReducer(audioContextReducer, {
-    bpm: 100,
+    bpm: 82,
     initialized: false,
     playing: false,
     tick: -1,
@@ -34,8 +35,9 @@ export function AudioContextProvider({
     return new Sequencer({
       initialTracks: [],
       onTick: incrementTick,
+      bpm: state.bpm,
     });
-  }, [incrementTick]);
+  }, []);
 
   // make sure the AudioContext is initialized
   const initialize = React.useCallback(async () => {
@@ -97,11 +99,24 @@ export function AudioContextProvider({
     [sequencer]
   );
 
-  const deleteTrack = React.useCallback((id: string) => {
-    const [_id, tracks] = sequencer.deleteTrack(id);
-    console.log('tracks', tracks);
-    dispatch({ type: 'DELETE_TRACK', value: id });
-  }, []);
+  const setRhythmTicks = React.useCallback(
+    ({ track, ticks }: { track: Track; ticks: number }) => {
+      // first set in sequencer
+      track.setRhythmTicks(ticks);
+
+      // now set in state
+      dispatch({ type: 'UPDATE_TRACK', value: track });
+    },
+    []
+  );
+
+  const deleteTrack = React.useCallback(
+    (id: string) => {
+      const [_id, tracks] = sequencer.deleteTrack(id);
+      dispatch({ type: 'DELETE_TRACK', value: id });
+    },
+    [sequencer, dispatch]
+  );
 
   const value = {
     state,
@@ -114,6 +129,7 @@ export function AudioContextProvider({
       changeBpm,
       createTrack,
       toggleTick,
+      setRhythmTicks,
     },
   };
 

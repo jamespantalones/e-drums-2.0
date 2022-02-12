@@ -9,13 +9,16 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Track.module.css';
+import config from '../../config/config';
+import { Highlight } from '../Highlight/Highlight';
+import clsx from 'clsx';
 export function TrackItem({ rhythm }: { rhythm: Track }) {
   const length = rhythm.pattern.length;
   const nodeRef = React.useRef<HTMLDivElement | null>(null);
 
   const {
     state: { tick },
-    methods: { toggleTick, deleteTrack },
+    methods: { toggleTick, deleteTrack, setRhythmTicks },
   } = useAudioContext();
 
   const data = React.useMemo(() => {
@@ -39,12 +42,12 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
 
       // if slice is enabled, but not currently triggered
       if (active && !enabled) {
-        return neutral['300'];
+        return neutral['500'];
       }
 
       // if slice is enabled, and triggered
       if (active && enabled) {
-        return blue['500'];
+        return yellow['400'];
       }
 
       // enabled
@@ -53,7 +56,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
       }
 
       // not active or selected
-      return neutral['200'];
+      return neutral['300'];
     });
 
     return [
@@ -61,7 +64,8 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
         data,
         animation: false,
         offset: 2,
-        borderWidth: 0,
+        borderWidth: 0.05,
+        borderColor: 'black',
         hoverBorderWidth: 0,
         backgroundColor: color,
         hoverBackgroundColor: color,
@@ -73,18 +77,28 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
     deleteTrack(rhythm.id);
   }, [rhythm, deleteTrack]);
 
+  const handleTotalNoteChange = React.useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      setRhythmTicks({
+        track: rhythm,
+        ticks: parseInt(ev.target.value, 10),
+      });
+    },
+    []
+  );
+
   return (
-    <Draggable key={rhythm.id} handle=".handle">
+    <Draggable key={rhythm.id} handle=".handle" bounds="parent">
       <section key={rhythm.id} className={styles.section}>
         <div className={styles.wrapper}>
-          <nav className={styles.nav}>
+          <nav className={clsx(styles.nav, 'handle', 'cursor-move')}>
             <div
               ref={nodeRef}
-              className="handle flex items-center justify-center w-6 h-6 cursor-move text-neutral-500"
+              className="flex items-center justify-center w-6 h-6 cursor-move text-neutral-500"
             >
               <DragHandle />
             </div>
-            <div>
+            <div className="cursor-pointer -mr-2">
               <IconButton small onClick={handleDelete} muted>
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -95,41 +109,52 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
               width={12}
               height={12}
               data={{ labels: [], datasets }}
-              options={{
-                cutout: 0,
-                radius: 120,
-                events: ['click'],
-                onClick: handleClick,
-                borderColor: 'black',
-                borderWidth: 0.05,
-                borderAlign: 'inner',
-                hoverBorderWidth: 1,
+              options={
+                {
+                  cutout: 0,
+                  radius: 120,
+                  events: ['click'],
+                  onClick: handleClick,
+                  borderColor: 'black',
+                  borderWidth: 0.05,
+                  borderAlign: 'inner',
+                  hoverBorderWidth: 1,
 
-                animation: {
-                  animateRotate: false,
-                },
-
-                plugins: {
-                  tooltip: {
-                    enabled: false,
-                    mode: 'nearest',
+                  animation: {
+                    animateRotate: false,
                   },
-                },
-                hover: {
-                  mode: undefined,
-                },
-              }}
+
+                  plugins: {
+                    tooltip: {
+                      enabled: false,
+                      mode: 'nearest',
+                    },
+                  },
+                  hover: {
+                    mode: undefined,
+                  },
+                } as unknown as any
+              }
             />
           </div>
-          {/* <div className="my-2 mx-auto text-center">
-          <label>Ticks</label>
-          <button className="button x-auto" onClick={decrementTick(rhythm)}>
-            -
-          </button>
-          <button className="button mx-auto" onClick={incrementTick(rhythm)}>
-            +
-          </button>
-        </div>
+          <div>
+            <label className="flex flex-col">
+              <div>
+                <Highlight>
+                  <p className="text-xs">SLICES {rhythm.totalNotes}</p>
+                </Highlight>
+              </div>
+              <input
+                type="range"
+                min={2}
+                max={config.MAX_SLICES}
+                step={1}
+                value={rhythm.totalNotes}
+                onChange={handleTotalNoteChange}
+              />
+            </label>
+          </div>
+          {/* 
         <div>
           <input
             type="range"
@@ -139,9 +164,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
             onChange={changeFrequency(rhythm)}
           />
         </div>
-        <div>
-          <button onClick={deleteTrack(rhythm)}>Delete</button>
-        </div> */}
+*/}
         </div>
       </section>
     </Draggable>

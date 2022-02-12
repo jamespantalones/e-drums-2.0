@@ -4,10 +4,10 @@
   @apply relative;
   @apply mr-4;
   @apply w-80;
-  @apply h-80;
+  @apply h-96;
   @apply shadow;
   @apply flex;
-  @apply bg-neutral-100;
+  @apply bg-neutral-200;
 }
 
 .wrapper {

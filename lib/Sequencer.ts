@@ -2,11 +2,13 @@ import * as Tone from "tone";
 import { Transport } from "tone/build/esm/core/clock/Transport";
 import { pubsub } from "./pubsub";
 import { SequencerEvents, SequencerPlayState } from "./schema";
-import { Time, Track } from "./Track";
-import { getBeats, handler } from "./utils";
+import { Track } from "./Track";
+import { handler } from "./utils";
 
 export interface SequencerOpts {
   initialTracks?: Track[];
+
+  bpm: number;
 
   onTick: (tickVal: number) => void;
 }
@@ -19,6 +21,8 @@ export class Sequencer {
     rhythmIndex: number;
     tracks: Track[];
   };
+
+  public bpm: number;
 
   public onTick: (tick: number) => void;
 
@@ -33,7 +37,7 @@ export class Sequencer {
 
   constructor(opts: SequencerOpts) {
     this.isInit = false;
-
+    this.bpm = opts.bpm;
     this.onTick = opts.onTick;
 
     this.state = new Proxy(
@@ -49,45 +53,9 @@ export class Sequencer {
   }
 
   private _addListeners() {
-    // when
-    pubsub.on(SequencerEvents.INCREMENT_BEAT, (id: string) => {
-      this.state.tracks = this.state.tracks.map((t) => {
-        if (t.id === id) {
-          return t.incrementBeat();
-        }
-        return t;
-      });
-    });
 
-    pubsub.on(SequencerEvents.DECREMENT_BEAT, (id: string) => {
-      console.log(`DECREMENT_BEAT`, id);
-      this.state.tracks = this.state.tracks.map((r) => {
-        if (r.id === id) {
-          return r.decrementBeat();
-        }
-        return r;
-      });
-    });
 
-    pubsub.on(SequencerEvents.INCREMENT_TICK, (id: string) => {
-      console.log(`INCREMENT_TICK`, id);
-      this.state.tracks = this.state.tracks.map((r) => {
-        if (r.id === id) {
-          return r.incrementTick();
-        }
-        return r;
-      });
-    });
 
-    pubsub.on(SequencerEvents.DECREMENT_TICK, (id: string) => {
-      console.log(`DECREMENT_TICK`, id);
-      this.state.tracks = this.state.tracks.map((r) => {
-        if (r.id === id) {
-          return r.decrementTick();
-        }
-        return r;
-      });
-    });
 
     pubsub.on(
       SequencerEvents.FREQUENCY_CHANGE,
@@ -104,18 +72,6 @@ export class Sequencer {
     
 
 
-
-    pubsub.on(
-      SequencerEvents.ADJUST_TIME_SCALE,
-      ({ id, value }: { id: string; value: number }) => {
-        this.state.tracks = this.state.tracks.map((r) => {
-          if (r.id === id) {
-            return r.adjustTimeScale(value);
-          }
-          return r;
-        });
-      }
-    );
   }
 
   async init() {
@@ -136,23 +92,17 @@ export class Sequencer {
     
   }
 
+  // stop the transport
   stop(){
     if (this.transport){
-      this.transport.stop();
+      this.transport.pause();
     }
   }
 
-  async start() {
-    if (!this.isInit) {
-      await this.init();
-    }
-
+  private _setupTransport(){
     this.transport = Tone.Transport;
-
     // on every 16th note...
     this.transport.scheduleRepeat((time) => {
-      
-      
       
       // IMPORTANT: any UI updates need to be called
       // here to not block main thread
@@ -167,10 +117,9 @@ export class Sequencer {
       // increment rhythm index
       let nextIndex = this.state.rhythmIndex + 1;
 
-      
-
-      this.state.tracks.forEach((track, index) => {
-        if (track.pattern[nextIndex % track.pattern.length]) {
+      this.state.tracks.forEach((track) => {
+        const currentTick = nextIndex % track.pattern.length;
+        if (track.pattern[currentTick]) {
           // normal time
           track.play(time);
         }
@@ -178,8 +127,20 @@ export class Sequencer {
       // use the callback time to schedule events
     }, "16n");
 
-    Tone.Transport.bpm.value = 69;
+    Tone.Transport.bpm.value = this.bpm;
     Tone.Transport.swing = 0.05;
+  }
+
+  async start() {
+    if (!this.isInit) {
+      await this.init();
+    }
+
+    // if transport hasn't been set up.. set it up
+    if (!this.transport){
+     this._setupTransport();
+    }
+
     Tone.Transport.start();
   }
 
@@ -194,6 +155,9 @@ export class Sequencer {
       onNotes: rhythm.onNotes,
       totalNotes: rhythm.totalNotes,
       note: rhythm.note,
+      // pass a function that allows the child to
+      // tell it's parent when to update itself
+      updateSelfInParent: this.updateChild,
     });
 
     await nextTrack.init();
@@ -226,6 +190,16 @@ export class Sequencer {
 
   public setBpm(val: number) {
     Tone.Transport.bpm.value = val;
+  }
+
+  updateChild = (child: Track) => {
+    this.state.tracks = this.state.tracks.map(track => {
+      if (track.id === child.id){
+        return child;
+      }
+      return track;
+    })
+
   }
 
   public deleteTrack(id: string): [string, Track[]]{

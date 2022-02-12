@@ -15,7 +15,7 @@ const Home: NextPage = () => {
     <>
       <Nav />
       <main className="w-full h-screen gridpaper">
-        <section className="h-full flex flex-wrap items-start justify-start overflow-scroll">
+        <section className="h-full w-full flex overflow-x-auto">
           {tracks.map((rhythm) => (
             <TrackItem key={rhythm.id} rhythm={rhythm} />
           ))}

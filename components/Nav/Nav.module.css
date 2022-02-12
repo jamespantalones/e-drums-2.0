@@ -1,8 +1,8 @@
 .nav {
-  @apply z-50;
   @apply p-2;
   @apply shadow-xl;
   @apply bg-neutral-200;
+  @apply relative;
 }
 
 .section {
