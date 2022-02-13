@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { SoundFile } from '../config/config';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 import { generateId } from '../utils';
@@ -78,7 +79,7 @@ export function AudioContextProvider({
       id: generateId(),
       onNotes: Math.floor(random / 2),
       totalNotes: random,
-      note: Math.floor(Math.random() * 400),
+      pitch: Math.floor(Math.random() * 127),
     };
 
     // add to Sequencer
@@ -102,10 +103,34 @@ export function AudioContextProvider({
   const setRhythmTicks = React.useCallback(
     ({ track, ticks }: { track: Track; ticks: number }) => {
       // first set in sequencer
-      track.setRhythmTicks(ticks);
+      const tu = track.setRhythmTicks(ticks);
 
       // now set in state
-      dispatch({ type: 'UPDATE_TRACK', value: track });
+      dispatch({ type: 'UPDATE_TRACK', value: tu });
+    },
+    []
+  );
+
+  const changeInstrument = React.useCallback(
+    async ({ track, instrument }: { track: Track; instrument: SoundFile }) => {
+      // first set in sequencer
+      const tu = await track.changeInstrument(instrument);
+
+      // now set in state
+      dispatch({ type: 'UPDATE_TRACK', value: tu });
+
+      return tu;
+    },
+    []
+  );
+
+  const setRhythmPitch = React.useCallback(
+    ({ track, pitch }: { track: Track; pitch: number }) => {
+      // first set in sequencer
+      const tu = track.changePitch(pitch);
+
+      // now set in state
+      dispatch({ type: 'UPDATE_TRACK', value: tu });
     },
     []
   );
@@ -130,6 +155,8 @@ export function AudioContextProvider({
       createTrack,
       toggleTick,
       setRhythmTicks,
+      setRhythmPitch,
+      changeInstrument,
     },
   };
 

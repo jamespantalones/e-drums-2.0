@@ -52,27 +52,6 @@ export class Sequencer {
     this.playState = SequencerPlayState.STOPPED;
   }
 
-  private _addListeners() {
-
-
-
-
-    pubsub.on(
-      SequencerEvents.FREQUENCY_CHANGE,
-      ({ id, value }: { id: string; value: number }) => {
-        this.state.tracks = this.state.tracks.map((r) => {
-          if (r.id === id) {
-            return r.changeFrequency(value);
-          }
-          return r;
-        });
-      }
-    );
-
-    
-
-
-  }
 
   async init() {
     try {
@@ -84,7 +63,6 @@ export class Sequencer {
       this.chain = new Tone.Gain();
       this.chain.chain(this.reverb, Tone.Destination);
 
-      this._addListeners();
       this.isInit = true;
     } catch (err) {
       console.error('B', err);
@@ -145,7 +123,7 @@ export class Sequencer {
   }
 
 
-  public async addNewRhythm(rhythm: Pick<Track, 'onNotes' | 'totalNotes' | 'note'>): Promise<Track>{
+  public async addNewRhythm(rhythm: Pick<Track, 'onNotes' | 'totalNotes' | 'pitch'>): Promise<Track>{
     
     if (!this.isInit) {
       await this.init();
@@ -154,7 +132,7 @@ export class Sequencer {
     const nextTrack = new Track({
       onNotes: rhythm.onNotes,
       totalNotes: rhythm.totalNotes,
-      note: rhythm.note,
+      pitch: rhythm.pitch,
       // pass a function that allows the child to
       // tell it's parent when to update itself
       updateSelfInParent: this.updateChild,
@@ -192,9 +170,13 @@ export class Sequencer {
     Tone.Transport.bpm.value = val;
   }
 
-  updateChild = (child: Track) => {
+  updateChild = (child: Track, {needsReconnect}: {needsReconnect?: boolean}) => {
+    console.log('CHILD TRACK', child);
     this.state.tracks = this.state.tracks.map(track => {
       if (track.id === child.id){
+        if (needsReconnect){
+          child.audio.connect(this.chain);
+        }
         return child;
       }
       return track;

@@ -1,3 +1,4 @@
+import { SoundFile } from '../config/config';
 import { Track } from '../lib/Track';
 export type AudioContextType = {
   bpm: number;
@@ -18,7 +19,9 @@ export type AudioContextReturnType = {
     changeBpm: (bpm: number) => void;
     createTrack: () => void;
     toggleTick: (id: string, index: number) => void;
-    setRhythmTicks: ({track: Track, ticks}: {track: Track, ticks: number}) => void;
+    changeInstrument: ({track, instrument}: {track: Track, instrument: SoundFile}) => Promise<Track>;
+    setRhythmTicks: ({track, ticks}: {track: Track, ticks: number}) => void;
+    setRhythmPitch: ({track, pitch}: {track: Track, pitch: number}) => void;
   }
 }
 

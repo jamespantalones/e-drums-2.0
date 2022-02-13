@@ -10,7 +10,6 @@ export function TempoSlider({
 }) {
   const handleChange = React.useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(ev.target.value);
       onChange(parseFloat(ev.target.value));
     },
     [onChange]

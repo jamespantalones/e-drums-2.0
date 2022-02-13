@@ -1,4 +1,4 @@
-import DragHandle from '@mui/icons-material/DragHandle';
+import MenuIcon from '@mui/icons-material/Menu';
 import DeleteIcon from '@mui/icons-material/Close';
 import { ActiveElement, ChartEvent } from 'chart.js';
 import * as React from 'react';
@@ -18,7 +18,13 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
 
   const {
     state: { tick },
-    methods: { toggleTick, deleteTrack, setRhythmTicks },
+    methods: {
+      toggleTick,
+      deleteTrack,
+      setRhythmTicks,
+      setRhythmPitch,
+      changeInstrument,
+    },
   } = useAudioContext();
 
   const data = React.useMemo(() => {
@@ -65,7 +71,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
         animation: false,
         offset: 2,
         borderWidth: 0.05,
-        borderColor: 'black',
+        borderColor: neutral[500],
         hoverBorderWidth: 0,
         backgroundColor: color,
         hoverBackgroundColor: color,
@@ -87,17 +93,42 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
     []
   );
 
+  const handlePitchChange = React.useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      setRhythmPitch({
+        track: rhythm,
+        pitch: parseInt(ev.target.value, 10),
+      });
+    },
+    []
+  );
+
+  const handleTrackChange = React.useCallback(
+    async (ev: React.ChangeEvent<HTMLSelectElement>) => {
+      // get the value
+      const target = config.SOUNDS[rhythm.library].find(
+        (e) => e.name === ev.target.value
+      );
+      if (!target) {
+        return;
+      }
+
+      const _value = await changeInstrument({
+        track: rhythm,
+        instrument: target,
+      });
+    },
+    []
+  );
+
   return (
     <Draggable key={rhythm.id} handle=".handle" bounds="parent">
       <section key={rhythm.id} className={styles.section}>
         <div className={styles.wrapper}>
           <nav className={clsx(styles.nav, 'handle', 'cursor-move')}>
-            <div
-              ref={nodeRef}
-              className="flex items-center justify-center w-6 h-6 cursor-move text-neutral-500"
-            >
-              <DragHandle />
-            </div>
+            <IconButton muted onClick={() => undefined}>
+              <MenuIcon />
+            </IconButton>
             <div className="cursor-pointer -mr-2">
               <IconButton small onClick={handleDelete} muted>
                 <DeleteIcon fontSize="small" />
@@ -115,8 +146,8 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
                   radius: 120,
                   events: ['click'],
                   onClick: handleClick,
-                  borderColor: 'black',
-                  borderWidth: 0.05,
+                  borderColor: neutral[500],
+                  borderWidth: 0.5,
                   borderAlign: 'inner',
                   hoverBorderWidth: 1,
 
@@ -137,34 +168,72 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
               }
             />
           </div>
-          <div>
-            <label className="flex flex-col">
-              <div>
-                <Highlight>
-                  <p className="text-xs">SLICES {rhythm.totalNotes}</p>
-                </Highlight>
-              </div>
-              <input
-                type="range"
-                min={2}
-                max={config.MAX_SLICES}
-                step={1}
-                value={rhythm.totalNotes}
-                onChange={handleTotalNoteChange}
-              />
-            </label>
+          <div className="w-full px-4">
+            <div>
+              <label className="flex flex-col">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs">SLICES</p>
+                  <div className="text-xs">
+                    <Highlight>{rhythm.totalNotes}</Highlight>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={2}
+                  max={config.MAX_SLICES}
+                  step={1}
+                  value={rhythm.totalNotes}
+                  onChange={handleTotalNoteChange}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="flex flex-col">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs">MIDI NOTE</p>
+                  <div className="text-xs">
+                    <Highlight>{rhythm.pitch}</Highlight>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={127}
+                  step={1}
+                  value={rhythm.pitch}
+                  onChange={handlePitchChange}
+                />
+              </label>
+            </div>
+            <div className="my-2">
+              <label className="flex flex-col">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs">MACHINE</p>
+                  <select value={rhythm.library}>
+                    <option>Korg Minipops</option>
+                  </select>
+                </div>
+              </label>
+            </div>
+            <div className="my-2">
+              <label className="flex flex-col">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs">INSTRUMENT</p>
+                  <select
+                    value={rhythm.currentInstrument?.parent.name || ''}
+                    onChange={handleTrackChange}
+                  >
+                    <option value=""> </option>
+                    {rhythm.soundOptions.map((opt) => (
+                      <option key={opt.name} value={opt.name}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </label>
+            </div>
           </div>
-          {/* 
-        <div>
-          <input
-            type="range"
-            min={0}
-            max={500}
-            defaultValue={rhythm.note}
-            onChange={changeFrequency(rhythm)}
-          />
-        </div>
-*/}
         </div>
       </section>
     </Draggable>
