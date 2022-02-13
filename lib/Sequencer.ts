@@ -1,6 +1,5 @@
 import * as Tone from "tone";
 import { Transport } from "tone/build/esm/core/clock/Transport";
-import { pubsub } from "./pubsub";
 import { SequencerEvents, SequencerPlayState } from "./schema";
 import { Track } from "./Track";
 import { handler } from "./utils";

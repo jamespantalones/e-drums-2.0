@@ -98,7 +98,6 @@ export class Track {
 
     this.pitch = this.currentInstrument.frequency;
 
-    console.log('THIS PITCH', this.pitch);
 
     return this.currentInstrument;
   }

@@ -1,7 +1,5 @@
 import * as Tone from "tone";
 import { euclideanRhythm } from "./euclideanRhythm";
-import { pubsub } from "./pubsub";
-import { SequencerEvents } from "./schema";
 import { Sequencer } from "./Sequencer";
 import { Track } from "./Track";
 
@@ -23,11 +21,9 @@ export const handler: ProxyHandler<{
     obj[prop as string] = value;
 
     if (prop === "tracks") {
-      pubsub.emit<SequencerEvents>(SequencerEvents.RHYTHM_CHANGE, value);
     }
 
     if (prop === "rhythmIndex") {
-      pubsub.emit<SequencerEvents>(SequencerEvents.TICK, value);
     }
 
     return true;

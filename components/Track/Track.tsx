@@ -209,8 +209,8 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
               <label className="flex flex-col">
                 <div className="flex items-center justify-between">
                   <p className="text-xs">MACHINE</p>
-                  <select value={rhythm.library}>
-                    <option>Korg Minipops</option>
+                  <select value={rhythm.library} className="text-xs">
+                    <option>MINIPOPS</option>
                   </select>
                 </div>
               </label>
@@ -222,6 +222,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
                   <select
                     value={rhythm.currentInstrument?.parent.name || ''}
                     onChange={handleTrackChange}
+                    className="text-xs"
                   >
                     <option value=""> </option>
                     {rhythm.soundOptions.map((opt) => (
