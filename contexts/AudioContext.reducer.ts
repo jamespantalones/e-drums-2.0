@@ -1,4 +1,4 @@
-import { AudioContextAction, AudioContextType } from "./AudioContext.types";
+import { AudioContextAction, AudioContextType } from "../types";
 
 export function audioContextReducer(
   state: AudioContextType,
@@ -6,10 +6,11 @@ export function audioContextReducer(
 ) {
   switch (action.type) {
     // private methods
-    case '_INITIALIZE': {
+    case 'INITIALIZE': {
       return {
         ...state,
         initialized: true,
+        tracks: action.value,
       };
     }
 

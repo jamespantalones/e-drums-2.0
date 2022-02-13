@@ -1,0 +1,24 @@
+.modal {
+  @apply fixed;
+  @apply top-0;
+  @apply left-0;
+  @apply right-0;
+  @apply bottom-0;
+  @apply bg-neutral-200;
+  @apply z-50;
+  @apply flex;
+  @apply items-center;
+  @apply justify-center;
+}
+
+.inner {
+  @apply w-1/2;
+  @apply h-40;
+  @apply flex;
+  @apply items-center;
+  @apply justify-center;
+}
+
+.button {
+  @apply shadow-md;
+}

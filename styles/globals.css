@@ -37,6 +37,7 @@ main {
 }
 
 .gridpaper {
+  position: relative;
   background-size: 18px 18px;
   background-image: linear-gradient(to right, #cecece 1px, transparent 1px),
     linear-gradient(to bottom, #cecece 1px, transparent 1px);

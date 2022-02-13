@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { SoundFile } from '../config/config';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import { generateId } from '../utils';
+import { AudioContextReturnType, SoundFile } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
-import { AudioContextReturnType } from './AudioContext.types';
 
 const AudioContext = React.createContext<AudioContextReturnType | undefined>(
   undefined
@@ -33,8 +31,9 @@ export function AudioContextProvider({
 
   // create the Sequencer
   const sequencer = React.useMemo(() => {
+    // async here?
     return new Sequencer({
-      initialTracks: [],
+      initialTracks: [Sequencer.generateTrack(0), Sequencer.generateTrack(1)],
       onTick: incrementTick,
       bpm: state.bpm,
     });
@@ -43,8 +42,8 @@ export function AudioContextProvider({
   // make sure the AudioContext is initialized
   const initialize = React.useCallback(async () => {
     try {
-      await sequencer.init();
-      dispatch({ type: '_INITIALIZE' });
+      const s = await sequencer.init();
+      dispatch({ type: 'INITIALIZE', value: s.state.tracks });
     } catch (err) {
       console.log(err);
     }
@@ -73,21 +72,14 @@ export function AudioContextProvider({
   );
 
   const createTrack = React.useCallback(async () => {
-    const random = Math.floor(Math.random() * 20) + 3;
-
-    const rhythm = {
-      id: generateId(),
-      onNotes: Math.floor(random / 2),
-      totalNotes: random,
-      pitch: Math.floor(Math.random() * 127),
-    };
-
     // add to Sequencer
-    const track = await sequencer.addNewRhythm(rhythm);
+    const track = await sequencer.addNewRhythm(
+      Sequencer.generateTrack(state.tracks.length)
+    );
 
     // add to state
     dispatch({ type: 'ADD_TRACK', value: track });
-  }, [sequencer]);
+  }, [sequencer, state.tracks]);
 
   const toggleTick = React.useCallback(
     (id: string, index: number) => {
@@ -135,6 +127,17 @@ export function AudioContextProvider({
     []
   );
 
+  const setRhythmVolume = React.useCallback(
+    ({ track, volume }: { track: Track; volume: number }) => {
+      // first set in sequencer
+      const tu = track.changeVolume(volume);
+
+      // now set in state
+      dispatch({ type: 'UPDATE_TRACK', value: tu });
+    },
+    []
+  );
+
   const deleteTrack = React.useCallback(
     (id: string) => {
       const [_id, tracks] = sequencer.deleteTrack(id);
@@ -156,6 +159,7 @@ export function AudioContextProvider({
       toggleTick,
       setRhythmTicks,
       setRhythmPitch,
+      setRhythmVolume,
       changeInstrument,
     },
   };

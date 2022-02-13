@@ -1,12 +1,8 @@
-import * as Tone from "tone";
 import { euclideanRhythm } from "./euclideanRhythm";
 import { Sequencer } from "./Sequencer";
 import { Track } from "./Track";
 
 export const getBeats = (rhythm: Track): number[] => {
-  // if (rhythm.pattern) {
-  //   return rhythm.pattern;
-  // }
   return euclideanRhythm(rhythm.onNotes, rhythm.totalNotes);
 };
 
@@ -31,17 +27,3 @@ export const handler: ProxyHandler<{
 };
 
 
-export async function loadAudioAsync(file: string): Promise<Tone.Sampler>{
-  return new Promise((resolve, reject) => {
-
-    let audio: Tone.Sampler;
-
-    function onLoad(){
-      resolve(audio);
-    }
-
-    audio = new Tone.Sampler({
-      C3: file,
-    }, onLoad)
-  });
-}

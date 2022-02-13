@@ -3,13 +3,12 @@ import PlayIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import NewIcon from '@mui/icons-material/Add';
 import { IconButton } from '../IconButton/IconButton';
-import { TempoSlider } from '../TempoSlider/TempoSlider';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
-import { generateId } from '../../utils';
 import { Highlight } from '../Highlight/Highlight';
+import config from '../../config/config';
 export function Nav() {
-  const { state, dispatch, initialize, methods } = useAudioContext();
+  const { state, methods } = useAudioContext();
 
   return (
     <nav className={styles.nav}>
@@ -27,7 +26,10 @@ export function Nav() {
         </div>
 
         <div>
-          <IconButton onClick={methods.createTrack}>
+          <IconButton
+            onClick={methods.createTrack}
+            disabled={state.tracks.length === config.MAX_TRACKS}
+          >
             <NewIcon />
           </IconButton>
         </div>

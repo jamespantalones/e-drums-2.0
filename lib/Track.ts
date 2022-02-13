@@ -1,17 +1,20 @@
-import * as Tone from "tone";
-import config, { Config, Library, SoundFile } from "../config/config";
-import { generateId } from "../utils";
-import { euclideanRhythm } from "./euclideanRhythm";
-import { getBeats, loadAudioAsync } from "./utils";
+import * as Tone from 'tone';
+import config from '../config/config';
+import {
+  Config,
+  CurrentInstrument,
+  Library,
+  SoundFile,
+  TrackOpts,
+} from '../types';
+import { generateId } from '../utils';
+import { euclideanRhythm } from './euclideanRhythm';
+import { getBeats } from './utils';
 
-export type CurrentInstrument = {
-  parent: SoundFile,
-  file: string;
-  frequency: number;
-};
-
+const VOLUME_MULTIPLIER = 1.25;
 
 export class Track {
+  public color: string;
   public onNotes: number;
 
   public totalNotes: number;
@@ -20,16 +23,17 @@ export class Track {
 
   public pitch: number;
 
-  public volume: 0.5;
+  public volume: number;
 
   public id: string;
 
+  public index: number;
+
   public audio!: Tone.Sampler;
 
-  public soundOptions!: Config['SOUNDS'][Library]
+  public soundOptions!: Config['SOUNDS'][Library];
 
   public pattern: number[];
-
 
   public isReady: boolean;
 
@@ -37,20 +41,21 @@ export class Track {
 
   public currentInstrument: CurrentInstrument | null;
 
-  public updateSelfInParent: (child: Track, {needsReconnect}: {needsReconnect?: true}) => void;
+  public updateSelfInParent: (
+    child: Track,
+    { needsReconnect }: { needsReconnect?: true }
+  ) => void;
 
   constructor({
     onNotes,
     totalNotes,
     pitch,
     updateSelfInParent,
-  }: {
-    onNotes: number;
-    totalNotes: number;
-    pitch?: number;
-    updateSelfInParent: (child: Track, {needsReconnect}: {needsReconnect?: boolean}) => void;
-  }) {
+    color,
+    index,
+  }: TrackOpts) {
     this.id = generateId();
+    this.index = index;
     this.updateSelfInParent = updateSelfInParent;
     this.onNotes = onNotes;
     this.totalNotes = totalNotes;
@@ -58,6 +63,7 @@ export class Track {
     this.library = Library.MINIPOPS;
     this.currentInstrument = null;
     this.primaryFile = null;
+    this.color = color;
 
     this.volume = 0.5;
 
@@ -65,21 +71,43 @@ export class Track {
     this.pitch = pitch || Math.floor(Math.random() * 127);
   }
 
-  public async init(): Promise<Track>{
+  static loadAudioAsync(file: string): Promise<Tone.Sampler> {
+    return new Promise((resolve, reject) => {
+      let audio: Tone.Sampler;
 
-    this.audio = await loadAudioAsync(`/sounds/${this._createSoundFile().file}`);
+      function onLoad() {
+        resolve(audio);
+      }
+
+      const buffer = new Tone.Buffer(file, () => {
+        audio = new Tone.Sampler({
+          C3: buffer,
+        });
+        onLoad();
+      });
+    });
+  }
+
+  public async init(): Promise<Track> {
+    this.audio = await Track.loadAudioAsync(
+      `/sounds/${this._createSoundFile().file}`
+    );
     this.isReady = true;
 
     return this;
   }
 
-  private _createSoundFile(value?: SoundFile): CurrentInstrument{
+  private _createSoundFile(value?: SoundFile): CurrentInstrument {
     // get all sounds from the library
     this.soundOptions = config.SOUNDS[this.library];
+
+    // placeholder for final sound
     let primarySound: SoundFile;
 
-    if (!value){
-      const [primarySoundFile] = this.soundOptions;
+    // there is is not already a value
+    if (!value) {
+      const primarySoundFile =
+        this.soundOptions[this.index % this.soundOptions.length];
       primarySound = primarySoundFile;
     } else {
       primarySound = value;
@@ -87,34 +115,28 @@ export class Track {
 
     const [min = 20, max = 100] = primarySound.defaultFreqRange;
 
-    console.log('MINMAX', min, max);
-
-
     this.currentInstrument = {
       parent: primarySound,
-      file: primarySound.files[Math.floor(Math.random() * primarySound.files.length)],
+      file: primarySound.files[
+        Math.floor(Math.random() * primarySound.files.length)
+      ],
       frequency: Math.floor(Math.random() * max) + min,
     };
 
     this.pitch = this.currentInstrument.frequency;
 
-
     return this.currentInstrument;
   }
 
   public play(time: number) {
-    if (!this.audio || !this.isReady){
+    if (!this.audio || !this.isReady) {
       console.warn('Audio file not yet ready...');
       return;
     }
-    
 
     const freq = Tone.Frequency(this.pitch, 'midi').toFrequency();
-    this.audio.triggerAttack(freq, time + 0.25, this.volume);
-
-  
+    this.audio.triggerAttack(freq, time, this.volume * VOLUME_MULTIPLIER);
   }
-
 
   public setRhythmTicks(value: number): Track {
     this.totalNotes = value;
@@ -123,29 +145,31 @@ export class Track {
     return this;
   }
 
-
-
-  public async changeInstrument(value: SoundFile): Promise<Track>{
+  public async changeInstrument(value: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;
     const file = `/sounds/${this._createSoundFile(value).file}`;
-    
+
     // dispose of old audio file
-    if (this.audio){
+    if (this.audio) {
       this.audio.dispose();
     }
 
-
     // load the new one
-    this.audio = await loadAudioAsync(file);
+    this.audio = await Track.loadAudioAsync(file);
     this.isReady = true;
 
     // update the parent
-    this.updateSelfInParent(this, {needsReconnect: true});
+    this.updateSelfInParent(this, { needsReconnect: true });
     return this;
   }
   public changePitch(value: number): Track {
     this.pitch = value;
+    return this;
+  }
+
+  public changeVolume(value: number): Track {
+    this.volume = value;
     return this;
   }
 

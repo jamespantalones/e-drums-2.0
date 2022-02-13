@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Close';
 import { ActiveElement, ChartEvent } from 'chart.js';
 import * as React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import Draggable from 'react-draggable';
+import Draggable, { DraggableEvent } from 'react-draggable';
 import { neutral, yellow, blue } from 'tailwindcss/colors';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
@@ -12,9 +12,18 @@ import styles from './Track.module.css';
 import config from '../../config/config';
 import { Highlight } from '../Highlight/Highlight';
 import clsx from 'clsx';
-export function TrackItem({ rhythm }: { rhythm: Track }) {
+
+const INDEX_OFFSET = 60;
+export function TrackItem({
+  index,
+  rhythm,
+  rect,
+}: {
+  index: number;
+  rhythm: Track;
+  rect: Omit<DOMRect, 'toJSON'>;
+}) {
   const length = rhythm.pattern.length;
-  const nodeRef = React.useRef<HTMLDivElement | null>(null);
 
   const {
     state: { tick },
@@ -23,6 +32,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
       deleteTrack,
       setRhythmTicks,
       setRhythmPitch,
+      setRhythmVolume,
       changeInstrument,
     },
   } = useAudioContext();
@@ -53,7 +63,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
 
       // if slice is enabled, and triggered
       if (active && enabled) {
-        return yellow['400'];
+        return rhythm.color;
       }
 
       // enabled
@@ -90,7 +100,7 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
         ticks: parseInt(ev.target.value, 10),
       });
     },
-    []
+    [rhythm, setRhythmTicks]
   );
 
   const handlePitchChange = React.useCallback(
@@ -100,7 +110,17 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
         pitch: parseInt(ev.target.value, 10),
       });
     },
-    []
+    [rhythm, setRhythmPitch]
+  );
+
+  const handleVolumeChange = React.useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      setRhythmVolume({
+        track: rhythm,
+        volume: parseFloat(ev.target.value),
+      });
+    },
+    [rhythm, setRhythmVolume]
   );
 
   const handleTrackChange = React.useCallback(
@@ -113,19 +133,46 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
         return;
       }
 
-      const _value = await changeInstrument({
+      await changeInstrument({
         track: rhythm,
         instrument: target,
       });
     },
-    []
+    [rhythm, changeInstrument]
   );
 
+  const handleZIndex = React.useCallback((ev: DraggableEvent) => {
+    let elems = document.getElementsByClassName('react-draggable');
+    for (let i = 0; i < elems.length; i += 1) {
+      // @ts-ignore
+      elems[i].style.zIndex = 1;
+    }
+
+    const target = ev.currentTarget as HTMLElement;
+    target.style.zIndex = '2';
+  }, []);
+
   return (
-    <Draggable key={rhythm.id} handle=".handle" bounds="parent">
-      <section key={rhythm.id} className={styles.section}>
+    <Draggable
+      key={rhythm.id}
+      handle=".handle"
+      onStart={handleZIndex}
+      bounds=".gridpaper"
+    >
+      <section
+        key={rhythm.id}
+        className={styles.section}
+        style={{
+          top: `${INDEX_OFFSET * index}px`,
+          left: `${INDEX_OFFSET * index}px`,
+          zIndex: 3,
+        }}
+      >
         <div className={styles.wrapper}>
-          <nav className={clsx(styles.nav, 'handle', 'cursor-move')}>
+          <nav
+            className={clsx(styles.nav, 'handle', 'cursor-move')}
+            style={{ backgroundColor: rhythm.color }}
+          >
             <IconButton muted onClick={() => undefined}>
               <MenuIcon />
             </IconButton>
@@ -190,6 +237,24 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
             <div>
               <label className="flex flex-col">
                 <div className="flex items-center justify-between">
+                  <p className="text-xs">VOLUME</p>
+                  <div className="text-xs">
+                    <Highlight>{Math.floor(rhythm.volume * 100)}</Highlight>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={rhythm.volume}
+                  onChange={handleVolumeChange}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="flex flex-col">
+                <div className="flex items-center justify-between">
                   <p className="text-xs">MIDI NOTE</p>
                   <div className="text-xs">
                     <Highlight>{rhythm.pitch}</Highlight>
@@ -209,8 +274,8 @@ export function TrackItem({ rhythm }: { rhythm: Track }) {
               <label className="flex flex-col">
                 <div className="flex items-center justify-between">
                   <p className="text-xs">MACHINE</p>
-                  <select value={rhythm.library} className="text-xs">
-                    <option>MINIPOPS</option>
+                  <select value={rhythm.library} className="text-xs" readOnly>
+                    <option value="MINIPOPS">MINIPOPS</option>
                   </select>
                 </div>
               </label>
