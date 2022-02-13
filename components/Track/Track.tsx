@@ -12,6 +12,7 @@ import styles from './Track.module.css';
 import config from '../../config/config';
 import { Highlight } from '../Highlight/Highlight';
 import clsx from 'clsx';
+import { AnyObject } from 'chart.js/types/basic';
 
 const INDEX_OFFSET = 60;
 export function TrackItem({
@@ -127,7 +128,7 @@ export function TrackItem({
     async (ev: React.ChangeEvent<HTMLSelectElement>) => {
       // get the value
       const target = config.SOUNDS[rhythm.library].find(
-        (e) => e.name === ev.target.value
+        (e: any) => e.name === ev.target.value
       );
       if (!target) {
         return;
@@ -274,7 +275,11 @@ export function TrackItem({
               <label className="flex flex-col">
                 <div className="flex items-center justify-between">
                   <p className="text-xs">MACHINE</p>
-                  <select value={rhythm.library} className="text-xs" readOnly>
+                  <select
+                    value={rhythm.library}
+                    className="text-xs"
+                    onChange={() => undefined}
+                  >
                     <option value="MINIPOPS">MINIPOPS</option>
                   </select>
                 </div>
