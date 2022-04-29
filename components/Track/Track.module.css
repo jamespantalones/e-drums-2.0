@@ -30,3 +30,7 @@
   @apply h-8;
   @apply px-2;
 }
+
+.nav button {
+  @apply bg-black;
+}

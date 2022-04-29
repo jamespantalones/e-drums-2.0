@@ -177,7 +177,7 @@ export function TrackItem({
             <IconButton muted onClick={() => undefined}>
               <MenuIcon />
             </IconButton>
-            <div className="cursor-pointer -mr-2">
+            <div className="cursor-pointer -mr-2 z-10">
               <IconButton small onClick={handleDelete} muted>
                 <DeleteIcon fontSize="small" />
               </IconButton>

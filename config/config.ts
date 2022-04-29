@@ -17,7 +17,6 @@ const config: Config = {
     ...Object.values(colors.blue),
     ...Object.values(colors.indigo),
     ...Object.values(colors.violet),
-    ...Object.values(colors.purple),
     ...Object.values(colors.fuchsia),
     ...Object.values(colors.pink),
     ...Object.values(colors.rose),
