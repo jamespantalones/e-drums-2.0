@@ -4,7 +4,7 @@
 
 :root {
   @apply bg-neutral-100;
-  @apply text-neutral-500;
+  @apply text-black;
 }
 
 html {
@@ -32,7 +32,6 @@ main {
   @apply rounded;
   @apply active:bg-black;
   @apply active:text-pink-200;
-  @apply shadow;
   @apply disabled:opacity-50;
 }
 
@@ -56,32 +55,31 @@ input[type='range']::-webkit-slider-runnable-track {
   height: 3px;
   cursor: pointer;
   border-radius: 1.3px;
-  @apply bg-neutral-500;
-  @apply shadow;
+  @apply bg-black;
 }
 input[type='range']::-webkit-slider-thumb {
-  height: 20px;
+  height: 15px;
   width: 10px;
   cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -9px;
-  @apply bg-neutral-500;
+  margin-top: -6px;
+  @apply bg-black;
 }
 input[type='range']:focus::-webkit-slider-runnable-track {
-  @apply bg-neutral-500;
+  @apply bg-black;
 }
 input[type='range']::-moz-range-track {
   width: 100%;
   height: 3px;
   cursor: pointer;
   appearance: none;
-  @apply bg-neutral-500;
+  @apply bg-black;
 }
 input[type='range']::-moz-range-thumb {
-  height: 20px;
+  height: 15px;
   width: 10px;
   cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -9px;
-  @apply bg-neutral-500;
+  margin-top: -6px;
+  @apply bg-black;
 }

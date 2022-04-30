@@ -2,7 +2,7 @@ import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
 import config from '../config/config';
 import { SequencerPlayState, SerializedTrack } from '../types';
-import { generateId, getRandomValue } from '../utils';
+import { generateId, getRandomValue, randomIntFromInterval } from '../utils';
 import { Track } from './Track';
 
 export interface SequencerOpts {
@@ -87,13 +87,13 @@ export class Sequencer {
   }
 
   static generateTrack(index: number): SerializedTrack {
-    const random = Math.floor(Math.random() * 20) + 3;
+    const random = Math.floor(Math.random() * 10) + 3;
     return {
       id: generateId(),
       index,
       onNotes: Math.floor(random / 2),
       totalNotes: random,
-      pitch: Math.floor(Math.random() * 127),
+      pitch: randomIntFromInterval(50, 100),
       color: config.COLORS[Math.floor(Math.random() * config.COLORS.length)],
     };
   }
@@ -113,11 +113,14 @@ export class Sequencer {
       // here to not block main thread
       Tone.Draw.schedule(() => {
         // increment rhythm index
-        this.state.rhythmIndex = this.state.rhythmIndex + 1;
+        // this.state.rhythmIndex = this.state.rhythmIndex + 1;
 
         // call the current tick increment
         this.onTick(this.state.rhythmIndex);
       }, time);
+
+      // increment rhythm index
+      this.state.rhythmIndex = this.state.rhythmIndex + 1;
 
       // increment rhythm index
       let nextIndex = this.state.rhythmIndex + 1;

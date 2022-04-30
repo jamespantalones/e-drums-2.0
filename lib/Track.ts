@@ -46,29 +46,23 @@ export class Track {
     { needsReconnect }: { needsReconnect?: true }
   ) => void;
 
-  constructor({
-    onNotes,
-    totalNotes,
-    pitch,
-    updateSelfInParent,
-    color,
-    index,
-  }: TrackOpts) {
-    this.id = generateId();
-    this.index = index;
-    this.updateSelfInParent = updateSelfInParent;
-    this.onNotes = onNotes;
-    this.totalNotes = totalNotes;
+  constructor(opts: TrackOpts) {
+    this.id = opts.id || generateId();
+    this.index = opts.index;
+    this.updateSelfInParent = opts.updateSelfInParent;
+    this.onNotes = opts.onNotes;
+    this.totalNotes = opts.totalNotes;
     this.isReady = false;
     this.library = Library.MINIPOPS;
-    this.currentInstrument = null;
+    this.currentInstrument = opts.currentInstrument || null;
     this.primaryFile = null;
-    this.color = color;
+    this.color = opts.color;
 
     this.volume = 0.5;
-
+    // get all sounds from the library
+    this.soundOptions = config.SOUNDS[this.library];
     this.pattern = euclideanRhythm(this.onNotes, this.totalNotes);
-    this.pitch = pitch || Math.floor(Math.random() * 127);
+    this.pitch = opts.pitch || Math.floor(Math.random() * 127);
   }
 
   static loadAudioAsync(file: string): Promise<Tone.Sampler> {
@@ -89,18 +83,21 @@ export class Track {
   }
 
   public async init(): Promise<Track> {
-    this.audio = await Track.loadAudioAsync(
-      `/sounds/${this._createSoundFile().file}`
-    );
+    if (this.currentInstrument) {
+      this.audio = await Track.loadAudioAsync(
+        `/sounds/${this.currentInstrument.file}`
+      );
+    } else {
+      this.audio = await Track.loadAudioAsync(
+        `/sounds/${this._createSoundFile().file}`
+      );
+    }
     this.isReady = true;
 
     return this;
   }
 
   private _createSoundFile(value?: SoundFile): CurrentInstrument {
-    // get all sounds from the library
-    this.soundOptions = config.SOUNDS[this.library];
-
     // placeholder for final sound
     let primarySound: SoundFile;
 
@@ -113,7 +110,7 @@ export class Track {
       primarySound = value;
     }
 
-    const [min = 20, max = 100] = primarySound.defaultFreqRange;
+    const [min = 40, max = 100] = primarySound.defaultFreqRange;
 
     this.currentInstrument = {
       parent: primarySound,

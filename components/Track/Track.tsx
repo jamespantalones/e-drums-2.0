@@ -59,7 +59,7 @@ export function TrackItem({
 
       // if slice is enabled, but not currently triggered
       if (active && !enabled) {
-        return neutral['500'];
+        return neutral['400'];
       }
 
       // if slice is enabled, and triggered
@@ -69,20 +69,20 @@ export function TrackItem({
 
       // enabled
       if (enabled) {
-        return neutral['400'];
+        return neutral['300'];
       }
 
       // not active or selected
-      return neutral['300'];
+      return neutral['200'];
     });
 
     return [
       {
         data,
         animation: false,
-        offset: 2,
-        borderWidth: 0.05,
-        borderColor: neutral[500],
+        offset: 0,
+        borderWidth: 0,
+        borderColor: 'black',
         hoverBorderWidth: 0,
         backgroundColor: color,
         hoverBackgroundColor: color,
@@ -170,14 +170,11 @@ export function TrackItem({
         }}
       >
         <div className={styles.wrapper}>
-          <nav
-            className={clsx(styles.nav, 'handle', 'cursor-move')}
-            style={{ backgroundColor: rhythm.color }}
-          >
-            <IconButton muted onClick={() => undefined}>
-              <MenuIcon />
-            </IconButton>
-            <div className="cursor-pointer -mr-2 z-10">
+          <nav style={{ backgroundColor: rhythm.color }} className={styles.nav}>
+            <div className={clsx('handle', 'cursor-move', 'w-full')}>
+              <MenuIcon style={{ fill: 'black' }} />
+            </div>
+            <div className="z-10">
               <IconButton small onClick={handleDelete} muted>
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -190,14 +187,14 @@ export function TrackItem({
               data={{ labels: [], datasets }}
               options={
                 {
-                  cutout: 0,
-                  radius: 120,
+                  cutout: 5,
+                  radius: 100,
                   events: ['click'],
                   onClick: handleClick,
-                  borderColor: neutral[500],
+                  borderColor: '#000',
                   borderWidth: 0.5,
                   borderAlign: 'inner',
-                  hoverBorderWidth: 1,
+                  hoverBorderWidth: 2,
 
                   animation: {
                     animateRotate: false,

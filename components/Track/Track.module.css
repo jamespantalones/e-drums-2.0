@@ -2,12 +2,12 @@
   @apply absolute;
   @apply top-0;
   @apply mr-4;
-  @apply w-80;
+  @apply w-60;
   @apply shadow;
   @apply flex;
   @apply rounded-lg;
   @apply border-2;
-  @apply border-neutral-300;
+  @apply border-black border-2;
   @apply bg-neutral-100;
   height: auto;
 }
@@ -22,15 +22,11 @@
 
 .nav {
   @apply w-full;
-  @apply bg-neutral-300;
-  @apply shadow;
   @apply flex;
   @apply items-center;
   @apply justify-between;
+  @apply rounded-t-md;
   @apply h-8;
   @apply px-2;
-}
-
-.nav button {
-  @apply bg-black;
+  @apply border-b-2 border-black;
 }
