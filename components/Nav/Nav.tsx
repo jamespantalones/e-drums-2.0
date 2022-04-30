@@ -22,7 +22,7 @@ export function Nav({
       <section className={styles.section}>
         <div className="flex items-center">
           <h1 className="select-none mr-2 border-2 uppercase border-black h-8 px-4 flex items-center justify-center">
-            E-Drums (Alpha)
+            E-Drums
           </h1>
           <IconButton onClick={methods.play} disabled={!state.initialized}>
             <PlayIcon />
