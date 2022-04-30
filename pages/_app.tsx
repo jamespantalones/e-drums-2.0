@@ -14,6 +14,7 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
           name="description"
           content="A simple Euclidean rhythm generator"
         />
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <meta name="viewport" content="width=device-width" />
       </Head>
 
