@@ -1,4 +1,4 @@
-import { AudioContextAction, AudioContextType } from "../types";
+import { AudioContextAction, AudioContextType } from '../types';
 
 export function audioContextReducer(
   state: AudioContextType,
@@ -17,8 +17,8 @@ export function audioContextReducer(
     case 'ADD_TRACK': {
       return {
         ...state,
-        tracks: state.tracks.concat(action.value)
-      }
+        tracks: state.tracks.concat(action.value),
+      };
     }
 
     case 'INCREMENT_TICK': {
@@ -32,7 +32,7 @@ export function audioContextReducer(
       return {
         ...state,
         bpm: action.value,
-      }
+      };
     }
 
     case '_PLAY': {
@@ -52,27 +52,27 @@ export function audioContextReducer(
     case 'DELETE_TRACK': {
       return {
         ...state,
-        tracks: state.tracks.filter(t => t.id !== action.value),
-      }
+        tracks: state.tracks.filter((t) => t.id !== action.value),
+      };
     }
 
     case 'UPDATE_TRACKS': {
       return {
         ...state,
         tracks: action.value,
-      }
+      };
     }
 
     case 'UPDATE_TRACK': {
       return {
         ...state,
-        tracks: state.tracks.map(track => {
-          if (track.id == action.value.id){
+        tracks: state.tracks.map((track) => {
+          if (track.id == action.value.id) {
             return action.value;
           }
           return track;
-        })
-      }
+        }),
+      };
     }
 
     default: {

@@ -8,3 +8,8 @@ export function generateId() {
 export function getRandomValue<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+export function randomIntFromInterval(min: number, max: number) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

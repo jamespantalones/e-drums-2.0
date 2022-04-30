@@ -1,4 +1,5 @@
 import * as React from 'react';
+import localforage from 'localforage';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 import { AudioContextReturnType, SoundFile } from '../types';
@@ -29,68 +30,90 @@ export function AudioContextProvider({
     [dispatch]
   );
 
-  // create the Sequencer
-  const sequencer = React.useMemo(() => {
-    // async here?
-    return new Sequencer({
-      initialTracks: [Sequencer.generateTrack(0), Sequencer.generateTrack(1)],
-      onTick: incrementTick,
-      bpm: state.bpm,
-    });
-  }, []);
+  let seq = React.useRef<Sequencer>();
 
   // make sure the AudioContext is initialized
   const initialize = React.useCallback(async () => {
     try {
-      const s = await sequencer.init();
+      // setup localstorage
+      localforage.config({
+        storeName: 'e-rhythms',
+        name: 'e-rhythms',
+      });
+
+      // get anything out of local
+      const initialState = await localforage.getItem<{
+        rhythmIndex: number;
+        tracks: Track[];
+        bpm: number;
+      }>('state');
+
+      if (initialState) {
+        changeBpm(initialState.bpm);
+        seq.current = new Sequencer({
+          initialTracks: initialState.tracks,
+          onTick: incrementTick,
+          bpm: initialState.bpm,
+        });
+      } else {
+        seq.current = new Sequencer({
+          initialTracks: [
+            Sequencer.generateTrack(0),
+            Sequencer.generateTrack(1),
+          ],
+          onTick: incrementTick,
+          bpm: state.bpm,
+        });
+      }
+
+      const s = await seq.current.init();
+
       dispatch({ type: 'INITIALIZE', value: s.state.tracks });
     } catch (err) {
       console.log(err);
     }
-  }, [sequencer]);
+  }, []);
 
   // methods
   const play = React.useCallback(async () => {
-    if (!sequencer.isInit) {
-      await sequencer.init();
+    if (seq.current && !seq.current.isInit) {
+      await seq.current.init();
     }
-    sequencer.start();
+    seq.current?.start();
     dispatch({ type: '_PLAY' });
-  }, [sequencer]);
+  }, []);
 
   const stop = React.useCallback(async () => {
-    sequencer.stop();
+    seq.current?.stop();
     dispatch({ type: '_STOP' });
-  }, [sequencer]);
+  }, []);
 
-  const changeBpm = React.useCallback(
-    (bpm: number) => {
-      sequencer.setBpm(bpm);
-      dispatch({ type: 'SET_BPM', value: bpm });
-    },
-    [sequencer]
-  );
+  const changeBpm = React.useCallback((bpm: number) => {
+    seq.current?.setBpm(bpm);
+    dispatch({ type: 'SET_BPM', value: bpm });
+  }, []);
 
   const createTrack = React.useCallback(async () => {
     // add to Sequencer
-    const track = await sequencer.addNewRhythm(
+    const track = await seq.current?.addNewRhythm(
       Sequencer.generateTrack(state.tracks.length)
     );
 
-    // add to state
-    dispatch({ type: 'ADD_TRACK', value: track });
-  }, [sequencer, state.tracks]);
+    if (track) {
+      // add to state
+      dispatch({ type: 'ADD_TRACK', value: track });
+    }
+  }, [state.tracks]);
 
-  const toggleTick = React.useCallback(
-    (id: string, index: number) => {
-      // update in sequencer
-      const [_track, tracks] = sequencer.toggleTick(id, index);
+  const toggleTick = React.useCallback((id: string, index: number) => {
+    if (seq.current) {
+      const [_track, tracks] = seq.current.toggleTick(id, index);
 
       // update in state
       dispatch({ type: 'UPDATE_TRACKS', value: tracks });
-    },
-    [sequencer]
-  );
+    }
+    // update in sequencer
+  }, []);
 
   const setRhythmTicks = React.useCallback(
     ({ track, ticks }: { track: Track; ticks: number }) => {
@@ -140,11 +163,34 @@ export function AudioContextProvider({
 
   const deleteTrack = React.useCallback(
     (id: string) => {
-      const [_id, tracks] = sequencer.deleteTrack(id);
-      dispatch({ type: 'DELETE_TRACK', value: id });
+      if (seq.current) {
+        const [_id, tracks] = seq.current.deleteTrack(id);
+        dispatch({ type: 'DELETE_TRACK', value: id });
+      }
     },
-    [sequencer, dispatch]
+    [dispatch]
   );
+
+  const save = React.useCallback(async () => {
+    if (seq.current) {
+      const { state: seqState } = seq.current;
+      const { tracks } = seqState;
+      const cleanTracks = tracks.map((track) => {
+        const { audio, updateSelfInParent, ...rest } = track;
+        return rest;
+      });
+
+      try {
+        const s = await localforage.setItem('state', {
+          ...seqState,
+          tracks: cleanTracks,
+          bpm: state.bpm,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, [state]);
 
   const value = {
     state,
@@ -161,6 +207,7 @@ export function AudioContextProvider({
       setRhythmPitch,
       setRhythmVolume,
       changeInstrument,
+      save,
     },
   };
 

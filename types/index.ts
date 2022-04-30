@@ -27,10 +27,12 @@ export type CurrentInstrument = {
 
 export type TrackOpts = {
   onNotes: number;
+  id?: string;
   totalNotes: number;
   pitch?: number;
   color: string;
   index: number;
+  currentInstrument?: CurrentInstrument;
   updateSelfInParent: (
     child: Track,
     { needsReconnect }: { needsReconnect?: boolean }
@@ -52,6 +54,7 @@ export type AudioContextReturnType = {
   methods: {
     play: () => Promise<void>;
     stop: () => void;
+    save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
     createTrack: () => void;
@@ -91,6 +94,9 @@ export type AudioContextAction =
       value: Track;
     }
   | {
+      type: 'SAVE';
+    }
+  | {
       type: 'DELETE_TRACK';
       value: string;
     }
@@ -128,6 +134,7 @@ export enum SequencerPlayState {
 }
 
 export enum SequencerEvents {
+  SAVE = 'SAVE',
   ADJUST_TIME_SCALE = 'ADJUST_TIME_SCALE',
   TICK = 'TICK',
 

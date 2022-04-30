@@ -1,13 +1,15 @@
 .nav {
-  @apply p-2;
-  @apply shadow-xl;
-  @apply bg-neutral-200;
+  @apply px-2 relative;
+  @apply bg-neutral-100;
+  @apply border-b-2 border-black;
   @apply relative;
+  @apply flex items-center;
 }
 
 .section {
   @apply my-3;
   @apply flex;
+  @apply w-full;
   @apply items-center;
   @apply justify-between;
 }
