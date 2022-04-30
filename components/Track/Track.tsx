@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { TrackInput } from './TrackInput';
 import { Library } from '../../types';
 
-const INDEX_OFFSET = 60;
+const INDEX_OFFSET = 15;
 export function TrackItem({
   index,
   rhythm,

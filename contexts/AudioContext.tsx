@@ -4,6 +4,7 @@ import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 import { AudioContextReturnType, Library, SoundFile } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
+import * as Tone from 'tone';
 
 const AudioContext = React.createContext<AudioContextReturnType | undefined>(
   undefined
@@ -66,7 +67,9 @@ export function AudioContextProvider({
         });
       }
 
+      console.log('start init');
       const s = await seq.current.init();
+      console.log('finish init');
 
       dispatch({ type: 'INITIALIZE', value: s.state.tracks });
     } catch (err) {
@@ -224,6 +227,13 @@ export function AudioContextProvider({
       save,
     },
   };
+
+  React.useEffect(() => {
+    document.querySelector('button').addEventListener('click', async () => {
+      await Tone.start();
+      console.log('context started');
+    });
+  });
 
   return (
     <AudioContext.Provider value={value}>{children}</AudioContext.Provider>

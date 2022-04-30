@@ -57,7 +57,7 @@ export class Sequencer {
   async init() {
     try {
       // start the AudioContext engine (on user interactive only)
-      await Tone.start();
+      Tone.start();
 
       // TODO: move this out
       // create an audio chain
