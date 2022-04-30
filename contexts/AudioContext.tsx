@@ -228,12 +228,15 @@ export function AudioContextProvider({
     },
   };
 
+  const start = React.useCallback(async () => {
+    await Tone.start();
+    console.log('context started');
+    document.querySelector('button')?.removeEventListener('click', start);
+  }, []);
+
   React.useEffect(() => {
-    document.querySelector('button')?.addEventListener('click', async () => {
-      await Tone.start();
-      console.log('context started');
-    });
-  });
+    document.querySelector('button')?.addEventListener('click', start);
+  }, []);
 
   return (
     <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
