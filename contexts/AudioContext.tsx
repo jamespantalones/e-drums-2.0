@@ -229,7 +229,7 @@ export function AudioContextProvider({
   };
 
   React.useEffect(() => {
-    document.querySelector('button').addEventListener('click', async () => {
+    document.querySelector('button')?.addEventListener('click', async () => {
       await Tone.start();
       console.log('context started');
     });
