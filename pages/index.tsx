@@ -63,7 +63,7 @@ const Home: NextPage = () => {
 
   return (
     <HotKeys keyName="cmd+s" onKeyDown={handleKeyDown} allowRepeat>
-      <div className="h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col">
         <Nav toggleAbout={toggleAbout} aboutOpen={aboutOpen} />
         <main className="w-full gridpaper flex-grow py-0" ref={ref}>
           <section className="h-full w-full overflow-x-auto">
