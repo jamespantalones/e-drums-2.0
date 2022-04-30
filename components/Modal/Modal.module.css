@@ -4,8 +4,8 @@
   @apply left-0;
   @apply right-0;
   @apply bottom-0;
-  @apply bg-neutral-200;
-  @apply z-50;
+  @apply bg-neutral-100;
+  @apply z-20;
   @apply flex;
   @apply items-center;
   @apply justify-center;
@@ -17,7 +17,15 @@
   @apply flex;
   @apply items-center;
   @apply justify-center;
+  @apply flex-col;
+}
+
+.h1 {
+  @apply my-4 uppercase;
 }
 
 .button {
+  @apply bg-white text-black;
+  @apply hover:bg-black hover:text-white;
+  @apply px-16 py-8;
 }

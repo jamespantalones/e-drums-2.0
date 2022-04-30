@@ -4,15 +4,15 @@ import { ActiveElement, ChartEvent } from 'chart.js';
 import * as React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import Draggable, { DraggableEvent } from 'react-draggable';
-import { neutral, yellow, blue } from 'tailwindcss/colors';
+import { neutral, blue } from 'tailwindcss/colors';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Track.module.css';
 import config from '../../config/config';
-import { Highlight } from '../Highlight/Highlight';
 import clsx from 'clsx';
-import { AnyObject } from 'chart.js/types/basic';
+import { TrackInput } from './TrackInput';
+import { Library } from '../../types';
 
 const INDEX_OFFSET = 60;
 export function TrackItem({
@@ -35,6 +35,7 @@ export function TrackItem({
       setRhythmPitch,
       setRhythmVolume,
       changeInstrument,
+      changeLibrary,
     },
   } = useAudioContext();
 
@@ -59,7 +60,7 @@ export function TrackItem({
 
       // if slice is enabled, but not currently triggered
       if (active && !enabled) {
-        return neutral['400'];
+        return neutral['500'];
       }
 
       // if slice is enabled, and triggered
@@ -69,7 +70,7 @@ export function TrackItem({
 
       // enabled
       if (enabled) {
-        return neutral['300'];
+        return neutral['400'];
       }
 
       // not active or selected
@@ -81,14 +82,14 @@ export function TrackItem({
         data,
         animation: false,
         offset: 0,
-        borderWidth: 0,
+        borderWidth: 1,
         borderColor: 'black',
-        hoverBorderWidth: 0,
+        hoverBorderWidth: 1,
         backgroundColor: color,
         hoverBackgroundColor: color,
       },
     ];
-  }, [data, tick, length, rhythm.pattern]);
+  }, [data, tick, length, rhythm]);
 
   const handleDelete = React.useCallback(() => {
     deleteTrack(rhythm.id);
@@ -122,6 +123,18 @@ export function TrackItem({
       });
     },
     [rhythm, setRhythmVolume]
+  );
+
+  const handleLibraryChange = React.useCallback(
+    (ev: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = ev.target.value as Library;
+
+      changeLibrary({
+        track: rhythm,
+        library: value,
+      });
+    },
+    [changeLibrary]
   );
 
   const handleTrackChange = React.useCallback(
@@ -182,8 +195,8 @@ export function TrackItem({
           </nav>
           <div className="w-64 h-64 cursor-pointer">
             <Doughnut
-              width={12}
-              height={12}
+              width={10}
+              height={10}
               data={{ labels: [], datasets }}
               options={
                 {
@@ -213,71 +226,45 @@ export function TrackItem({
               }
             />
           </div>
-          <div className="w-full px-4">
-            <div>
-              <label className="flex flex-col">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs">SLICES</p>
-                  <div className="text-xs">
-                    <Highlight>{rhythm.totalNotes}</Highlight>
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min={2}
-                  max={config.MAX_SLICES}
-                  step={1}
-                  value={rhythm.totalNotes}
-                  onChange={handleTotalNoteChange}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="flex flex-col">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs">VOLUME</p>
-                  <div className="text-xs">
-                    <Highlight>{Math.floor(rhythm.volume * 100)}</Highlight>
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={rhythm.volume}
-                  onChange={handleVolumeChange}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="flex flex-col">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs">MIDI NOTE</p>
-                  <div className="text-xs">
-                    <Highlight>{rhythm.pitch}</Highlight>
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={127}
-                  step={1}
-                  value={rhythm.pitch}
-                  onChange={handlePitchChange}
-                />
-              </label>
-            </div>
-            <div className="my-2">
+          <div className="w-full px-2">
+            <TrackInput
+              label={`SLICES / ${rhythm.totalNotes}`}
+              min={2}
+              max={config.MAX_SLICES}
+              step={1}
+              value={rhythm.totalNotes}
+              onChange={handleTotalNoteChange}
+            />
+
+            <TrackInput
+              label={`VOLUME / ${Math.floor(rhythm.volume * 100)}`}
+              min={0}
+              max={1}
+              step={0.01}
+              value={rhythm.volume}
+              onChange={handleVolumeChange}
+            />
+
+            <TrackInput
+              label={`MIDI NOTE / ${rhythm.pitch}`}
+              min={0}
+              max={127}
+              step={1}
+              value={rhythm.pitch}
+              onChange={handlePitchChange}
+            />
+
+            <div className="">
               <label className="flex flex-col">
                 <div className="flex items-center justify-between">
                   <p className="text-xs">MACHINE</p>
                   <select
                     value={rhythm.library}
-                    className="text-xs"
-                    onChange={() => undefined}
+                    className="text-xs border-2 border-black"
+                    onChange={handleLibraryChange}
                   >
                     <option value="MINIPOPS">MINIPOPS</option>
+                    <option value="TR727">TR727</option>
                   </select>
                 </div>
               </label>
@@ -289,7 +276,7 @@ export function TrackItem({
                   <select
                     value={rhythm.currentInstrument?.parent.name || ''}
                     onChange={handleTrackChange}
-                    className="text-xs"
+                    className="text-xs border-2 border-black"
                   >
                     <option value=""> </option>
                     {rhythm.soundOptions.map((opt) => (

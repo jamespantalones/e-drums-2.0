@@ -2,7 +2,7 @@
   @apply px-2 relative;
   @apply bg-neutral-100;
   @apply border-b-2 border-black;
-  @apply relative;
+  @apply relative z-50;
   @apply flex items-center;
 }
 

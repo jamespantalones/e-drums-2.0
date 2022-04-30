@@ -49,6 +49,13 @@ export function audioContextReducer(
       };
     }
 
+    case 'CHANGE_LIBRARY': {
+      return {
+        ...state,
+        library: action.value,
+      };
+    }
+
     case 'DELETE_TRACK': {
       return {
         ...state,

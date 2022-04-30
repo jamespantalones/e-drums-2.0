@@ -35,9 +35,6 @@ export function TempoSlider({
           onChange={handleChange}
           className="w-full mt-2"
         />
-        <Highlight>
-          <small className="text-xs">BPM: {formatBpm(bpm)}</small>
-        </Highlight>
       </label>
     </div>
   );

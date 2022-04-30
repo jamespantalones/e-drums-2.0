@@ -23,6 +23,59 @@ const config: Config = {
   ],
 
   SOUNDS: {
+    TR727: [
+      {
+        name: 'CABASA',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/cabasa.wav'],
+      },
+      {
+        name: 'HI BONGO',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/hi_bongo.wav'],
+      },
+      {
+        name: 'LO BONGO',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/lo_bongo.wav'],
+      },
+
+      {
+        name: 'HI TIMBALE',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/hi_timba.wav'],
+      },
+
+      {
+        name: 'LO TIMBALE',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/lo_timba.wav'],
+      },
+
+      {
+        name: 'HI CONGA',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/hm_conga.wav'],
+      },
+
+      {
+        name: 'LO CONGA',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/lo_conga.wav'],
+      },
+
+      {
+        name: 'MARACAS',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/maracas.wav'],
+      },
+
+      {
+        name: 'STARCHIM',
+        defaultFreqRange: [20, 80],
+        files: ['tr727/starchim.wav'],
+      },
+    ],
     MINIPOPS: [
       {
         name: 'KICK',

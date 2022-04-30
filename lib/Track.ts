@@ -13,6 +13,12 @@ import { getBeats } from './utils';
 
 const VOLUME_MULTIPLIER = 1.25;
 
+export function getRandomLibrary() {
+  const arr = [Library.MINIPOPS, Library.TR727];
+
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export class Track {
   public color: string;
   public onNotes: number;
@@ -53,12 +59,12 @@ export class Track {
     this.onNotes = opts.onNotes;
     this.totalNotes = opts.totalNotes;
     this.isReady = false;
-    this.library = Library.MINIPOPS;
+    this.library = opts.library || getRandomLibrary();
     this.currentInstrument = opts.currentInstrument || null;
     this.primaryFile = null;
     this.color = opts.color;
 
-    this.volume = 0.5;
+    this.volume = 0.6;
     // get all sounds from the library
     this.soundOptions = config.SOUNDS[this.library];
     this.pattern = euclideanRhythm(this.onNotes, this.totalNotes);
@@ -80,6 +86,12 @@ export class Track {
         onLoad();
       });
     });
+  }
+
+  public changeLibrary(library: Library) {
+    this.library = library;
+    this.soundOptions = config.SOUNDS[this.library];
+    return this;
   }
 
   public async init(): Promise<Track> {

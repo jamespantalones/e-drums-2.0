@@ -17,6 +17,7 @@ body {
   @apply font-extralight;
   @apply w-full;
   @apply h-full;
+  @apply fixed top-0 left-0;
   @apply overflow-hidden;
 }
 

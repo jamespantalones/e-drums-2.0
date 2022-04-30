@@ -2,6 +2,8 @@ import { Track } from '../lib/Track';
 
 export enum Library {
   MINIPOPS = 'MINIPOPS',
+
+  TR727 = 'TR727',
 }
 
 export type SoundFile = {
@@ -29,6 +31,7 @@ export type TrackOpts = {
   onNotes: number;
   id?: string;
   totalNotes: number;
+  library?: Library;
   pitch?: number;
   color: string;
   index: number;
@@ -57,6 +60,13 @@ export type AudioContextReturnType = {
     save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
+    changeLibrary: ({
+      track,
+      library,
+    }: {
+      track: Track;
+      library: Library;
+    }) => void;
     createTrack: () => void;
     toggleTick: (id: string, index: number) => void;
     setRhythmVolume: ({
@@ -82,6 +92,10 @@ export type AudioContextAction =
   | {
       type: 'INITIALIZE';
       value: Track[];
+    }
+  | {
+      type: 'CHANGE_LIBRARY';
+      value: Library;
     }
   | {
       type: '_PLAY';

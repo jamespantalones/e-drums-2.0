@@ -107,36 +107,42 @@ export class Sequencer {
 
   private _setupTransport() {
     this.transport = Tone.Transport;
+
+    // ************************************************************
+    // main loop
+    // ************************************************************
     // on every 16th note...
     this.transport.scheduleRepeat((time) => {
+      // increment rhythm index
+      this.state.rhythmIndex += 1;
+
+      Tone.Draw.anticipation = 0.23;
+
       // IMPORTANT: any UI updates need to be called
       // here to not block main thread
       Tone.Draw.schedule(() => {
-        // increment rhythm index
-        // this.state.rhythmIndex = this.state.rhythmIndex + 1;
-
         // call the current tick increment
         this.onTick(this.state.rhythmIndex);
       }, time);
 
-      // increment rhythm index
-      this.state.rhythmIndex = this.state.rhythmIndex + 1;
-
-      // increment rhythm index
+      // get the next index
       let nextIndex = this.state.rhythmIndex + 1;
 
       this.state.tracks.forEach((track) => {
         const currentTick = nextIndex % track.pattern.length;
         if (track.pattern[currentTick]) {
+          const x = Math.random() < 0.5 ? -1 : 1;
+          const y = Math.random();
           // normal time
-          track.play(time);
+          track.play(time + (y * x) / 2000);
         }
       });
+
       // use the callback time to schedule events
     }, '16n');
 
     Tone.Transport.bpm.value = this.bpm;
-    Tone.Transport.swing = 0.05;
+    Tone.Transport.swing = 0.01;
   }
 
   async start() {

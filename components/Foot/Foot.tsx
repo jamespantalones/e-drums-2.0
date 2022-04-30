@@ -6,7 +6,7 @@ export function Foot() {
   const { state, methods } = useAudioContext();
 
   return (
-    <footer className="py-4 px-2 bg-neutral-200 relative border-t-2 border-black">
+    <footer className="px-2 py-0 bg-neutral-100 relative border-t-2 border-black">
       <TempoSlider bpm={state.bpm} onChange={methods.changeBpm} />
     </footer>
   );

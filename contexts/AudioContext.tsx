@@ -2,7 +2,7 @@ import * as React from 'react';
 import localforage from 'localforage';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import { AudioContextReturnType, SoundFile } from '../types';
+import { AudioContextReturnType, Library, SoundFile } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
 
 const AudioContext = React.createContext<AudioContextReturnType | undefined>(
@@ -37,8 +37,8 @@ export function AudioContextProvider({
     try {
       // setup localstorage
       localforage.config({
-        storeName: 'e-rhythms',
-        name: 'e-rhythms',
+        storeName: 'e-drums',
+        name: 'e-drums',
       });
 
       // get anything out of local
@@ -92,6 +92,19 @@ export function AudioContextProvider({
     seq.current?.setBpm(bpm);
     dispatch({ type: 'SET_BPM', value: bpm });
   }, []);
+
+  const changeLibrary = React.useCallback(
+    ({ track, library }: { track: Track; library: Library }) => {
+      // first set in sequencer
+      const tu = track.changeLibrary(library);
+
+      // now set in state
+      dispatch({ type: 'UPDATE_TRACK', value: tu });
+
+      return tu;
+    },
+    []
+  );
 
   const createTrack = React.useCallback(async () => {
     // add to Sequencer
@@ -201,6 +214,7 @@ export function AudioContextProvider({
       play,
       stop,
       changeBpm,
+      changeLibrary,
       createTrack,
       toggleTick,
       setRhythmTicks,

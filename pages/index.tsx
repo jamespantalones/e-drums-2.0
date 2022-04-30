@@ -1,4 +1,5 @@
 import 'chart.js/auto';
+import HotKeys from 'react-hot-keys';
 import type { NextPage } from 'next';
 import * as React from 'react';
 import { Foot } from '../components/Foot/Foot';
@@ -6,10 +7,12 @@ import { Modal } from '../components/Modal/Modal';
 import { Nav } from '../components/Nav/Nav';
 import { TrackItem } from '../components/Track/Track';
 import { useAudioContext } from '../contexts/AudioContext';
+import { AboutModal } from '../components/Modal/AboutModal';
 
 const Home: NextPage = () => {
   const {
     state: { tracks, initialized },
+    methods,
     initialize,
   } = useAudioContext();
 
@@ -24,6 +27,21 @@ const Home: NextPage = () => {
     left: 0,
     right: 0,
   });
+
+  const [aboutOpen, setAboutOpen] = React.useState(false);
+
+  const handleKeyDown = React.useCallback(
+    (_, ev) => {
+      ev.stopPropagation();
+      ev.preventDefault();
+      methods.save();
+    },
+    [methods]
+  );
+
+  const toggleAbout = React.useCallback(() => {
+    setAboutOpen((o) => !o);
+  }, []);
 
   const measureRect = React.useCallback(() => {
     if (!ref.current) {
@@ -41,12 +59,12 @@ const Home: NextPage = () => {
     return () => {
       window.removeEventListener('resize', measureRect);
     };
-  }, []);
+  }, [measureRect]);
 
   return (
-    <>
+    <HotKeys keyName="cmd+s" onKeyDown={handleKeyDown} allowRepeat>
       <div className="h-screen flex flex-col">
-        <Nav />
+        <Nav toggleAbout={toggleAbout} aboutOpen={aboutOpen} />
         <main className="w-full gridpaper flex-grow py-0" ref={ref}>
           <section className="h-full w-full overflow-x-auto">
             {tracks.map((rhythm, index) => (
@@ -61,8 +79,9 @@ const Home: NextPage = () => {
         </main>
         <Foot />
       </div>
+      {aboutOpen && <AboutModal />}
       {!initialized && <Modal initialize={initialize} />}
-    </>
+    </HotKeys>
   );
 };
 

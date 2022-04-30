@@ -7,20 +7,27 @@ import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import config from '../../config/config';
-export function Nav() {
+import { Close, ExitToApp, LiveHelp, QuestionMark } from '@mui/icons-material';
+export function Nav({
+  aboutOpen,
+  toggleAbout,
+}: {
+  aboutOpen: boolean;
+  toggleAbout: () => void;
+}) {
   const { state, methods } = useAudioContext();
 
   return (
     <nav className={styles.nav}>
       <section className={styles.section}>
         <div className="flex items-center">
-          <h1 className="select-none mr-2 border-2 border-black h-12 px-4 flex items-center justify-center">
-            E-Rhythms
+          <h1 className="select-none mr-2 border-2 uppercase border-black h-8 px-4 flex items-center justify-center">
+            E-Drums (Alpha)
           </h1>
-          <IconButton onClick={methods.play}>
+          <IconButton onClick={methods.play} disabled={!state.initialized}>
             <PlayIcon />
           </IconButton>
-          <IconButton onClick={methods.stop}>
+          <IconButton onClick={methods.stop} disabled={!state.initialized}>
             <StopIcon />
           </IconButton>
         </div>
@@ -28,12 +35,19 @@ export function Nav() {
         <div>
           <IconButton
             onClick={methods.createTrack}
-            disabled={state.tracks.length === config.MAX_TRACKS}
+            disabled={
+              state.tracks.length === config.MAX_TRACKS || !state.initialized
+            }
           >
             <NewIcon />
           </IconButton>
-          <IconButton onClick={methods.save}>
+          <IconButton onClick={methods.save} disabled={!state.initialized}>
             <SaveIcon />
+          </IconButton>
+
+          <IconButton onClick={toggleAbout}>
+            {!aboutOpen && <QuestionMark />}
+            {aboutOpen && <Close />}
           </IconButton>
         </div>
       </section>

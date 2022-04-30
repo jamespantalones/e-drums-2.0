@@ -1,5 +1,6 @@
 .button {
-  @apply mr-2 w-12 h-12 border-2 text-black border-black hover:bg-white;
+  @apply disabled:opacity-0 transition-opacity duration-500;
+  @apply mr-2 w-8 h-8 border-2 text-black border-black hover:bg-black hover:text-white;
 }
 
 .small {
