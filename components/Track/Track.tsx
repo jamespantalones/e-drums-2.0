@@ -53,7 +53,7 @@ export function TrackItem({
     [rhythm, toggleTick]
   );
 
-  const datasets = React.useMemo(() => {
+  const datasets = () => {
     const color = new Array(length).fill(0).map((_val, i) => {
       const active = tick % length === i;
       const enabled = rhythm.pattern[i];
@@ -89,7 +89,7 @@ export function TrackItem({
         hoverBackgroundColor: color,
       },
     ];
-  }, [data, tick, length, rhythm]);
+  };
 
   const handleDelete = React.useCallback(() => {
     deleteTrack(rhythm.id);
@@ -197,7 +197,7 @@ export function TrackItem({
             <Doughnut
               width={10}
               height={10}
-              data={{ labels: [], datasets }}
+              data={{ labels: [], datasets: datasets() }}
               options={
                 {
                   cutout: 5,
