@@ -67,9 +67,7 @@ export function AudioContextProvider({
         });
       }
 
-      console.log('start init');
       const s = await seq.current.init();
-      console.log('finish init');
 
       dispatch({ type: 'INITIALIZE', value: s.state.tracks });
     } catch (err) {
@@ -121,15 +119,18 @@ export function AudioContextProvider({
     }
   }, [state.tracks]);
 
-  const toggleTick = React.useCallback((id: string, index: number) => {
-    if (seq.current) {
-      const [_track, tracks] = seq.current.toggleTick(id, index);
+  const toggleTick = React.useCallback(
+    (id: string, index: number) => {
+      if (seq.current) {
+        const [_track, tracks] = seq.current.toggleTick(id, index);
 
-      // update in state
-      dispatch({ type: 'UPDATE_TRACKS', value: tracks });
-    }
-    // update in sequencer
-  }, []);
+        // update in state
+        dispatch({ type: 'UPDATE_TRACKS', value: tracks });
+      }
+      // update in sequencer
+    },
+    [state.tracks]
+  );
 
   const setRhythmTicks = React.useCallback(
     ({ track, ticks }: { track: Track; ticks: number }) => {
@@ -230,7 +231,6 @@ export function AudioContextProvider({
 
   const start = React.useCallback(async () => {
     await Tone.start();
-    console.log('context started');
     document.querySelector('button')?.removeEventListener('click', start);
   }, []);
 
