@@ -14,7 +14,7 @@ import { getBeats } from './utils';
 const VOLUME_MULTIPLIER = 1.25;
 
 export function getRandomLibrary() {
-  const arr = [Library.MINIPOPS, Library.TR727];
+  const arr = [Library.MINIPOPS, Library.TR727, Library.RAVEN];
 
   return arr[Math.floor(Math.random() * arr.length)];
 }

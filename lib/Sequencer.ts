@@ -142,7 +142,7 @@ export class Sequencer {
     }, '16n');
 
     Tone.Transport.bpm.value = this.bpm;
-    Tone.Transport.swing = 0.01;
+    Tone.Transport.swing = 0.0667;
   }
 
   async start() {

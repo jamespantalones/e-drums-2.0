@@ -1,15 +1,46 @@
 .section {
-  @apply absolute;
-  @apply top-0;
-  @apply mr-4;
-  @apply w-60;
-  @apply shadow;
-  @apply flex;
-  @apply rounded-lg;
-  @apply border-2;
-  @apply border-black border-2;
-  @apply bg-white;
-  height: auto;
+  @apply w-full;
+  @apply my-2 shadow;
+  @apply bg-white border;
+  @apply flex-shrink-0;
+}
+
+.slice-wrapper {
+  @apply flex h-full;
+  @apply h-12;
+}
+
+button.slice {
+  @apply w-full;
+  @apply select-none;
+  @apply flex-grow flex-shrink;
+  @apply border;
+  transition: width 0.1s ease;
+  &:hover {
+    @apply bg-yellow-100;
+    @apply mix-blend-darken;
+  }
+  &:active {
+    @apply bg-yellow-200;
+    @apply mix-blend-darken;
+  }
+}
+
+.slice.note-change {
+  @apply flex-grow-0 flex-shrink-0;
+  @apply w-8;
+}
+
+.slice.active {
+  @apply bg-gray-100;
+}
+
+.slice.enabled {
+  @apply bg-gray-300;
+}
+
+.slice.enabled.active {
+  @apply bg-gray-400;
 }
 
 .wrapper {
@@ -25,8 +56,6 @@
   @apply flex;
   @apply items-center;
   @apply justify-between;
-  @apply rounded-t-md;
-  @apply h-7;
   @apply px-2;
   @apply border-b-2 border-black;
 }

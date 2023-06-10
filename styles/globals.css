@@ -17,7 +17,6 @@ body {
   @apply font-extralight;
   @apply w-full;
   @apply h-full;
-  @apply overflow-x-hidden;
 }
 
 main {
@@ -33,13 +32,6 @@ main {
   @apply active:bg-black;
   @apply active:text-pink-200;
   @apply disabled:opacity-50;
-}
-
-.gridpaper {
-  position: relative;
-  background-size: 18px 18px;
-  background-image: linear-gradient(to right, #cecece 1px, transparent 1px),
-    linear-gradient(to bottom, #cecece 1px, transparent 1px);
 }
 
 input[type='range'] {

@@ -6,7 +6,7 @@ import styles from './Modal.module.css';
 export function AboutModal() {
   return (
     <section
-      className={clsx(styles.modal, 'gridpaper')}
+      className={clsx(styles.modal)}
       tabIndex={-1}
       style={{ zIndex: 40 }}
     >

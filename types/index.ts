@@ -4,6 +4,8 @@ export enum Library {
   MINIPOPS = 'MINIPOPS',
 
   TR727 = 'TR727',
+
+  RAVEN = 'RAVEN',
 }
 
 export type SoundFile = {

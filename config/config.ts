@@ -3,7 +3,7 @@ import { Config } from '../types';
 
 const config: Config = {
   MAX_SLICES: 20,
-  MAX_TRACKS: 8,
+  MAX_TRACKS: 20,
   COLORS: [
     '#ff8a80',
     '#ff80ab',
@@ -74,6 +74,13 @@ const config: Config = {
         name: 'STARCHIM',
         defaultFreqRange: [20, 80],
         files: ['tr727/starchim.wav'],
+      },
+    ],
+    RAVEN: [
+      {
+        name: 'HIT',
+        defaultFreqRange: [20, 80],
+        files: ['raven/raven_hit.mp3'],
       },
     ],
     MINIPOPS: [
