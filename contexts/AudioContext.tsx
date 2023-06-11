@@ -1,22 +1,26 @@
-import * as React from 'react';
 import localforage from 'localforage';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 import { AudioContextReturnType, Library, SoundFile } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
 import * as Tone from 'tone';
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react';
 
-const AudioContext = React.createContext<AudioContextReturnType | undefined>(
+const AudioContext = createContext<AudioContextReturnType | undefined>(
   undefined
 );
 
-export function AudioContextProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AudioContextProvider({ children }: { children: ReactNode }) {
   // audio state
-  const [state, dispatch] = React.useReducer(audioContextReducer, {
+  const [state, dispatch] = useReducer(audioContextReducer, {
     bpm: 82,
     initialized: false,
     playing: false,
@@ -24,17 +28,17 @@ export function AudioContextProvider({
     tracks: [],
   });
 
-  const incrementTick = React.useCallback(
+  const incrementTick = useCallback(
     (tickVal: number) => {
       dispatch({ type: 'INCREMENT_TICK', value: tickVal });
     },
     [dispatch]
   );
 
-  let seq = React.useRef<Sequencer>();
+  let seq = useRef<Sequencer>();
 
   // make sure the AudioContext is initialized
-  const initialize = React.useCallback(async () => {
+  const initialize = useCallback(async () => {
     try {
       // setup localstorage
       localforage.config({
@@ -76,7 +80,7 @@ export function AudioContextProvider({
   }, []);
 
   // methods
-  const play = React.useCallback(async () => {
+  const play = useCallback(async () => {
     if (seq.current && !seq.current.isInit) {
       await seq.current.init();
     }
@@ -84,17 +88,17 @@ export function AudioContextProvider({
     dispatch({ type: '_PLAY' });
   }, []);
 
-  const stop = React.useCallback(async () => {
+  const stop = useCallback(async () => {
     seq.current?.stop();
     dispatch({ type: '_STOP' });
   }, []);
 
-  const changeBpm = React.useCallback((bpm: number) => {
+  const changeBpm = useCallback((bpm: number) => {
     seq.current?.setBpm(bpm);
     dispatch({ type: 'SET_BPM', value: bpm });
   }, []);
 
-  const changeLibrary = React.useCallback(
+  const changeLibrary = useCallback(
     ({ track, library }: { track: Track; library: Library }) => {
       // first set in sequencer
       const tu = track.changeLibrary(library);
@@ -107,7 +111,7 @@ export function AudioContextProvider({
     []
   );
 
-  const createTrack = React.useCallback(async () => {
+  const createTrack = useCallback(async () => {
     // add to Sequencer
     const track = await seq.current?.addNewRhythm(
       Sequencer.generateTrack(state.tracks.length)
@@ -119,7 +123,7 @@ export function AudioContextProvider({
     }
   }, [state.tracks]);
 
-  const toggleTick = React.useCallback(
+  const toggleTick = useCallback(
     (id: string, index: number) => {
       if (seq.current) {
         const [_track, tracks] = seq.current.toggleTick(id, index);
@@ -132,7 +136,7 @@ export function AudioContextProvider({
     [state.tracks]
   );
 
-  const setRhythmTicks = React.useCallback(
+  const setRhythmTicks = useCallback(
     ({ track, ticks }: { track: Track; ticks: number }) => {
       // first set in sequencer
       const tu = track.setRhythmTicks(ticks);
@@ -143,7 +147,7 @@ export function AudioContextProvider({
     []
   );
 
-  const changeInstrument = React.useCallback(
+  const changeInstrument = useCallback(
     async ({ track, instrument }: { track: Track; instrument: SoundFile }) => {
       // first set in sequencer
       const tu = await track.changeInstrument(instrument);
@@ -156,7 +160,7 @@ export function AudioContextProvider({
     []
   );
 
-  const setRhythmPitch = React.useCallback(
+  const setRhythmPitch = useCallback(
     ({ track, pitch }: { track: Track; pitch: number }) => {
       // first set in sequencer
       const tu = track.changePitch(pitch);
@@ -167,7 +171,7 @@ export function AudioContextProvider({
     []
   );
 
-  const setRhythmVolume = React.useCallback(
+  const setRhythmVolume = useCallback(
     ({ track, volume }: { track: Track; volume: number }) => {
       // first set in sequencer
       const tu = track.changeVolume(volume);
@@ -178,7 +182,7 @@ export function AudioContextProvider({
     []
   );
 
-  const deleteTrack = React.useCallback(
+  const deleteTrack = useCallback(
     (id: string) => {
       if (seq.current) {
         const [_id, tracks] = seq.current.deleteTrack(id);
@@ -188,7 +192,7 @@ export function AudioContextProvider({
     [dispatch]
   );
 
-  const save = React.useCallback(async () => {
+  const save = useCallback(async () => {
     if (seq.current) {
       const { state: seqState } = seq.current;
       const { tracks } = seqState;
@@ -229,12 +233,12 @@ export function AudioContextProvider({
     },
   };
 
-  const start = React.useCallback(async () => {
+  const start = useCallback(async () => {
     await Tone.start();
     document.querySelector('button')?.removeEventListener('click', start);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.querySelector('button')?.addEventListener('click', start);
   }, []);
 
@@ -244,7 +248,7 @@ export function AudioContextProvider({
 }
 
 export function useAudioContext() {
-  const context = React.useContext(AudioContext);
+  const context = useContext(AudioContext);
   if (context === undefined) {
     throw new Error(
       `useAudioContext must be used within an AudioContextProvider`

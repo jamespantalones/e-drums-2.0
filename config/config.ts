@@ -1,26 +1,8 @@
-import colors from 'tailwindcss/colors';
 import { Config } from '../types';
 
 const config: Config = {
   MAX_SLICES: 20,
   MAX_TRACKS: 20,
-  COLORS: [
-    '#ff8a80',
-    '#ff80ab',
-    '#ea80fc',
-    '#b388ff',
-    '#8c9eff',
-    '#82b1ff',
-    '#80d8ff',
-    '#84ffff',
-    '#a7ffeb',
-    '#b9f6ca',
-    '#ccff90',
-    '#f4ff81',
-    '#ffff8d',
-    '#ffe57f',
-    '#ffd180',
-  ],
 
   SOUNDS: {
     TR727: [

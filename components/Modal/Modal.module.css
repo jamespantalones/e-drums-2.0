@@ -4,11 +4,11 @@
   @apply left-0;
   @apply right-0;
   @apply bottom-0;
-  @apply bg-neutral-100;
   @apply z-20;
   @apply flex;
   @apply items-center;
   @apply justify-center;
+  background: var(--color-bg);
 }
 
 .inner {
@@ -27,5 +27,5 @@
 .button {
   @apply bg-white text-black;
   @apply hover:bg-black hover:text-white;
-  @apply px-16 py-8;
+  @apply px-16 py-8 border-black border-2;
 }

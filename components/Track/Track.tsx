@@ -1,14 +1,13 @@
 import DeleteIcon from '@mui/icons-material/Close';
 import * as React from 'react';
-import { neutral, blue } from 'tailwindcss/colors';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
-import { IconButton } from '../IconButton/IconButton';
 import styles from './Track.module.css';
 import config from '../../config/config';
 import clsx from 'clsx';
 import { TrackInput } from './TrackInput';
 import { Library } from '../../types';
+import Tippy from '@tippyjs/react';
 
 export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
   const length = rhythm.pattern.length;
@@ -38,44 +37,6 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     },
     [rhythm, toggleTick]
   );
-
-  const datasets = () => {
-    const color = new Array(length).fill(0).map((_val, i) => {
-      const active = tick % length === i;
-      const enabled = rhythm.pattern[i];
-
-      // if slice is enabled, but not currently triggered
-      if (active && !enabled) {
-        return neutral['500'];
-      }
-
-      // if slice is enabled, and triggered
-      if (active && enabled) {
-        return rhythm.color;
-      }
-
-      // enabled
-      if (enabled) {
-        return neutral['400'];
-      }
-
-      // not active or selected
-      return neutral['200'];
-    });
-
-    return [
-      {
-        data,
-        animation: false,
-        offset: 0,
-        borderWidth: 1,
-        borderColor: 'black',
-        hoverBorderWidth: 1,
-        backgroundColor: color,
-        hoverBackgroundColor: color,
-      },
-    ];
-  };
 
   const handleDelete = React.useCallback(() => {
     deleteTrack(rhythm.id);
@@ -159,55 +120,27 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     return new Array(length).fill(0);
   }, [length]);
 
+  /*
+  <div>
+          <Tippy>
+            <button>+</button>
+          </Tippy>
+        </div>*/
+
+  console.log('c', rhythm.color);
+
   return (
-    <section className={styles.section}>
-      <nav style={{ backgroundColor: rhythm.color }} className={styles.nav}>
-        <div className="">
-          <label className="flex flex-col">
-            <div className="flex items-center justify-between">
-              <p className="text-xs">MACHINE</p>
-              <select
-                value={rhythm.library}
-                className="text-xs border-2 border-black"
-                onChange={handleLibraryChange}
-              >
-                <option value="MINIPOPS">MINIPOPS</option>
-                <option value="TR727">TR727</option>
-                <option value="RAVEN">RAVEN</option>
-              </select>
-            </div>
-          </label>
-        </div>
-        <div className="my-2">
-          <label className="flex flex-col">
-            <div className="flex items-center justify-between">
-              <p className="text-xs">INSTRUMENT</p>
-              <select
-                value={rhythm.currentInstrument?.parent.name || ''}
-                onChange={handleTrackChange}
-                className="text-xs border-2 border-black"
-              >
-                <option value=""> </option>
-                {rhythm.soundOptions.map((opt) => (
-                  <option key={opt.name} value={opt.name}>
-                    {opt.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </label>
-        </div>
-        <div className="z-10">
-          <IconButton small onClick={handleDelete} muted>
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </div>
-      </nav>
+    <section
+      className={styles.section}
+      data-color={rhythm.color}
+      style={{ '--color-track': rhythm.color } as React.CSSProperties}
+    >
       <div className={styles['slice-wrapper']}>
         <button
           className={clsx(styles.slice, styles['note-change'])}
           onClick={handleTotalNoteChangeDecrement}
         >{`<`}</button>
+
         {slices.map((slice, index) => (
           <button
             key={index}
@@ -217,10 +150,9 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
             })}
             type="button"
             onClick={handleClick(index)}
-          >
-            {index}
-          </button>
+          />
         ))}
+
         <button
           className={clsx(styles.slice, styles['note-change'])}
           onClick={handleTotalNoteChangeIncrement}

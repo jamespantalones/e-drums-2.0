@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 :root {
-  @apply bg-neutral-100;
+  --color-bg: rgb(163 163 163);
+}
+
+:root {
+  background: var(--color-bg);
   @apply text-black;
 }
 

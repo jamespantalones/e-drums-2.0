@@ -4,6 +4,7 @@ import config from '../config/config';
 import { SequencerPlayState, SerializedTrack } from '../types';
 import { generateId, getRandomValue, randomIntFromInterval } from '../utils';
 import { Track } from './Track';
+import { generateRandomColor } from './utils';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -94,7 +95,7 @@ export class Sequencer {
       onNotes: Math.floor(random / 2),
       totalNotes: random,
       pitch: randomIntFromInterval(50, 100),
-      color: config.COLORS[Math.floor(Math.random() * config.COLORS.length)],
+      color: generateRandomColor(),
     };
   }
 
@@ -166,7 +167,7 @@ export class Sequencer {
     const nextTrack = new Track({
       index: rhythm.index,
       onNotes: rhythm.onNotes,
-      color: getRandomValue<string>(config.COLORS),
+      color: generateRandomColor(),
       totalNotes: rhythm.totalNotes,
       pitch: rhythm.pitch,
       // pass a function that allows the child to

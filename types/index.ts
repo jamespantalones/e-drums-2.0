@@ -17,7 +17,6 @@ export type SoundFile = {
 export type Config = {
   MAX_SLICES: number;
   MAX_TRACKS: number;
-  COLORS: string[];
   SOUNDS: {
     [key in Library]: SoundFile[];
   };
