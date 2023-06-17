@@ -27,7 +27,7 @@ const Home: NextPage = () => {
       <div className="min-h-[100vh] flex flex-col">
         <Nav toggleAbout={toggleAbout} aboutOpen={aboutOpen} />
         <main className="w-full flex-grow py-0" ref={ref}>
-          <section className="mt-16 pb-16">
+          <section className="mt-16 pb-16 w-full overflow-x-auto">
             {tracks.map((rhythm, index) => (
               <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
             ))}

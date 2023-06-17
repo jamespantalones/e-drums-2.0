@@ -25,6 +25,8 @@ body {
 
 main {
   @apply p-4;
+  @apply w-full max-w-[100vw];
+  @apply overflow-hidden;
 }
 
 .button {

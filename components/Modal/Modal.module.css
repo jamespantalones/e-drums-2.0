@@ -1,5 +1,5 @@
 .modal {
-  @apply fixed;
+  @apply absolute;
   @apply top-0;
   @apply left-0;
   @apply right-0;
@@ -27,5 +27,5 @@
 .button {
   @apply bg-white text-black;
   @apply hover:bg-black hover:text-white;
-  @apply px-16 py-8 border-black border-2;
+  @apply px-8 py-2 border-black border-2;
 }

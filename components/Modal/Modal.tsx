@@ -1,5 +1,3 @@
-import * as React from 'react';
-import { Highlight } from '../Highlight/Highlight';
 import clsx from 'clsx';
 import styles from './Modal.module.css';
 export function Modal({ initialize }: { initialize: () => Promise<void> }) {

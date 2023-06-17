@@ -2,8 +2,8 @@ import { euclideanRhythm } from './euclideanRhythm';
 import { Sequencer } from './Sequencer';
 import { Track } from './Track';
 
-export const getBeats = (rhythm: Track): number[] => {
-  return euclideanRhythm(rhythm.onNotes, rhythm.totalNotes);
+export const getBeats = (rhythm: Track, pitch: number): number[] => {
+  return euclideanRhythm(rhythm.onNotes, rhythm.totalNotes, pitch);
 };
 
 export const handler: ProxyHandler<{

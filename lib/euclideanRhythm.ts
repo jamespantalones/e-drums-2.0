@@ -1,9 +1,12 @@
-
 function compareArrays(a: any[], b: any[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
-export function euclideanRhythm(onNotes: number, totalNotes: number): number[] {
-  let groups = [] as any[];
+export function euclideanRhythm(
+  onNotes: number,
+  totalNotes: number,
+  pitch: number
+): number[] {
+  let groups: number[][] = [];
 
   for (let i = 0; i < totalNotes; i += 1) {
     groups.push([Number(i < onNotes)]);
@@ -33,15 +36,19 @@ export function euclideanRhythm(onNotes: number, totalNotes: number): number[] {
       break;
     }
 
-    let count = Math.min(start, l - end);
+    const count = Math.min(start, l - end);
 
     groups = groups
       .slice(0, count)
-      .map((g, i) => {
-        return g.concat(groups[l - i]);
-      })
+      .map((g, i) => g.concat(groups[l - i]))
       .concat(groups.slice(count, -count));
   }
 
-  return [].concat.apply([], groups);
+  const arr = groups.flat();
+  return arr.map((a) => {
+    if (a === 0) {
+      return 0;
+    }
+    return pitch;
+  });
 }
