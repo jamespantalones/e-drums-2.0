@@ -207,8 +207,6 @@ export class Track {
       return p;
     });
 
-    console.log('this', this);
-
     return this;
   }
 }

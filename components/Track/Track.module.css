@@ -1,13 +1,29 @@
 .section {
-  @apply w-full;
-  @apply my-4;
-  @apply flex-shrink-0;
+  @apply w-full bg-green-200;
+  @apply my-4 relative py-4;
+  --slice-size: 16vh;
+}
 
-  --slice-size: 10vh;
+.config-right,
+.config-left {
+  @apply w-8 z-50;
+  @apply bg-white;
+  opacity: 1;
+  @apply absolute top-0;
+  @apply flex items-center flex-col justify-center h-full;
+}
+
+.config-left {
+  @apply left-0;
+}
+
+.config-right {
+  @apply right-0;
 }
 
 .slice-wrapper {
-  @apply flex h-full;
+  @apply flex h-full overflow-x-auto;
+  @apply px-8 pr-16;
 }
 
 .slice-outer {
@@ -30,12 +46,6 @@ button.slice {
   @apply border-2;
   @apply border-neutral-500;
   @apply rounded;
-}
-
-.slice.note-change {
-  @apply flex-grow-0 flex-shrink-0;
-  @apply w-8;
-  @apply shadow;
 }
 
 /* tick */

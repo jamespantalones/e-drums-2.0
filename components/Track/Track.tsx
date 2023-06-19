@@ -42,7 +42,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
       setRhythmTicks({
         track: rhythm,
         ticks:
-          rhythm.totalNotes + 1 > 20
+          rhythm.totalNotes + 1 > config.MAX_SLICES
             ? rhythm.totalNotes
             : rhythm.totalNotes + 1,
       });
@@ -136,12 +136,11 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
       data-color={rhythm.color}
       style={{ '--color-track': rhythm.color } as React.CSSProperties}
     >
-      <div className={styles['slice-wrapper']}>
-        <button
-          className={clsx(styles.slice, styles['note-change'])}
-          onClick={handleTotalNoteChangeDecrement}
-        >{`<`}</button>
+      <div className={clsx(styles['config-left'], styles.group)}>
+        <button onClick={handleTotalNoteChangeDecrement}>{`<`}</button>
+      </div>
 
+      <div className={clsx(styles['slice-wrapper'], styles.group)}>
         {slices.map((slice, index) => (
           <div key={`${slice.id}-${index}`} className={styles['slice-outer']}>
             <button
@@ -159,34 +158,13 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
             </div>
           </div>
         ))}
+      </div>
 
-        <button
-          className={clsx(styles.slice, styles['note-change'])}
-          onClick={handleTotalNoteChangeIncrement}
-        >{`>`}</button>
+      <div className={clsx(styles['config-right'], styles.group)}>
+        <button onClick={handleTotalNoteChangeIncrement}>{`>`}</button>
       </div>
 
       <button onClick={handleDelete}>DEL</button>
-
-      {/* <div className="w-full px-2 mt-4">
-        <TrackInput
-          label={`VOLUME / ${Math.floor(rhythm.volume * 100)}`}
-          min={0}
-          max={1}
-          step={0.01}
-          value={rhythm.volume}
-          onChange={handleVolumeChange}
-        />
-
-        <TrackInput
-          label={`MIDI NOTE / ${rhythm.pitch}`}
-          min={10}
-          max={60}
-          step={1}
-          value={rhythm.pitch}
-          onChange={handlePitchChange}
-        />
-      </div> */}
     </section>
   );
 }
