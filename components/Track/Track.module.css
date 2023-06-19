@@ -1,34 +1,26 @@
 .section {
-  @apply w-full bg-green-200;
-  @apply my-4 relative py-4;
-  --slice-size: 16vh;
-}
-
-.config-right,
-.config-left {
-  @apply w-8 z-50;
-  @apply bg-white;
-  opacity: 1;
-  @apply absolute top-0;
-  @apply flex items-center flex-col justify-center h-full;
-}
-
-.config-left {
-  @apply left-0;
-}
-
-.config-right {
-  @apply right-0;
+  @apply w-full;
+  @apply my-2 relative;
+  @apply flex h-12;
+  @apply transition-all;
+  --slice-size: 12vh;
+  &.shift {
+    @apply h-32;
+  }
 }
 
 .slice-wrapper {
   @apply flex h-full overflow-x-auto;
-  @apply px-8 pr-16;
+  @apply w-full py-2 ml-4;
+  transform: translate3d(-180px, 0, 0);
+  transition: transform 0.2s ease;
+  &.shift {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .slice-outer {
   @apply block;
-  height: calc(var(--slice-size) + 2rem);
 }
 
 button.slice {
@@ -37,7 +29,7 @@ button.slice {
   @apply select-none;
   @apply relative;
   @apply flex-shrink-0;
-  height: var(--slice-size);
+  height: 100%;
   width: var(--slice-size);
   background: var(--color-track);
   @apply scale-100;
@@ -63,14 +55,4 @@ button.slice {
 .slice.enabled.active {
   opacity: 1;
   @apply scale-105;
-}
-
-.group {
-  @apply flex;
-  & > button {
-    @apply mr-2;
-    @apply text-2xl;
-    @apply border border-black;
-    @apply w-8 h-8;
-  }
 }

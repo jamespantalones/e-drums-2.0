@@ -5,10 +5,12 @@ import config from '../../config/config';
 import clsx from 'clsx';
 import { TrackInput } from './TrackInput';
 import { Library } from '../../types';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { Settings } from '../Settings/Settings';
 
 export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
   const length = rhythm.pattern.length;
+  const [expanded, setExpanded] = useState(false);
 
   const {
     state: { tick },
@@ -118,19 +120,31 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, changeInstrument]
   );
 
+  const toggleOpen = useCallback(() => {
+    setExpanded((e) => !e);
+  }, []);
+
   const slices = useMemo(() => new Array(length).fill(0), [length]);
 
   return (
     <section
-      className={styles.section}
+      className={clsx(styles.section, {
+        [styles.shift]: expanded,
+      })}
       data-color={rhythm.color}
       style={{ '--color-track': rhythm.color } as React.CSSProperties}
     >
-      <div className={clsx(styles['config-left'], styles.group)}>
-        <button onClick={handleTotalNoteChangeDecrement}>{`<`}</button>
-      </div>
+      <Settings
+        open={expanded}
+        toggleOpen={toggleOpen}
+        handleDelete={handleDelete}
+      />
 
-      <div className={clsx(styles['slice-wrapper'], styles.group)}>
+      <div
+        className={clsx(styles['slice-wrapper'], styles.group, {
+          [styles.shift]: expanded,
+        })}
+      >
         {slices.map((slice, index) => (
           <div key={`${slice.id}-${index}`} className={styles['slice-outer']}>
             <button
@@ -149,12 +163,6 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
           </div>
         ))}
       </div>
-
-      <div className={clsx(styles['config-right'], styles.group)}>
-        <button onClick={handleTotalNoteChangeIncrement}>{`>`}</button>
-      </div>
-
-      <button onClick={handleDelete}>DEL</button>
     </section>
   );
 }

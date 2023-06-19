@@ -1,5 +1,4 @@
 import { nanoid } from 'nanoid';
-import { SerializedTrack } from '../types';
 
 export function generateId() {
   return nanoid(10);

@@ -8,8 +8,7 @@ import {
   TrackOpts,
 } from '../types';
 import { generateId } from '../utils';
-import { euclideanRhythm } from './euclideanRhythm';
-import { getBeats } from './utils';
+import { euclideanRhythm } from './utils';
 
 const VOLUME_MULTIPLIER = 1.25;
 
@@ -146,6 +145,8 @@ export class Track {
     }
 
     const freq = Tone.Frequency(
+      // use user specified pitch, falling back
+      // to initial pitch
       pitchOverride || this.pitch,
       'midi'
     ).toFrequency();
@@ -154,7 +155,7 @@ export class Track {
 
   public setRhythmTicks(value: number): Track {
     this.totalNotes = value;
-    this.pattern = getBeats(this, this.pitch, this.pattern);
+    this.pattern.push(0);
     this.updateSelfInParent(this, {});
     return this;
   }

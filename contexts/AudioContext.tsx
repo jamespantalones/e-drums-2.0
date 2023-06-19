@@ -249,8 +249,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.querySelector('button')?.addEventListener('click', start);
-  }, []);
+    return () => {
+      document.querySelector('button')?.removeEventListener('click', start);
+    };
+  }, [start]);
 
   return (
     <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
