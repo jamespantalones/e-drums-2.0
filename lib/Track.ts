@@ -8,8 +8,7 @@ import {
   TrackOpts,
 } from '../types';
 import { generateId } from '../utils';
-import { euclideanRhythm } from './euclideanRhythm';
-import { getBeats } from './utils';
+import { euclideanRhythm } from './utils';
 
 const VOLUME_MULTIPLIER = 1.25;
 
@@ -65,10 +64,14 @@ export class Track {
     this.color = opts.color;
 
     this.volume = 0.6;
+    this.pitch = opts.pitch;
     // get all sounds from the library
     this.soundOptions = config.SOUNDS[this.library];
-    this.pattern = euclideanRhythm(this.onNotes, this.totalNotes);
-    this.pitch = opts.pitch || Math.floor(Math.random() * 127);
+    this.pattern = euclideanRhythm({
+      onNotes: this.onNotes,
+      totalNotes: this.totalNotes,
+      pitch: this.pitch,
+    });
   }
 
   static loadAudioAsync(file: string): Promise<Tone.Sampler> {
@@ -129,27 +132,30 @@ export class Track {
       file: primarySound.files[
         Math.floor(Math.random() * primarySound.files.length)
       ],
-      frequency: Math.floor(Math.random() * max) + min,
+      frequency: this.pitch,
     };
-
-    this.pitch = this.currentInstrument.frequency;
 
     return this.currentInstrument;
   }
 
-  public play(time: number) {
+  public play(time: number, pitchOverride?: number) {
     if (!this.audio || !this.isReady) {
       console.warn('Audio file not yet ready...');
       return;
     }
 
-    const freq = Tone.Frequency(this.pitch, 'midi').toFrequency();
+    const freq = Tone.Frequency(
+      // use user specified pitch, falling back
+      // to initial pitch
+      pitchOverride || this.pitch,
+      'midi'
+    ).toFrequency();
     this.audio.triggerAttack(freq, time, this.volume * VOLUME_MULTIPLIER);
   }
 
   public setRhythmTicks(value: number): Track {
     this.totalNotes = value;
-    this.pattern = getBeats(this);
+    this.pattern.push(0);
     this.updateSelfInParent(this, {});
     return this;
   }
@@ -182,10 +188,27 @@ export class Track {
     return this;
   }
 
-  public toggleNote(index: number, instance: Track): Track {
+  public toggleNote(index: number): Track {
+    const self = this;
     this.pattern = this.pattern.map((p, i) => {
       if (i === index) {
-        return 1 - p;
+        if (p > 0) {
+          return 0;
+        }
+        return self.pitch;
+      }
+
+      return p;
+    });
+
+    return this;
+  }
+
+  public repitchNote(index: number, type: 'INCREMENT' | 'DECREMENT'): Track {
+    this.pattern = this.pattern.map((p, i) => {
+      if (index === i) {
+        if (p === 0) return p;
+        return p + (type === 'INCREMENT' ? 1 : -1);
       }
       return p;
     });

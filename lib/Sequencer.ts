@@ -2,7 +2,7 @@ import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
 import config from '../config/config';
 import { SequencerPlayState, SerializedTrack } from '../types';
-import { generateId, getRandomValue, randomIntFromInterval } from '../utils';
+import { generateId, randomIntFromInterval } from '../utils';
 import { Track } from './Track';
 import { generateRandomColor } from './utils';
 
@@ -131,11 +131,11 @@ export class Sequencer {
 
       this.state.tracks.forEach((track) => {
         const currentTick = nextIndex % track.pattern.length;
-        if (track.pattern[currentTick]) {
+        if (track.pattern[currentTick] > 0) {
           const x = Math.random() < 0.5 ? -1 : 1;
           const y = Math.random();
           // normal time
-          track.play(time + (y * x) / 2000);
+          track.play(time + (y * x) / 2000, track.pattern[currentTick]);
         }
       });
 
@@ -185,13 +185,34 @@ export class Sequencer {
     return nextTrack;
   }
 
+  public repitchTick(
+    id: string,
+    index: number,
+    type: 'INCREMENT' | 'DECREMENT'
+  ) {
+    let rhythmTarget: Track | undefined = undefined;
+
+    this.state.tracks = this.state.tracks.map((rhythm) => {
+      // if we have a target
+      if (rhythm.id === id) {
+        const track = rhythm.repitchNote(index, type);
+        rhythmTarget = track;
+        return track;
+      }
+
+      return rhythm;
+    });
+
+    return [rhythmTarget, this.state.tracks];
+  }
+
   public toggleTick(id: string, index: number): [Track | undefined, Track[]] {
     let rhythmTarget: Track | undefined = undefined;
 
     this.state.tracks = this.state.tracks.map((rhythm) => {
       // if we have a target
       if (rhythm.id === id) {
-        const track = rhythm.toggleNote(index, rhythm);
+        const track = rhythm.toggleNote(index);
         rhythmTarget = track;
         return track;
       }

@@ -1,5 +1,3 @@
-import DeleteIcon from '@mui/icons-material/Close';
-import * as React from 'react';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
@@ -7,15 +5,18 @@ import config from '../../config/config';
 import clsx from 'clsx';
 import { TrackInput } from './TrackInput';
 import { Library } from '../../types';
-import Tippy from '@tippyjs/react';
+import { useCallback, useMemo, useState } from 'react';
+import { Settings } from '../Settings/Settings';
 
 export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
   const length = rhythm.pattern.length;
+  const [expanded, setExpanded] = useState(false);
 
   const {
     state: { tick },
     methods: {
       toggleTick,
+      repitchTick,
       deleteTrack,
       setRhythmTicks,
       setRhythmPitch,
@@ -25,29 +26,25 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     },
   } = useAudioContext();
 
-  const data = React.useMemo(() => {
-    return new Array(length).fill(Math.round(100 / length));
-  }, [length]);
-
-  const handleClick = React.useCallback(
+  const handleClick = useCallback(
     (index: number) => {
-      return function handler(ev: React.MouseEvent<HTMLButtonElement>) {
+      return function handler() {
         toggleTick(rhythm.id, index);
       };
     },
     [rhythm, toggleTick]
   );
 
-  const handleDelete = React.useCallback(() => {
+  const handleDelete = useCallback(() => {
     deleteTrack(rhythm.id);
   }, [rhythm, deleteTrack]);
 
-  const handleTotalNoteChangeIncrement = React.useCallback(
+  const handleTotalNoteChangeIncrement = useCallback(
     (ev: React.MouseEvent<HTMLButtonElement>) => {
       setRhythmTicks({
         track: rhythm,
         ticks:
-          rhythm.totalNotes + 1 > 20
+          rhythm.totalNotes + 1 > config.MAX_SLICES
             ? rhythm.totalNotes
             : rhythm.totalNotes + 1,
       });
@@ -55,7 +52,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setRhythmTicks]
   );
 
-  const handleTotalNoteChangeDecrement = React.useCallback(
+  const handleTotalNoteChangeDecrement = useCallback(
     (ev: React.MouseEvent<HTMLButtonElement>) => {
       setRhythmTicks({
         track: rhythm,
@@ -66,7 +63,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setRhythmTicks]
   );
 
-  const handlePitchChange = React.useCallback(
+  const handlePitchChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       setRhythmPitch({
         track: rhythm,
@@ -76,17 +73,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setRhythmPitch]
   );
 
-  const handleVolumeChange = React.useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setRhythmVolume({
-        track: rhythm,
-        volume: parseFloat(ev.target.value),
-      });
-    },
-    [rhythm, setRhythmVolume]
-  );
-
-  const handleLibraryChange = React.useCallback(
+  const handleLibraryChange = useCallback(
     (ev: React.ChangeEvent<HTMLSelectElement>) => {
       const value = ev.target.value as Library;
 
@@ -98,15 +85,32 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [changeLibrary]
   );
 
-  const handleTrackChange = React.useCallback(
+  const decrementPitch = useCallback(
+    (index: number) => {
+      return function handler() {
+        repitchTick(rhythm.id, index, 'DECREMENT');
+      };
+    },
+    [rhythm, repitchTick]
+  );
+
+  const incrementPitch = useCallback(
+    (index: number) => {
+      return function handler() {
+        repitchTick(rhythm.id, index, 'INCREMENT');
+      };
+    },
+    [rhythm, repitchTick]
+  );
+
+  const handleTrackChange = useCallback(
     async (ev: React.ChangeEvent<HTMLSelectElement>) => {
       // get the value
       const target = config.SOUNDS[rhythm.library].find(
         (e: any) => e.name === ev.target.value
       );
-      if (!target) {
-        return;
-      }
+
+      if (!target) return;
 
       await changeInstrument({
         track: rhythm,
@@ -116,67 +120,49 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, changeInstrument]
   );
 
-  const slices = React.useMemo(() => {
-    return new Array(length).fill(0);
-  }, [length]);
+  const toggleOpen = useCallback(() => {
+    setExpanded((e) => !e);
+  }, []);
 
-  /*
-  <div>
-          <Tippy>
-            <button>+</button>
-          </Tippy>
-        </div>*/
-
-  console.log('c', rhythm.color);
+  const slices = useMemo(() => new Array(length).fill(0), [length]);
 
   return (
     <section
-      className={styles.section}
+      className={clsx(styles.section, {
+        [styles.shift]: expanded,
+      })}
       data-color={rhythm.color}
       style={{ '--color-track': rhythm.color } as React.CSSProperties}
     >
-      <div className={styles['slice-wrapper']}>
-        <button
-          className={clsx(styles.slice, styles['note-change'])}
-          onClick={handleTotalNoteChangeDecrement}
-        >{`<`}</button>
+      <Settings
+        open={expanded}
+        toggleOpen={toggleOpen}
+        handleDelete={handleDelete}
+      />
 
+      <div
+        className={clsx(styles['slice-wrapper'], styles.group, {
+          [styles.shift]: expanded,
+        })}
+      >
         {slices.map((slice, index) => (
-          <button
-            key={index}
-            className={clsx(styles.slice, {
-              [styles.active]: tick % length === index,
-              [styles.enabled]: rhythm.pattern[index],
-            })}
-            type="button"
-            onClick={handleClick(index)}
-          />
+          <div key={`${slice.id}-${index}`} className={styles['slice-outer']}>
+            <button
+              key={index}
+              className={clsx(styles.slice, {
+                [styles.active]: tick % length === index,
+                [styles.enabled]: rhythm.pattern[index],
+              })}
+              type="button"
+              onClick={handleClick(index)}
+            />
+            <div className={styles.group}>
+              <button onClick={decrementPitch(index)}>-</button>
+              <button onClick={incrementPitch(index)}>+</button>
+            </div>
+          </div>
         ))}
-
-        <button
-          className={clsx(styles.slice, styles['note-change'])}
-          onClick={handleTotalNoteChangeIncrement}
-        >{`>`}</button>
       </div>
-      {/* <div className="w-full px-2 mt-4">
-        <TrackInput
-          label={`VOLUME / ${Math.floor(rhythm.volume * 100)}`}
-          min={0}
-          max={1}
-          step={0.01}
-          value={rhythm.volume}
-          onChange={handleVolumeChange}
-        />
-
-        <TrackInput
-          label={`MIDI NOTE / ${rhythm.pitch}`}
-          min={10}
-          max={60}
-          step={1}
-          value={rhythm.pitch}
-          onChange={handlePitchChange}
-        />
-      </div> */}
     </section>
   );
 }

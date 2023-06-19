@@ -33,7 +33,7 @@ export type TrackOpts = {
   id?: string;
   totalNotes: number;
   library?: Library;
-  pitch?: number;
+  pitch: number;
   color: string;
   index: number;
   currentInstrument?: CurrentInstrument;
@@ -69,6 +69,11 @@ export type AudioContextReturnType = {
       library: Library;
     }) => void;
     createTrack: () => void;
+    repitchTick: (
+      id: string,
+      index: number,
+      type: 'INCREMENT' | 'DECREMENT'
+    ) => void;
     toggleTick: (id: string, index: number) => void;
     setRhythmVolume: ({
       track,

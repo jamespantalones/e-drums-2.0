@@ -1,11 +1,26 @@
 .section {
   @apply w-full;
-  @apply my-1;
-  @apply flex-shrink-0;
+  @apply my-2 relative;
+  @apply flex h-12;
+  @apply transition-all;
+  --slice-size: 12vh;
+  &.shift {
+    @apply h-32;
+  }
 }
 
 .slice-wrapper {
-  @apply flex h-full;
+  @apply flex h-full overflow-x-auto;
+  @apply w-full py-2 ml-4;
+  transform: translate3d(-180px, 0, 0);
+  transition: transform 0.2s ease;
+  &.shift {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slice-outer {
+  @apply block;
 }
 
 button.slice {
@@ -14,25 +29,21 @@ button.slice {
   @apply select-none;
   @apply relative;
   @apply flex-shrink-0;
-  height: 7.5vh;
-  width: 7.5vh;
+  height: 100%;
+  width: var(--slice-size);
   background: var(--color-track);
   @apply scale-100;
   transition: transform 10ms;
   opacity: 0.25;
-  @apply border-black;
+  @apply border-2;
+  @apply border-neutral-500;
   @apply rounded;
-}
-
-.slice.note-change {
-  @apply flex-grow-0 flex-shrink-0;
-  @apply w-8;
-  @apply shadow;
 }
 
 /* tick */
 .slice.active {
-  border-width: 3px;
+  transform: scale(1.02);
+  @apply border-black;
 }
 
 /* pressed */
@@ -43,30 +54,5 @@ button.slice {
 /* tick & pressed */
 .slice.enabled.active {
   opacity: 1;
-  border-width: 4px;
-  opacity: 1;
-}
-
-.wrapper {
-  @apply w-full;
-  @apply flex;
-  @apply flex-col;
-  @apply items-center;
-  @apply rounded-lg;
-}
-
-.nav {
-  @apply w-full;
-  @apply flex relative;
-  @apply items-center;
-  @apply justify-between;
-  @apply px-2;
-
-  &::after {
-    content: '';
-    @apply block;
-    @apply rounded-full w-3 h-3;
-    @apply absolute top-2.5 left-2 shadow;
-    background: var(--nav-color);
-  }
+  @apply scale-105;
 }

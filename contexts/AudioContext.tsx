@@ -123,18 +123,27 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     }
   }, [state.tracks]);
 
-  const toggleTick = useCallback(
-    (id: string, index: number) => {
+  const repitchTick = useCallback(
+    (id: string, index: number, type: 'INCREMENT' | 'DECREMENT') => {
       if (seq.current) {
-        const [_track, tracks] = seq.current.toggleTick(id, index);
+        const [_track, tracks] = seq.current.repitchTick(id, index, type);
 
         // update in state
-        dispatch({ type: 'UPDATE_TRACKS', value: tracks });
+        dispatch({ type: 'UPDATE_TRACKS', value: tracks || [] });
       }
-      // update in sequencer
     },
-    [state.tracks]
+    []
   );
+
+  const toggleTick = useCallback((id: string, index: number) => {
+    if (seq.current) {
+      const [_track, tracks] = seq.current.toggleTick(id, index);
+
+      // update in state
+      dispatch({ type: 'UPDATE_TRACKS', value: tracks });
+    }
+    // update in sequencer
+  }, []);
 
   const setRhythmTicks = useCallback(
     ({ track, ticks }: { track: Track; ticks: number }) => {
@@ -224,6 +233,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       changeBpm,
       changeLibrary,
       createTrack,
+      repitchTick,
       toggleTick,
       setRhythmTicks,
       setRhythmPitch,
@@ -239,8 +249,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.querySelector('button')?.addEventListener('click', start);
-  }, []);
+    return () => {
+      document.querySelector('button')?.removeEventListener('click', start);
+    };
+  }, [start]);
 
   return (
     <AudioContext.Provider value={value}>{children}</AudioContext.Provider>

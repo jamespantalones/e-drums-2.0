@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { Highlight } from '../Highlight/Highlight';
+import { useCallback } from 'react';
 
 export function TempoSlider({
   bpm,
@@ -8,23 +7,15 @@ export function TempoSlider({
   bpm: number;
   onChange: (b: number) => void;
 }) {
-  const handleChange = React.useCallback(
+  const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       onChange(parseFloat(ev.target.value));
     },
     [onChange]
   );
 
-  const formatBpm = React.useCallback((bpm: number): string => {
-    if (bpm < 100) {
-      return `0${bpm.toFixed(1)}`;
-    }
-
-    return bpm.toFixed(1).toString();
-  }, []);
-
   return (
-    <div className="w-full font-mono text-xs">
+    <div className="w-full">
       <label>
         <input
           type="range"
