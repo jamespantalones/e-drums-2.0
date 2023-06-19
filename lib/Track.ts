@@ -68,9 +68,11 @@ export class Track {
     this.pitch = opts.pitch;
     // get all sounds from the library
     this.soundOptions = config.SOUNDS[this.library];
-    this.pattern = euclideanRhythm(this.onNotes, this.totalNotes, this.pitch);
-
-    console.log('this', this);
+    this.pattern = euclideanRhythm({
+      onNotes: this.onNotes,
+      totalNotes: this.totalNotes,
+      pitch: this.pitch,
+    });
   }
 
   static loadAudioAsync(file: string): Promise<Tone.Sampler> {
@@ -143,13 +145,16 @@ export class Track {
       return;
     }
 
-    const freq = Tone.Frequency(pitchOverride, 'midi').toFrequency();
+    const freq = Tone.Frequency(
+      pitchOverride || this.pitch,
+      'midi'
+    ).toFrequency();
     this.audio.triggerAttack(freq, time, this.volume * VOLUME_MULTIPLIER);
   }
 
   public setRhythmTicks(value: number): Track {
     this.totalNotes = value;
-    this.pattern = getBeats(this, this.pitch);
+    this.pattern = getBeats(this, this.pitch, this.pattern);
     this.updateSelfInParent(this, {});
     return this;
   }

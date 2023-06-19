@@ -71,16 +71,6 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setRhythmPitch]
   );
 
-  const handleVolumeChange = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setRhythmVolume({
-        track: rhythm,
-        volume: parseFloat(ev.target.value),
-      });
-    },
-    [rhythm, setRhythmVolume]
-  );
-
   const handleLibraryChange = useCallback(
     (ev: React.ChangeEvent<HTMLSelectElement>) => {
       const value = ev.target.value as Library;
