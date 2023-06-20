@@ -21,7 +21,7 @@ export function Nav({
     <nav className={styles.nav}>
       <section className={styles.section}>
         <div className="flex items-center">
-          <h1 className="select-none mr-2 border-2 uppercase border-black h-8 px-4 flex items-center justify-center bg-white">
+          <h1 className="select-none mr-2 border-2 uppercase border-current h-8 px-4 flex items-center justify-center">
             E-Drums
           </h1>
           <IconButton onClick={methods.play} disabled={!state.initialized}>
@@ -35,17 +35,22 @@ export function Nav({
         <div>
           <IconButton
             onClick={methods.createTrack}
+            noBorder
             disabled={
               state.tracks.length === config.MAX_TRACKS || !state.initialized
             }
           >
             <NewIcon />
           </IconButton>
-          <IconButton onClick={methods.save} disabled={!state.initialized}>
+          <IconButton
+            noBorder
+            onClick={methods.save}
+            disabled={!state.initialized}
+          >
             <SaveIcon />
           </IconButton>
 
-          <IconButton onClick={toggleAbout}>
+          <IconButton noBorder onClick={toggleAbout}>
             {!aboutOpen && <QuestionMark />}
             {aboutOpen && <Close />}
           </IconButton>

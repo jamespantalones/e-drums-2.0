@@ -25,7 +25,5 @@
 }
 
 .button {
-  @apply bg-white text-black;
-  @apply hover:bg-black hover:text-white;
-  @apply px-8 py-2 border-black border-2;
+  @apply px-8 py-2 border-current border-2;
 }

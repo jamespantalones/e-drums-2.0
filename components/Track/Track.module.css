@@ -5,7 +5,7 @@
   @apply transition-all;
   --slice-size: 12vh;
   &.shift {
-    @apply h-32;
+    @apply h-36;
   }
 }
 
@@ -23,27 +23,26 @@
   @apply block;
 }
 
-button.slice {
-  margin: 0 2px;
+.slice {
+  margin: 0 4px;
   @apply w-full;
   @apply select-none;
   @apply relative;
-  @apply flex-shrink-0;
-  height: 100%;
+  height: calc(100% - 16px);
+  min-height: 3rem;
   width: var(--slice-size);
   background: var(--color-track);
-  @apply scale-100;
-  transition: transform 10ms;
   opacity: 0.25;
-  @apply border-2;
-  @apply border-neutral-500;
-  @apply rounded;
 }
 
 /* tick */
 .slice.active {
-  transform: scale(1.02);
-  @apply border-black;
+  &::after {
+    content: '';
+    @apply block w-full h-full;
+    @apply bg-current;
+    @apply opacity-80;
+  }
 }
 
 /* pressed */
@@ -54,5 +53,21 @@ button.slice {
 /* tick & pressed */
 .slice.enabled.active {
   opacity: 1;
-  @apply scale-105;
+  box-shadow: 0 0 8px currentColor;
+  &::after {
+    content: '';
+    @apply block w-full h-full;
+    /* @apply absolute top-0 left-0 right-0 bottom-0; */
+    @apply bg-current;
+    @apply opacity-60;
+  }
+}
+
+.pitch {
+  @apply z-20;
+  @apply w-full h-1/2 block;
+  @apply hover:bg-[rgba(255,255,255,0.2)] active:bg-[rgba(255,200,200,0.5)];
+  &:first-child {
+    @apply border-b;
+  }
 }

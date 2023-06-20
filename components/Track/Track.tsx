@@ -9,12 +9,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { Settings } from '../Settings/Settings';
 
 export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
+  console.log('rhytjm', rhythm.pattern, rhythm.pitch);
+
   const { length } = useMemo(() => {
     return rhythm.pattern;
-  }, [rhythm]);
+  }, [rhythm.pattern]);
 
   const [expanded, setExpanded] = useState(false);
-
+  const [editPitch, setEditPitch] = useState(false);
   const {
     state: { tick },
     methods: {
@@ -22,7 +24,6 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
       repitchTick,
       deleteTrack,
       setRhythmTicks,
-      setRhythmPitch,
       setRhythmVolume,
       changeInstrument,
       changeLibrary,
@@ -64,16 +65,6 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
       });
     },
     [rhythm, setRhythmTicks]
-  );
-
-  const handlePitchChange = useCallback(
-    (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setRhythmPitch({
-        track: rhythm,
-        pitch: parseInt(ev.target.value, 10),
-      });
-    },
-    [rhythm, setRhythmPitch]
   );
 
   const handleLibraryChange = useCallback(
@@ -129,6 +120,10 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
 
   const slices = useMemo(() => new Array(length).fill(0), [length]);
 
+  const togglePitch = useCallback(() => {
+    setEditPitch((p) => !p);
+  }, []);
+
   return (
     <section
       className={clsx(styles.section, {
@@ -143,6 +138,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
         handleDelete={handleDelete}
         handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
         handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}
+        togglePitch={togglePitch}
       />
 
       <div
@@ -152,19 +148,53 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
       >
         {slices.map((slice, index) => (
           <div key={`${slice.id}-${index}`} className={styles['slice-outer']}>
-            <button
-              key={index}
-              className={clsx(styles.slice, {
-                [styles.active]: tick % length === index,
-                [styles.enabled]: rhythm.pattern[index],
-              })}
-              type="button"
-              onClick={handleClick(index)}
-            />
-            <div className={styles.group}>
+            {!editPitch && (
+              <button
+                key={index}
+                className={clsx(styles.slice, {
+                  [styles.active]: tick % length === index,
+                  [styles.enabled]: rhythm.pattern[index],
+                })}
+                type="button"
+                onClick={handleClick(index)}
+              />
+            )}
+            {editPitch && (
+              <div
+                className={clsx('z-50', styles.slice, {
+                  [styles.active]: tick % length === index,
+                  [styles.enabled]: rhythm.pattern[index],
+                })}
+              >
+                {rhythm.pattern[index] > 0 && (
+                  <>
+                    <button
+                      className={styles.pitch}
+                      onClick={incrementPitch(index)}
+                    >
+                      +
+                    </button>
+                    <button
+                      className={styles.pitch}
+                      onClick={decrementPitch(index)}
+                    >
+                      -
+                    </button>
+                  </>
+                )}
+
+                {rhythm.pattern[index] > 0 && (
+                  <div className={styles['pitch-overlay']}>
+                    {rhythm.pattern[index]}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* <div className={styles.group}>
               <button onClick={decrementPitch(index)}>-</button>
               <button onClick={incrementPitch(index)}>+</button>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>

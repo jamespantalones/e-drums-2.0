@@ -8,6 +8,7 @@ import styles from './settings.module.css';
 export type Props = {
   open: boolean;
   toggleOpen: () => void;
+  togglePitch: () => void;
   handleDelete: () => void;
   handleTotalNoteChangeDecrement: (
     ev: React.MouseEvent<HTMLButtonElement>
@@ -21,6 +22,7 @@ export function Settings(props: Props) {
     open,
     handleDelete,
     toggleOpen,
+    togglePitch,
     handleTotalNoteChangeIncrement,
     handleTotalNoteChangeDecrement,
   } = props;
@@ -49,6 +51,9 @@ export function Settings(props: Props) {
           <button onClick={handleDelete}>
             <Delete />
           </button>
+        </div>
+        <div className={styles.group}>
+          <button onClick={togglePitch}>Pitch</button>
         </div>
       </div>
       <div className={styles.outer}>
