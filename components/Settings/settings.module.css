@@ -9,7 +9,21 @@
 }
 
 .settings.open {
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(-5px, 0, 0);
+
+  .outer {
+    @apply hidden;
+  }
+}
+
+.exit {
+  @apply absolute top-3 left-0 bottom-0;
+  @apply flex items-start justify-center;
+  @apply opacity-0;
+}
+
+.settings.open .exit {
+  @apply opacity-100;
 }
 
 .outer {
@@ -28,7 +42,8 @@
 }
 .inner {
   @apply w-full bg-white mr-6 rounded-lg;
+  @apply pl-7;
 }
 .group {
-  @apply flex;
+  @apply inline-block divide-x  p-2 border-black border;
 }

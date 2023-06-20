@@ -9,7 +9,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { Settings } from '../Settings/Settings';
 
 export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
-  const length = rhythm.pattern.length;
+  const { length } = useMemo(() => {
+    return rhythm.pattern;
+  }, [rhythm]);
+
   const [expanded, setExpanded] = useState(false);
 
   const {
@@ -138,6 +141,8 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
         open={expanded}
         toggleOpen={toggleOpen}
         handleDelete={handleDelete}
+        handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
+        handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}
       />
 
       <div
