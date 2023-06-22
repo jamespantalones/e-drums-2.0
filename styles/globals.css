@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(184 184 184);
+  --color-bg: rgb(3 3 3);
 }
 
 :root {
   background: var(--color-bg);
-  @apply text-black;
+  @apply text-white;
 }
 
 html {

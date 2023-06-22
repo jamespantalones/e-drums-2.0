@@ -94,7 +94,7 @@ export class Sequencer {
       index,
       onNotes: Math.floor(random / 2),
       totalNotes: random,
-      pitch: randomIntFromInterval(50, 100),
+      pitch: randomIntFromInterval(20, 70),
       color: generateRandomColor(),
     };
   }

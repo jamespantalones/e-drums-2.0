@@ -8,13 +8,25 @@ import styles from './settings.module.css';
 export type Props = {
   open: boolean;
   toggleOpen: () => void;
+  togglePitch: () => void;
   handleDelete: () => void;
+  handleTotalNoteChangeDecrement: (
+    ev: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  handleTotalNoteChangeIncrement: (
+    ev: React.MouseEvent<HTMLButtonElement>
+  ) => void;
 };
 export function Settings(props: Props) {
-  const { open, handleDelete } = props;
-  function handleTotalNoteChangeIncrement() {}
+  const {
+    open,
+    handleDelete,
+    toggleOpen,
+    togglePitch,
+    handleTotalNoteChangeIncrement,
+    handleTotalNoteChangeDecrement,
+  } = props;
 
-  function handleTotalNoteChangeDecrement() {}
   return (
     <section
       className={clsx(styles.settings, {
@@ -22,19 +34,26 @@ export function Settings(props: Props) {
       })}
     >
       <div className={styles.inner}>
-        <div className={styles.group}></div>
-        <div className={styles.group}>
-          <button onClick={handleTotalNoteChangeIncrement} title="Add Slice">
-            <Add />
+        <div className={clsx(styles.exit)}>
+          <button onClick={toggleOpen}>
+            <Expand />
           </button>
+        </div>
+        <div className={styles.group}>
           <button onClick={handleTotalNoteChangeDecrement} title="Remove Slice">
             <Remove />
+          </button>
+          <button onClick={handleTotalNoteChangeIncrement} title="Add Slice">
+            <Add />
           </button>
         </div>
         <div className={styles.group}>
           <button onClick={handleDelete}>
             <Delete />
           </button>
+        </div>
+        <div className={styles.group}>
+          <button onClick={togglePitch}>REPITCH</button>
         </div>
       </div>
       <div className={styles.outer}>

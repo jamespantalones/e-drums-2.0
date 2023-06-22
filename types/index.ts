@@ -90,7 +90,6 @@ export type AudioContextReturnType = {
       instrument: SoundFile;
     }) => Promise<Track>;
     setRhythmTicks: ({ track, ticks }: { track: Track; ticks: number }) => void;
-    setRhythmPitch: ({ track, pitch }: { track: Track; pitch: number }) => void;
   };
 };
 

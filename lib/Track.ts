@@ -67,6 +67,7 @@ export class Track {
     this.pitch = opts.pitch;
     // get all sounds from the library
     this.soundOptions = config.SOUNDS[this.library];
+
     this.pattern = euclideanRhythm({
       onNotes: this.onNotes,
       totalNotes: this.totalNotes,
@@ -155,7 +156,21 @@ export class Track {
 
   public setRhythmTicks(value: number): Track {
     this.totalNotes = value;
-    this.pattern.push(0);
+    const length = this.pattern.length;
+    console.log('hit value', value, length);
+
+    if (value === length) {
+      this.updateSelfInParent(this, {});
+      return this;
+    }
+
+    if (value > length) {
+      this.pattern.push(0);
+      this.updateSelfInParent(this, {});
+      return this;
+    }
+
+    this.pattern.pop();
     this.updateSelfInParent(this, {});
     return this;
   }

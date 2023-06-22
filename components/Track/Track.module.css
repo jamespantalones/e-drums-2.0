@@ -1,11 +1,12 @@
 .section {
   @apply w-full;
-  @apply my-2 relative;
-  @apply flex h-12;
+  @apply my-3 relative;
+  @apply flex h-16;
   @apply transition-all;
   --slice-size: 12vh;
+  /* @apply overflow-hidden; */
   &.shift {
-    @apply h-32;
+    @apply h-36;
   }
 }
 
@@ -23,27 +24,28 @@
   @apply block;
 }
 
-button.slice {
-  margin: 0 2px;
+.slice {
+  margin: 0 4px;
   @apply w-full;
   @apply select-none;
   @apply relative;
-  @apply flex-shrink-0;
-  height: 100%;
+  height: calc(100% - 16px);
+  min-height: 3rem;
   width: var(--slice-size);
   background: var(--color-track);
-  @apply scale-100;
-  transition: transform 10ms;
   opacity: 0.25;
-  @apply border-2;
-  @apply border-neutral-500;
-  @apply rounded;
+  @apply rounded-sm;
+  @apply overflow-hidden;
 }
 
 /* tick */
 .slice.active {
-  transform: scale(1.02);
-  @apply border-black;
+  &::after {
+    content: '';
+    @apply block w-full h-[150%];
+    @apply bg-current;
+    /* @apply opacity-80; */
+  }
 }
 
 /* pressed */
@@ -54,5 +56,33 @@ button.slice {
 /* tick & pressed */
 .slice.enabled.active {
   opacity: 1;
-  @apply scale-105;
+  box-shadow: 0 0 8px currentColor;
+  &::after {
+    content: '';
+    @apply block w-full h-full;
+    @apply bg-current;
+    @apply opacity-60;
+  }
+}
+
+.pitch {
+  @apply z-20;
+  @apply w-full h-1/2 block;
+  @apply opacity-30;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  > svg {
+    @apply rounded-full;
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.pitch-overlay {
+  @apply opacity-20;
+  @apply absolute;
+  @apply mt-2 inline-block rounded px-4;
+  @apply bottom-[45px] left-0 right-0 text-center;
 }
