@@ -41,9 +41,21 @@
   }
 }
 .inner {
-  @apply w-full bg-black border border-white mr-6 rounded-lg;
+  @apply w-full bg-black border mr-6 rounded-lg opacity-40;
   @apply pl-7;
 }
 .group {
-  @apply inline-block divide-x  p-2 border-white border;
+  @apply text-xs;
+  @apply relative;
+  @apply inline-block;
+  box-shadow: 0 0 3px white;
+  -webkit-font-smoothing: antialiased;
+  @apply mt-3 mr-3 p-2 border-white border rounded;
+
+  & > button {
+    @apply opacity-100;
+  }
+  & > button > svg {
+    @apply w-4 h-4;
+  }
 }

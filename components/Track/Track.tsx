@@ -7,6 +7,8 @@ import { TrackInput } from './TrackInput';
 import { Library } from '../../types';
 import { useCallback, useMemo, useState } from 'react';
 import { Settings } from '../Settings/Settings';
+import Add from '@mui/icons-material/Add';
+import Remove from '@mui/icons-material/Remove';
 
 export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
   console.log('rhytjm', rhythm.pattern, rhythm.pitch);
@@ -148,7 +150,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
       >
         {slices.map((slice, index) => (
           <div key={`${slice.id}-${index}`} className={styles['slice-outer']}>
-            {!editPitch && (
+            {(!editPitch || !expanded) && (
               <button
                 key={index}
                 className={clsx(styles.slice, {
@@ -159,7 +161,7 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
                 onClick={handleClick(index)}
               />
             )}
-            {editPitch && (
+            {editPitch && expanded && (
               <div
                 className={clsx('z-50', styles.slice, {
                   [styles.active]: tick % length === index,
@@ -172,29 +174,36 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
                       className={styles.pitch}
                       onClick={incrementPitch(index)}
                     >
-                      +
+                      <Add />
                     </button>
                     <button
                       className={styles.pitch}
                       onClick={decrementPitch(index)}
                     >
-                      -
+                      <Remove />
                     </button>
                   </>
                 )}
 
+                {rhythm.pattern[index] === 0 && (
+                  <button
+                    key={index}
+                    className={clsx(styles.slice, {
+                      [styles.active]: tick % length === index,
+                      [styles.enabled]: rhythm.pattern[index],
+                    })}
+                    type="button"
+                    onClick={handleClick(index)}
+                  />
+                )}
+
                 {rhythm.pattern[index] > 0 && (
                   <div className={styles['pitch-overlay']}>
-                    {rhythm.pattern[index]}
+                    <span>{rhythm.pattern[index]}</span>
                   </div>
                 )}
               </div>
             )}
-
-            {/* <div className={styles.group}>
-              <button onClick={decrementPitch(index)}>-</button>
-              <button onClick={incrementPitch(index)}>+</button>
-            </div> */}
           </div>
         ))}
       </div>

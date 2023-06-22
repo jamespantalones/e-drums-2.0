@@ -53,7 +53,7 @@ export function Settings(props: Props) {
           </button>
         </div>
         <div className={styles.group}>
-          <button onClick={togglePitch}>Pitch</button>
+          <button onClick={togglePitch}>REPITCH</button>
         </div>
       </div>
       <div className={styles.outer}>

@@ -1,9 +1,10 @@
 .section {
   @apply w-full;
-  @apply my-2 relative;
-  @apply flex h-12;
+  @apply my-3 relative;
+  @apply flex h-16;
   @apply transition-all;
   --slice-size: 12vh;
+  /* @apply overflow-hidden; */
   &.shift {
     @apply h-36;
   }
@@ -33,15 +34,17 @@
   width: var(--slice-size);
   background: var(--color-track);
   opacity: 0.25;
+  @apply rounded-sm;
+  @apply overflow-hidden;
 }
 
 /* tick */
 .slice.active {
   &::after {
     content: '';
-    @apply block w-full h-full;
+    @apply block w-full h-[150%];
     @apply bg-current;
-    @apply opacity-80;
+    /* @apply opacity-80; */
   }
 }
 
@@ -57,7 +60,6 @@
   &::after {
     content: '';
     @apply block w-full h-full;
-    /* @apply absolute top-0 left-0 right-0 bottom-0; */
     @apply bg-current;
     @apply opacity-60;
   }
@@ -66,8 +68,21 @@
 .pitch {
   @apply z-20;
   @apply w-full h-1/2 block;
-  @apply hover:bg-[rgba(255,255,255,0.2)] active:bg-[rgba(255,200,200,0.5)];
-  &:first-child {
-    @apply border-b;
+  @apply opacity-30;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
   }
+
+  > svg {
+    @apply rounded-full;
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.pitch-overlay {
+  @apply opacity-20;
+  @apply absolute;
+  @apply mt-2 inline-block rounded px-4;
+  @apply bottom-[45px] left-0 right-0 text-center;
 }
