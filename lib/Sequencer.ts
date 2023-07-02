@@ -1,6 +1,5 @@
 import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
-import config from '../config/config';
 import { SequencerPlayState, SerializedTrack } from '../types';
 import { generateId, randomIntFromInterval } from '../utils';
 import { Track } from './Track';

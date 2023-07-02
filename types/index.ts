@@ -14,14 +14,6 @@ export type SoundFile = {
   defaultFreqRange: [number, number];
 };
 
-export type Config = {
-  MAX_SLICES: number;
-  MAX_TRACKS: number;
-  SOUNDS: {
-    [key in Library]: SoundFile[];
-  };
-};
-
 export type CurrentInstrument = {
   parent: SoundFile;
   file: string;

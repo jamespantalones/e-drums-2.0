@@ -25,5 +25,5 @@
 }
 
 .button {
-  @apply px-8 py-2 border-current border-2;
+  @apply px-8 py-2 border-current border;
 }

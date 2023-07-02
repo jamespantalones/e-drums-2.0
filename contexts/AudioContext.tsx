@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
+import { config } from '../config';
 import { AudioContextReturnType, Library, SoundFile } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
 import * as Tone from 'tone';
@@ -21,7 +22,7 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 export function AudioContextProvider({ children }: { children: ReactNode }) {
   // audio state
   const [state, dispatch] = useReducer(audioContextReducer, {
-    bpm: 82,
+    bpm: config.DEFAULT_BPM,
     initialized: false,
     playing: false,
     tick: -1,

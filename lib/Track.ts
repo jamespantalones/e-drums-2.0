@@ -1,12 +1,6 @@
 import * as Tone from 'tone';
-import config from '../config/config';
-import {
-  Config,
-  CurrentInstrument,
-  Library,
-  SoundFile,
-  TrackOpts,
-} from '../types';
+import { config, Config } from '../config';
+import { CurrentInstrument, Library, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
 import { euclideanRhythm } from './utils';
 

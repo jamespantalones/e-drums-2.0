@@ -6,7 +6,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
-import config from '../../config/config';
+import { config } from '../../config';
 import { Close, ExitToApp, LiveHelp, QuestionMark } from '@mui/icons-material';
 export function Nav({
   aboutOpen,
@@ -21,7 +21,7 @@ export function Nav({
     <nav className={styles.nav}>
       <section className={styles.section}>
         <div className="flex items-center">
-          <h1 className="select-none mr-2 border-2 uppercase border-current h-8 px-4 flex items-center justify-center">
+          <h1 className="select-none mr-2 border uppercase border-current h-8 px-4 flex items-center justify-center">
             E-Drums
           </h1>
           <IconButton onClick={methods.play} disabled={!state.initialized}>
