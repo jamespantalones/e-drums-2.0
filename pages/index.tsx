@@ -24,17 +24,14 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <div className="min-h-[100vh] flex flex-col">
-        <Nav toggleAbout={toggleAbout} aboutOpen={aboutOpen} />
-        <main className="w-full flex-grow py-0" ref={ref}>
-          <section className="mt-16 pb-16 w-full">
-            {tracks.map((rhythm, index) => (
-              <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
-            ))}
-          </section>
-        </main>
-        <Foot />
-      </div>
+      <Nav toggleAbout={toggleAbout} aboutOpen={aboutOpen} />
+
+      <main ref={ref} className="pb-16">
+        {tracks.map((rhythm, index) => (
+          <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
+        ))}
+      </main>
+      <Foot />
       {aboutOpen && <AboutModal />}
       {!initialized && <Modal initialize={initialize} />}
     </>

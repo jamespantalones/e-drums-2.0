@@ -4,9 +4,21 @@ import Remove from '@mui/icons-material/Remove';
 import Expand from '@mui/icons-material/MoreVert';
 import clsx from 'clsx';
 import styles from './settings.module.css';
+import { useMemo, useState } from 'react';
+import { Track } from '../../lib/Track';
+import { Library, SoundFile } from '../../types';
+import { config } from '../../config';
 
 export type Props = {
   open: boolean;
+  track: Track;
+  changeInstrument: ({
+    track,
+    instrument,
+  }: {
+    track: Track;
+    instrument: SoundFile;
+  }) => void;
   toggleOpen: () => void;
   togglePitch: () => void;
   handleDelete: () => void;
@@ -17,15 +29,36 @@ export type Props = {
     ev: React.MouseEvent<HTMLButtonElement>
   ) => void;
 };
+
+const soundFiles: SoundFile[] = Object.keys(config.SOUNDS).reduce(
+  (acc, curr) => {
+    return acc.concat(config.SOUNDS[curr as Library]);
+  },
+  [] as SoundFile[]
+);
+
 export function Settings(props: Props) {
+  // TODO: This needs to start on correct random index
+  const [index, setIndex] = useState(0);
+
   const {
     open,
+    track,
     handleDelete,
     toggleOpen,
     togglePitch,
     handleTotalNoteChangeIncrement,
     handleTotalNoteChangeDecrement,
+    changeInstrument,
   } = props;
+
+  function nextSelection() {
+    setIndex((l) => {
+      const next = l + 1 > soundFiles.length ? 0 : l + 1;
+      changeInstrument({ instrument: soundFiles[next], track });
+      return next;
+    });
+  }
 
   return (
     <section
@@ -33,7 +66,17 @@ export function Settings(props: Props) {
         [styles.open]: open,
       })}
     >
-      <div className={styles.inner}>
+      <div className={clsx(styles.toggle)}>
+        <button onClick={nextSelection}>{index}</button>
+      </div>
+
+      <div className={clsx(styles.toggle)}>
+        <button onClick={props.toggleOpen}>
+          <Expand />
+        </button>
+      </div>
+
+      {/* <div className={styles.inner}>
         <div className={clsx(styles.exit)}>
           <button onClick={toggleOpen}>
             <Expand />
@@ -55,14 +98,7 @@ export function Settings(props: Props) {
         <div className={styles.group}>
           <button onClick={togglePitch}>REPITCH</button>
         </div>
-      </div>
-      <div className={styles.outer}>
-        <div className={styles.toggle}>
-          <button onClick={props.toggleOpen}>
-            <Expand />
-          </button>
-        </div>
-      </div>
+      </div> */}
     </section>
   );
 }

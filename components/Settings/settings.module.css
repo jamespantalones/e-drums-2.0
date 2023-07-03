@@ -1,61 +1,16 @@
 .settings {
   @apply h-full flex-shrink-0;
-  @apply w-6;
-  @apply w-[200px];
-  @apply z-50;
   @apply flex;
+  @apply mr-1;
   transition: transform 0.2s ease;
-  transform: translate3d(-180px, 0, 0);
+  //transform: translate3d(-180px, 0, 0);
 }
 
-.settings.open {
-  transform: translate3d(-5px, 0, 0);
-
-  .outer {
-    @apply hidden;
-  }
-}
-
-.exit {
-  @apply absolute top-3 left-0 bottom-0;
-  @apply flex items-start justify-center;
-  @apply opacity-0;
-}
-
-.settings.open .exit {
-  @apply opacity-100;
-}
-
-.outer {
-  @apply w-6;
-  @apply rounded;
-  @apply flex items-center justify-center;
-  .toggle {
-    @apply w-full h-full;
-    & > button {
-      @apply h-full;
-      @apply bg-black rounded;
-      @apply hover:bg-neutral-800;
-      @apply focus:outline;
-    }
-  }
-}
-.inner {
-  @apply w-full bg-black border mr-6 rounded-lg opacity-40;
-  @apply pl-7;
-}
-.group {
-  @apply text-xs;
-  @apply relative;
-  @apply inline-block;
-  box-shadow: 0 0 3px white;
-  -webkit-font-smoothing: antialiased;
-  @apply mt-3 mr-3 p-2 border-white border rounded;
-
+.toggle {
+  @apply cursor-pointer;
+  @apply h-full flex items-center justify-center w-8;
+  @apply hover:bg-neutral-800 active:bg-neutral-700;
   & > button {
-    @apply opacity-100;
-  }
-  & > button > svg {
-    @apply w-4 h-4;
+    @apply w-full h-full select-none;
   }
 }

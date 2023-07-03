@@ -1,19 +1,23 @@
 .section {
+  --slice-size: 4rem;
+
   @apply w-full;
-  @apply my-3 relative;
-  @apply flex h-16;
+  @apply my-2 relative;
+  @apply flex;
   @apply transition-all;
-  --slice-size: 12vh;
-  /* @apply overflow-hidden; */
-  &.shift {
-    @apply h-36;
+  height: var(--slice-size);
+}
+
+@media (min-width: 1020px) {
+  .section {
+    --slice-size: 6rem;
   }
 }
 
 .slice-wrapper {
-  @apply flex h-full overflow-x-auto;
-  @apply w-full py-2 ml-4;
-  transform: translate3d(-180px, 0, 0);
+  @apply flex h-full overflow-x-auto overflow-y-hidden;
+  @apply w-full;
+  //transform: translate3d(-180px, 0, 0);
   transition: transform 0.2s ease;
   &.shift {
     transform: translate3d(0, 0, 0);
@@ -25,11 +29,10 @@
 }
 
 .slice {
-  margin: 0 4px;
-  @apply w-full;
+  @apply mx-1;
+  @apply w-full h-full;
   @apply select-none;
   @apply relative;
-  height: calc(100% - 16px);
   min-height: 3rem;
   width: var(--slice-size);
   background: var(--color-track);

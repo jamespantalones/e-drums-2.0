@@ -93,13 +93,14 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     >
       <Settings
         open={expanded}
+        track={rhythm}
         toggleOpen={toggleOpen}
         handleDelete={handleDelete}
         handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
         handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}
         togglePitch={togglePitch}
+        changeInstrument={changeInstrument}
       />
-
       <div
         className={clsx(styles['slice-wrapper'], styles.group, {
           [styles.shift]: expanded,
