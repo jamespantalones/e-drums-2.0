@@ -12,12 +12,17 @@ type Props = {
 };
 export function IconButton(props: Props) {
   const { children, onClick, small, muted, disabled, noBorder } = props;
-  const cx = clsx('disabled:opacity-50', 'disabled:pointer-events-none', {
-    [styles.button]: !small && !muted,
-    [styles.small]: small && !muted,
-    [styles.muted]: small && muted,
-    [styles['no-border']]: noBorder,
-  });
+  const cx = clsx(
+    'button',
+    'disabled:opacity-50',
+    'disabled:pointer-events-none',
+    {
+      [styles.button]: !small && !muted,
+      [styles.small]: small && !muted,
+      [styles.muted]: small && muted,
+      [styles['no-border']]: noBorder,
+    }
+  );
   return (
     <button
       onClick={onClick}

@@ -53,13 +53,6 @@ export type AudioContextReturnType = {
     save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
-    changeLibrary: ({
-      track,
-      library,
-    }: {
-      track: Track;
-      library: Library;
-    }) => void;
     createTrack: () => void;
     repitchTick: (
       id: string,

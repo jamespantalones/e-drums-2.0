@@ -23,11 +23,3 @@
 .h1 {
   @apply my-4 uppercase;
 }
-
-.button {
-  @apply px-8 py-2 border-current border;
-}
-
-.button:hover {
-  box-shadow: 0 0 20px rgb(200, 200, 200);
-}

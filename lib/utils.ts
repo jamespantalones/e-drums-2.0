@@ -1,5 +1,10 @@
-import { Sequencer } from './Sequencer';
-import { Track } from './Track';
+import { Library } from '../types';
+
+export function getRandomLibrary() {
+  const arr = [Library.MINIPOPS, Library.TR727, Library.RAVEN];
+
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 export function generateRandomColor() {
   const color = `hsl(${Math.floor(Math.random() * 360)} 80% ${

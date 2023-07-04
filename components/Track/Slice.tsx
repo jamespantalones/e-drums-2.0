@@ -4,7 +4,7 @@ import Add from '@mui/icons-material/Add';
 import Remove from '@mui/icons-material/Remove';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 export function Slice({
   index,
@@ -38,7 +38,7 @@ export function Slice({
 
   return (
     <div className={styles['slice-outer']}>
-      {(!editPitch || !expanded) && (
+      {!editPitch && (
         <button
           key={index}
           className={clsx(styles.slice, {
@@ -49,7 +49,7 @@ export function Slice({
           onClick={handleClick}
         />
       )}
-      {editPitch && expanded && (
+      {editPitch && (
         <div
           className={clsx('z-50', styles.slice, {
             [styles.active]: tick % length === index,

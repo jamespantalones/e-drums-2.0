@@ -2,15 +2,9 @@ import * as Tone from 'tone';
 import { config, Config } from '../config';
 import { CurrentInstrument, Library, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
-import { euclideanRhythm } from './utils';
+import { euclideanRhythm, getRandomLibrary } from './utils';
 
 const VOLUME_MULTIPLIER = 1.25;
-
-export function getRandomLibrary() {
-  const arr = [Library.MINIPOPS, Library.TR727, Library.RAVEN];
-
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 export class Track {
   public color: string;
@@ -52,6 +46,8 @@ export class Track {
     this.onNotes = opts.onNotes;
     this.totalNotes = opts.totalNotes;
     this.isReady = false;
+
+    // TODO: Remove library and flatten
     this.library = opts.library || getRandomLibrary();
     this.currentInstrument = opts.currentInstrument || null;
     this.primaryFile = null;
@@ -86,12 +82,6 @@ export class Track {
     });
   }
 
-  public changeLibrary(library: Library) {
-    this.library = library;
-    this.soundOptions = config.SOUNDS[this.library];
-    return this;
-  }
-
   public async init(): Promise<Track> {
     if (this.currentInstrument) {
       this.audio = await Track.loadAudioAsync(
@@ -119,8 +109,6 @@ export class Track {
     } else {
       primarySound = value;
     }
-
-    const [min = 40, max = 100] = primarySound.defaultFreqRange;
 
     this.currentInstrument = {
       parent: primarySound,
@@ -151,7 +139,6 @@ export class Track {
   public setRhythmTicks(value: number): Track {
     this.totalNotes = value;
     const length = this.pattern.length;
-    console.log('hit value', value, length);
 
     if (value === length) {
       this.updateSelfInParent(this, {});

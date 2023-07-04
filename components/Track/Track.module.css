@@ -1,6 +1,4 @@
 .section {
-  --slice-size: 4rem;
-
   @apply w-full;
   @apply my-2 relative;
   @apply flex;
@@ -71,7 +69,7 @@
 .pitch {
   @apply z-20;
   @apply w-full h-1/2 block;
-  @apply opacity-30;
+  color: var(--color-bg);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   &:hover {
     background: rgba(0, 0, 0, 0.2);
@@ -84,8 +82,11 @@
 }
 
 .pitch-overlay {
-  @apply opacity-20;
-  @apply absolute;
-  @apply mt-2 inline-block rounded px-4;
-  @apply bottom-[45px] left-0 right-0 text-center;
+  @apply opacity-80;
+  @apply absolute w-full h-full;
+  @apply bottom-0 left-0 right-0 top-0;
+  @apply flex justify-center items-center;
+  color: transparent;
+  text-shadow: 0 0 1px black;
+  @apply pointer-events-none;
 }

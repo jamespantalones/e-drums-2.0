@@ -1,6 +1,6 @@
 .settings {
   @apply h-full flex-shrink-0;
-  @apply flex;
+  @apply flex items-center justify-center;
   @apply mr-1;
   transition: transform 0.2s ease;
   //transform: translate3d(-180px, 0, 0);
@@ -8,9 +8,13 @@
 
 .toggle {
   @apply cursor-pointer;
-  @apply h-full flex items-center justify-center w-8;
+  @apply h-8 w-8 flex items-center justify-center;
   @apply hover:bg-neutral-800 active:bg-neutral-700;
   & > button {
     @apply w-full h-full select-none;
+  }
+  &.on {
+    @apply border;
+    box-shadow: var(--box-shadow-sm);
   }
 }

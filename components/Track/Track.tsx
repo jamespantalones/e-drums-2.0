@@ -3,17 +3,16 @@ import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import { config } from '../../config';
 import clsx from 'clsx';
-import { Library } from '../../types';
 import { useCallback, useMemo, useState } from 'react';
 import { Settings } from '../Settings/Settings';
 
 import { Slice } from './Slice';
 
-export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
+export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const [expanded, setExpanded] = useState(false);
   const [editPitch, setEditPitch] = useState(false);
   const {
-    methods: { deleteTrack, setRhythmTicks, changeInstrument, changeLibrary },
+    methods: { deleteTrack, setRhythmTicks, changeInstrument },
   } = useAudioContext();
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
@@ -46,42 +45,13 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setRhythmTicks]
   );
 
-  const handleLibraryChange = useCallback(
-    (ev: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = ev.target.value as Library;
-
-      changeLibrary({
-        track: rhythm,
-        library: value,
-      });
-    },
-    [changeLibrary, rhythm]
-  );
-
-  const handleTrackChange = useCallback(
-    async (ev: React.ChangeEvent<HTMLSelectElement>) => {
-      // get the value
-      const target = config.SOUNDS[rhythm.library].find(
-        (e: any) => e.name === ev.target.value
-      );
-
-      if (!target) return;
-
-      await changeInstrument({
-        track: rhythm,
-        instrument: target,
-      });
-    },
-    [rhythm, changeInstrument]
-  );
-
-  const toggleOpen = useCallback(() => {
-    setExpanded((e) => !e);
-  }, []);
-
   const togglePitch = useCallback(() => {
     setEditPitch((p) => !p);
   }, []);
+
+  const style: React.CSSProperties = {
+    '--color-track': rhythm.color,
+  } as React.CSSProperties;
 
   return (
     <section
@@ -89,12 +59,11 @@ export function TrackItem({ index, rhythm }: { index: number; rhythm: Track }) {
         [styles.shift]: expanded,
       })}
       data-color={rhythm.color}
-      style={{ '--color-track': rhythm.color } as React.CSSProperties}
+      style={style}
     >
       <Settings
-        open={expanded}
+        pitchEditOn={editPitch}
         track={rhythm}
-        toggleOpen={toggleOpen}
         handleDelete={handleDelete}
         handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
         handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}

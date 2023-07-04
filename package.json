@@ -11,13 +11,11 @@
   },
   "dependencies": {
     "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.13.4",
     "@tippyjs/react": "^4.2.6",
     "clsx": "^1.2.1",
-    "eventemitter3": "^4.0.7",
     "localforage": "^1.10.0",
     "nanoid": "^4.0.2",
-    "next": "^13.4.4",
+    "next": "^13.4.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tone": "^14.7.77"

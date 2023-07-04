@@ -3,9 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(3 3 3);
-  --color-text: white;
+  --color-bg: rgb(3, 3, 3);
+  --color-text: rgb(100, 100, 100);
   --border-width: 1px;
+  --box-shadow-sm: 0 0 10px rgb(80, 80, 80);
+  --box-shadow-lg: 0 0 20px rgb(190, 190, 190);
+  --slice-size: 4rem;
 }
 
 html {
@@ -17,7 +20,6 @@ html {
 
 body {
   @apply font-mono;
-  @apply font-extralight;
   @apply w-full;
   @apply h-full;
 }
@@ -28,55 +30,29 @@ main {
   @apply overflow-hidden;
 }
 
-.button {
-  @apply border;
-  @apply border-gray-500;
-  @apply m-auto;
-  @apply px-4;
-  @apply rounded;
-  @apply active:bg-black;
-  @apply active:text-pink-200;
-  @apply disabled:opacity-50;
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  @apply uppercase;
 }
 
-input[type='range'] {
-  -webkit-appearance: none;
-  @apply my-4;
-  @apply w-full;
+.button {
+  @apply rounded;
+  @apply p-2;
+  box-shadow: var(--box-shadow-sm);
+  &.lg {
+    @apply px-8 py-2;
+  }
 }
-input[type='range']:focus {
-  @apply outline-none;
+
+.button:hover {
+  box-shadow: var(--box-shadow-lg);
+  @apply bg-neutral-900;
 }
-input[type='range']::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 3px;
-  cursor: pointer;
-  border-radius: 1.3px;
-  @apply bg-black;
-}
-input[type='range']::-webkit-slider-thumb {
-  height: 15px;
-  width: 10px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -6px;
-  @apply bg-black;
-}
-input[type='range']:focus::-webkit-slider-runnable-track {
-  @apply bg-black;
-}
-input[type='range']::-moz-range-track {
-  width: 100%;
-  height: 3px;
-  cursor: pointer;
-  appearance: none;
-  @apply bg-black;
-}
-input[type='range']::-moz-range-thumb {
-  height: 15px;
-  width: 10px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -6px;
-  @apply bg-black;
+
+.button:active {
+  @apply bg-neutral-800;
 }
