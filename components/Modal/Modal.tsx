@@ -4,7 +4,7 @@ export function Modal({ initialize }: { initialize: () => Promise<void> }) {
   return (
     <section className={clsx(styles.modal)} tabIndex={-1}>
       <div className={styles.inner}>
-        <button className={styles.button} onClick={initialize}>
+        <button className="button lg" onClick={initialize}>
           START
         </button>
       </div>

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { config } from '../../config';
 
 export function TempoSlider({
   bpm,
@@ -19,9 +20,9 @@ export function TempoSlider({
       <label>
         <input
           type="range"
-          min="50"
-          max="180"
-          step={0.1}
+          min={config.MIN_BPM}
+          max={config.MAX_BPM}
+          step={0.2}
           value={bpm}
           onChange={handleChange}
           className="w-full mt-2"

@@ -14,14 +14,6 @@ export type SoundFile = {
   defaultFreqRange: [number, number];
 };
 
-export type Config = {
-  MAX_SLICES: number;
-  MAX_TRACKS: number;
-  SOUNDS: {
-    [key in Library]: SoundFile[];
-  };
-};
-
 export type CurrentInstrument = {
   parent: SoundFile;
   file: string;
@@ -61,13 +53,6 @@ export type AudioContextReturnType = {
     save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
-    changeLibrary: ({
-      track,
-      library,
-    }: {
-      track: Track;
-      library: Library;
-    }) => void;
     createTrack: () => void;
     repitchTick: (
       id: string,

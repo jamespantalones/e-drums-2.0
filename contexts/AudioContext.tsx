@@ -1,6 +1,6 @@
-import localforage from 'localforage';
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
+import { config } from '../config';
 import { AudioContextReturnType, Library, SoundFile } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
 import * as Tone from 'tone';
@@ -13,7 +13,14 @@ import {
   useReducer,
   useRef,
 } from 'react';
+import { loadFromLocalStorage } from '../utils';
+import localforage from 'localforage';
 
+/**
+ * Main goal of this AudioContext is
+ * to provide singular set of UI operation
+ * which in turn, update the underlying audio sequencer
+ */
 const AudioContext = createContext<AudioContextReturnType | undefined>(
   undefined
 );
@@ -21,38 +28,37 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 export function AudioContextProvider({ children }: { children: ReactNode }) {
   // audio state
   const [state, dispatch] = useReducer(audioContextReducer, {
-    bpm: 82,
+    bpm: config.DEFAULT_BPM,
     initialized: false,
     playing: false,
     tick: -1,
     tracks: [],
   });
 
+  // Local reference to the sequencer
+  const seq = useRef<Sequencer>();
+
+  // when we receive a message from the sequencer
+  // update the tick in the UI
   const incrementTick = useCallback(
-    (tickVal: number) => {
-      dispatch({ type: 'INCREMENT_TICK', value: tickVal });
+    (t: number) => {
+      dispatch({ type: 'INCREMENT_TICK', value: t });
     },
     [dispatch]
   );
 
-  let seq = useRef<Sequencer>();
+  const changeBpm = useCallback((bpm: number) => {
+    seq.current?.setBpm(bpm);
+    dispatch({ type: 'SET_BPM', value: bpm });
+  }, []);
 
   // make sure the AudioContext is initialized
   const initialize = useCallback(async () => {
     try {
-      // setup localstorage
-      localforage.config({
-        storeName: 'e-drums',
-        name: 'e-drums',
-      });
+      const initialState = await loadFromLocalStorage();
 
-      // get anything out of local
-      const initialState = await localforage.getItem<{
-        rhythmIndex: number;
-        tracks: Track[];
-        bpm: number;
-      }>('state');
-
+      // if we have a previously saved song,
+      // load it
       if (initialState) {
         changeBpm(initialState.bpm);
         seq.current = new Sequencer({
@@ -60,7 +66,9 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
           onTick: incrementTick,
           bpm: initialState.bpm,
         });
-      } else {
+      }
+      // otherwise, make a new one
+      else {
         seq.current = new Sequencer({
           initialTracks: [
             Sequencer.generateTrack(0),
@@ -77,9 +85,11 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [changeBpm, incrementTick, state.bpm]);
 
-  // methods
+  /**
+   * Starts playback
+   */
   const play = useCallback(async () => {
     if (seq.current && !seq.current.isInit) {
       await seq.current.init();
@@ -88,28 +98,13 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     dispatch({ type: '_PLAY' });
   }, []);
 
+  /**
+   * Stops playback
+   */
   const stop = useCallback(async () => {
     seq.current?.stop();
     dispatch({ type: '_STOP' });
   }, []);
-
-  const changeBpm = useCallback((bpm: number) => {
-    seq.current?.setBpm(bpm);
-    dispatch({ type: 'SET_BPM', value: bpm });
-  }, []);
-
-  const changeLibrary = useCallback(
-    ({ track, library }: { track: Track; library: Library }) => {
-      // first set in sequencer
-      const tu = track.changeLibrary(library);
-
-      // now set in state
-      dispatch({ type: 'UPDATE_TRACK', value: tu });
-
-      return tu;
-    },
-    []
-  );
 
   const createTrack = useCallback(async () => {
     // add to Sequencer
@@ -220,7 +215,6 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       play,
       stop,
       changeBpm,
-      changeLibrary,
       createTrack,
       repitchTick,
       toggleTick,

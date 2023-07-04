@@ -1,6 +1,20 @@
-import { Config } from '../types';
+import { Library, SoundFile } from '../types';
 
-const config: Config = {
+export type Config = {
+  DEFAULT_BPM: number;
+  MAX_BPM: number;
+  MIN_BPM: number;
+  MAX_SLICES: number;
+  MAX_TRACKS: number;
+  SOUNDS: {
+    [key in Library]: SoundFile[];
+  };
+};
+
+export const config: Config = {
+  DEFAULT_BPM: 134,
+  MAX_BPM: 250,
+  MIN_BPM: 60,
   MAX_SLICES: 20,
   MAX_TRACKS: 20,
 
@@ -137,5 +151,3 @@ const config: Config = {
     ],
   },
 };
-
-export default config;

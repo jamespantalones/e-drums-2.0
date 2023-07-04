@@ -23,7 +23,3 @@
 .h1 {
   @apply my-4 uppercase;
 }
-
-.button {
-  @apply px-8 py-2 border-current border-2;
-}
