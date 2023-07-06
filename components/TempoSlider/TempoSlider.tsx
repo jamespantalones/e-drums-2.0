@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { config } from '../../config';
+import { TrackInput } from '../Track/TrackInput';
 
 export function TempoSlider({
   bpm,
@@ -17,17 +18,14 @@ export function TempoSlider({
 
   return (
     <div className="w-full">
-      <label>
-        <input
-          type="range"
-          min={config.MIN_BPM}
-          max={config.MAX_BPM}
-          step={0.2}
-          value={bpm}
-          onChange={handleChange}
-          className="w-full mt-2"
-        />
-      </label>
+      <TrackInput
+        label="BPM"
+        min={config.MIN_BPM}
+        max={config.MAX_BPM}
+        step={0.2}
+        value={bpm}
+        onChange={handleChange}
+      />
     </div>
   );
 }

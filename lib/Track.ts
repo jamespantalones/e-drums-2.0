@@ -53,7 +53,7 @@ export class Track {
     this.primaryFile = null;
     this.color = opts.color;
 
-    this.volume = 0.6;
+    this.volume = 0.3;
     this.pitch = opts.pitch;
     // get all sounds from the library
     this.soundOptions = config.SOUNDS[this.library];

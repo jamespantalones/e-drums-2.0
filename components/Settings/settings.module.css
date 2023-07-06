@@ -6,6 +6,17 @@
   //transform: translate3d(-180px, 0, 0);
 }
 
+.vert_group {
+  @apply border border-gray-700;
+  @apply flex flex-col items-center justify-center;
+  button {
+    @apply w-6 h-6 p-1;
+    svg {
+      @apply w-full h-full;
+    }
+  }
+}
+
 .toggle {
   @apply cursor-pointer;
   @apply h-8 w-8 flex items-center justify-center;

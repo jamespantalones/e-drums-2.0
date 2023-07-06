@@ -12,14 +12,10 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const [expanded, setExpanded] = useState(false);
   const [editPitch, setEditPitch] = useState(false);
   const {
-    methods: { deleteTrack, setRhythmTicks, changeInstrument },
+    methods: { deleteTrack, setRhythmTicks, changeInstrument, setRhythmVolume },
   } = useAudioContext();
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
-
-  const handleDelete = useCallback(() => {
-    deleteTrack(rhythm.id);
-  }, [rhythm, deleteTrack]);
 
   const handleTotalNoteChangeIncrement = useCallback(
     (ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -64,7 +60,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
       <Settings
         pitchEditOn={editPitch}
         track={rhythm}
-        handleDelete={handleDelete}
         handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
         handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}
         togglePitch={togglePitch}

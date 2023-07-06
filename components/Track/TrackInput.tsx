@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styles from './TrackInput.module.css';
 
 export type TrackInputProps = {
   label: string;
@@ -11,11 +12,8 @@ export type TrackInputProps = {
 export function TrackInput(props: TrackInputProps) {
   const { label, min = 0, max = 1000, step = 1, value, onChange } = props;
   return (
-    <div>
-      <label className="flex flex-col">
-        <div className="flex items-center justify-between">
-          <p className="text-xs">{label}</p>
-        </div>
+    <div className={styles.wrapper}>
+      <label>
         <input
           type="range"
           min={min}
@@ -24,6 +22,7 @@ export function TrackInput(props: TrackInputProps) {
           value={value}
           onChange={onChange}
         />
+        <p className="text-xs">{label}</p>
       </label>
     </div>
   );
