@@ -6,9 +6,9 @@ import clsx from 'clsx';
 import styles from './settings.module.css';
 import { useCallback, useState } from 'react';
 import { Track } from '../../lib/Track';
-import { Library, SoundFile } from '../../types';
-import { config } from '../../config';
-import { noop, padNumber } from '../../utils';
+import { SoundFile } from '../../types';
+import { SOUNDS } from '../../config';
+import { padNumber } from '../../utils';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { TrackInput } from '../Track/TrackInput';
 
@@ -31,13 +31,6 @@ export type Props = {
   ) => void;
 };
 
-const soundFiles: SoundFile[] = Object.keys(config.SOUNDS).reduce(
-  (acc, curr) => {
-    return acc.concat(config.SOUNDS[curr as Library]);
-  },
-  [] as SoundFile[]
-);
-
 export function Settings(props: Props) {
   // TODO: This needs to start on correct random index
   const [index, setIndex] = useState(0);
@@ -59,8 +52,8 @@ export function Settings(props: Props) {
 
   function nextSelection() {
     setIndex((l) => {
-      const next = l + 1 > soundFiles.length ? 0 : l + 1;
-      changeInstrument({ instrument: soundFiles[next], track });
+      const next = l + 1 > SOUNDS.length ? 0 : l + 1;
+      changeInstrument({ instrument: SOUNDS[next], track });
       return next;
     });
   }

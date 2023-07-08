@@ -16,6 +16,7 @@ describe('Utils', () => {
       ).toEqual([1, 0, 1, 0, 1, 0, 1, 0]);
       expect(euclideanRhythm({ onNotes: 2, totalNotes: 3 })).toEqual([1, 1, 0]);
     });
+
     it('should return correct outputs with pitch if provided', () => {
       expect(
         euclideanRhythm({
@@ -28,6 +29,7 @@ describe('Utils', () => {
         [50, 50, 0]
       );
     });
+
     it('should return the previous patterns pitch if possible', () => {
       expect(
         euclideanRhythm({
@@ -38,6 +40,7 @@ describe('Utils', () => {
         })
       ).toEqual([100, 0, 100, 0, 50, 0, 50, 0]);
     });
+
     it('should not have less onNotes than the previousPattern (if provided)', () => {
       expect(
         euclideanRhythm({

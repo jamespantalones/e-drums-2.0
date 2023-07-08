@@ -72,7 +72,7 @@ export class Sequencer {
       const resolvedTracks = await Promise.all(trackPromises);
 
       // loop through each resolved track and connect to chain
-      resolvedTracks.forEach((track) => track.audio.connect(this.chain));
+      resolvedTracks.forEach((track) => track.sampler.connect(this.chain));
       this.state.tracks = resolvedTracks;
 
       this.isInit = true;
@@ -88,6 +88,7 @@ export class Sequencer {
 
   static generateTrack(index: number): SerializedTrack {
     const random = Math.floor(Math.random() * 10) + 3;
+
     return {
       id: generateId(),
       index,
@@ -169,14 +170,12 @@ export class Sequencer {
       color: generateRandomColor(),
       totalNotes: rhythm.totalNotes,
       pitch: rhythm.pitch,
-      // pass a function that allows the child to
-      // tell it's parent when to update itself
       updateSelfInParent: this.updateChild,
     });
 
     await nextTrack.init();
 
-    nextTrack.audio.connect(this.chain);
+    nextTrack.sampler.connect(this.chain);
 
     // add
     this.state.tracks = this.state.tracks.concat(nextTrack);
@@ -233,7 +232,7 @@ export class Sequencer {
     this.state.tracks = this.state.tracks.map((track) => {
       if (track.id === child.id) {
         if (needsReconnect) {
-          child.audio.connect(this.chain);
+          child.sampler.connect(this.chain);
         }
         return child;
       }

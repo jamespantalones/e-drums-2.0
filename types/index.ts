@@ -14,21 +14,20 @@ export type SoundFile = {
   defaultFreqRange: [number, number];
 };
 
-export type CurrentInstrument = {
-  parent: SoundFile;
-  file: string;
+export type Instrument = {
+  sound: SoundFile;
   frequency: number;
 };
 
 export type TrackOpts = {
-  onNotes: number;
+  onNotes?: number;
+  totalNotes?: number;
   id?: string;
-  totalNotes: number;
   library?: Library;
-  pitch: number;
-  color: string;
+  pitch?: number;
+  color?: string;
   index: number;
-  currentInstrument?: CurrentInstrument;
+  instrument?: Instrument;
   updateSelfInParent: (
     child: Track,
     { needsReconnect }: { needsReconnect?: boolean }
@@ -128,8 +127,7 @@ export type SerializedTrack = {
   totalNotes: number;
   pitch: number;
   color: string;
-  library?: Library;
-  instrument?: SoundFile;
+  audio?: SoundFile;
 };
 
 export enum SequencerPlayState {

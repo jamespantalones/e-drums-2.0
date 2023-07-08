@@ -1,18 +1,18 @@
 import * as Tone from 'tone';
-import { config, Config } from '../config';
-import { CurrentInstrument, Library, SoundFile, TrackOpts } from '../types';
+import { SOUNDS } from '../config';
+import { Instrument, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
-import { euclideanRhythm, getRandomLibrary } from './utils';
-
-const VOLUME_MULTIPLIER = 1.25;
+import {
+  createAsyncSampler,
+  euclideanRhythm,
+  generateRandomColor,
+} from './utils';
 
 export class Track {
   public color: string;
   public onNotes: number;
 
   public totalNotes: number;
-
-  public library: Library;
 
   public pitch: number;
 
@@ -22,17 +22,15 @@ export class Track {
 
   public index: number;
 
-  public audio!: Tone.Sampler;
-
-  public soundOptions!: Config['SOUNDS'][Library];
+  public sampler!: Tone.Sampler;
 
   public pattern: number[];
 
   public isReady: boolean;
 
-  public primaryFile: null | string;
+  public fileBuffer: null | string;
 
-  public currentInstrument: CurrentInstrument | null;
+  public instrument: Instrument | null;
 
   public updateSelfInParent: (
     child: Track,
@@ -43,20 +41,14 @@ export class Track {
     this.id = opts.id || generateId();
     this.index = opts.index;
     this.updateSelfInParent = opts.updateSelfInParent;
-    this.onNotes = opts.onNotes;
-    this.totalNotes = opts.totalNotes;
+    this.onNotes = opts.onNotes || 4;
+    this.totalNotes = opts.totalNotes || 8;
     this.isReady = false;
-
-    // TODO: Remove library and flatten
-    this.library = opts.library || getRandomLibrary();
-    this.currentInstrument = opts.currentInstrument || null;
-    this.primaryFile = null;
-    this.color = opts.color;
-
+    this.instrument = opts.instrument || null;
+    this.fileBuffer = null;
+    this.color = opts.color || generateRandomColor();
     this.volume = 0.3;
-    this.pitch = opts.pitch;
-    // get all sounds from the library
-    this.soundOptions = config.SOUNDS[this.library];
+    this.pitch = opts.pitch || 50;
 
     this.pattern = euclideanRhythm({
       onNotes: this.onNotes,
@@ -65,31 +57,14 @@ export class Track {
     });
   }
 
-  static loadAudioAsync(file: string): Promise<Tone.Sampler> {
-    return new Promise((resolve, reject) => {
-      let audio: Tone.Sampler;
-
-      function onLoad() {
-        resolve(audio);
-      }
-
-      const buffer = new Tone.Buffer(file, () => {
-        audio = new Tone.Sampler({
-          C3: buffer,
-        });
-        onLoad();
-      });
-    });
-  }
-
   public async init(): Promise<Track> {
-    if (this.currentInstrument) {
-      this.audio = await Track.loadAudioAsync(
-        `/sounds/${this.currentInstrument.file}`
+    if (this.instrument) {
+      this.sampler = await createAsyncSampler(
+        `/sounds/${this.instrument.sound.files[0]}`
       );
     } else {
-      this.audio = await Track.loadAudioAsync(
-        `/sounds/${this._createSoundFile().file}`
+      this.sampler = await createAsyncSampler(
+        `/sounds/${this._createSoundFile().sound.files[0]}`
       );
     }
     this.isReady = true;
@@ -97,32 +72,20 @@ export class Track {
     return this;
   }
 
-  private _createSoundFile(value?: SoundFile): CurrentInstrument {
+  private _createSoundFile(value?: SoundFile): Instrument {
     // placeholder for final sound
-    let primarySound: SoundFile;
+    let sound = value || SOUNDS[Math.floor(Math.random() * SOUNDS.length)];
 
-    // there is is not already a value
-    if (!value) {
-      const primarySoundFile =
-        this.soundOptions[this.index % this.soundOptions.length];
-      primarySound = primarySoundFile;
-    } else {
-      primarySound = value;
-    }
-
-    this.currentInstrument = {
-      parent: primarySound,
-      file: primarySound.files[
-        Math.floor(Math.random() * primarySound.files.length)
-      ],
+    this.instrument = {
+      sound,
       frequency: this.pitch,
     };
 
-    return this.currentInstrument;
+    return this.instrument;
   }
 
   public play(time: number, pitchOverride?: number) {
-    if (!this.audio || !this.isReady) {
+    if (!this.sampler || !this.isReady) {
       console.warn('Audio file not yet ready...');
       return;
     }
@@ -133,7 +96,7 @@ export class Track {
       pitchOverride || this.pitch,
       'midi'
     ).toFrequency();
-    this.audio.triggerAttack(freq, time, this.volume * VOLUME_MULTIPLIER);
+    this.sampler.triggerAttack(freq, time, this.volume);
   }
 
   public setRhythmTicks(value: number): Track {
@@ -159,15 +122,15 @@ export class Track {
   public async changeInstrument(value: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;
-    const file = `/sounds/${this._createSoundFile(value).file}`;
+    const file = `/sounds/${this._createSoundFile(value)}`;
 
     // dispose of old audio file
-    if (this.audio) {
-      this.audio.dispose();
+    if (this.sampler) {
+      this.sampler.dispose();
     }
 
     // load the new one
-    this.audio = await Track.loadAudioAsync(file);
+    this.sampler = await createAsyncSampler(file);
     this.isReady = true;
 
     // update the parent
@@ -193,14 +156,14 @@ export class Track {
         }
         return self.pitch;
       }
-
       return p;
     });
-
     return this;
   }
 
   public repitchNote(index: number, type: 'INCREMENT' | 'DECREMENT'): Track {
+    // TODO: Update pitch parent here...
+
     this.pattern = this.pattern.map((p, i) => {
       if (index === i) {
         if (p === 0) return p;
