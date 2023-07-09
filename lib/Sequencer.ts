@@ -94,7 +94,7 @@ export class Sequencer {
       index,
       onNotes: Math.floor(random / 2),
       totalNotes: random,
-      pitch: randomIntFromInterval(20, 70),
+      pitch: 100,
       color: generateRandomColor(),
     };
   }
@@ -132,10 +132,8 @@ export class Sequencer {
       this.state.tracks.forEach((track) => {
         const currentTick = nextIndex % track.pattern.length;
         if (track.pattern[currentTick] > 0) {
-          const x = Math.random() < 0.5 ? -1 : 1;
-          const y = Math.random();
           // normal time
-          track.play(time + (y * x) / 2000, track.pattern[currentTick]);
+          track.play(time, currentTick);
         }
       });
 

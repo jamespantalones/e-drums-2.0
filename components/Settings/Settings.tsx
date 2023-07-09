@@ -43,12 +43,11 @@ export function Settings(props: Props) {
   } = props;
 
   const {
-    methods: { deleteTrack, setRhythmTicks, changeInstrument, setRhythmVolume },
+    methods: { deleteTrack, changeInstrument, setRhythmVolume, setRhythmPitch },
   } = useAudioContext();
 
   const [open, setOpen] = useState(true);
   const [openInner, setOpenInner] = useState(false);
-  const [pitch, setPitch] = useState(50);
 
   function nextSelection() {
     setIndex((l) => {
@@ -69,6 +68,13 @@ export function Settings(props: Props) {
   const handleVolChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       setRhythmVolume({ track, volume: parseFloat(ev.target.value) });
+    },
+    []
+  );
+
+  const handlePitchChange = useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      setRhythmPitch({ track, pitch: parseFloat(ev.target.value) });
     },
     []
   );
@@ -143,11 +149,11 @@ export function Settings(props: Props) {
 
           <TrackInput
             label="Pitch"
-            value={track.volume}
+            value={track.pitch}
             step={1}
             min={0}
             max={100}
-            onChange={(ev) => setPitch(parseInt(ev.target.value))}
+            onChange={handlePitchChange}
           />
         </div>
 

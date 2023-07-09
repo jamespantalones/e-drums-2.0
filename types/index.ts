@@ -66,6 +66,7 @@ export type AudioContextReturnType = {
       track: Track;
       volume: number;
     }) => void;
+    setRhythmPitch: ({ track, pitch }: { track: Track; pitch: number }) => void;
     changeInstrument: ({
       track,
       instrument,

@@ -81,7 +81,7 @@ export function Slice({
 
           {rhythm.pattern[index] > 0 && (
             <div className={styles['pitch-overlay']}>
-              <span>{rhythm.pattern[index]}</span>
+              <span>{rhythm.pitchOffset[index]}</span>
             </div>
           )}
         </div>

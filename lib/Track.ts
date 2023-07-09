@@ -25,6 +25,7 @@ export class Track {
   public sampler!: Tone.Sampler;
 
   public pattern: number[];
+  public pitchOffset: number[];
 
   public isReady: boolean;
 
@@ -48,13 +49,15 @@ export class Track {
     this.fileBuffer = null;
     this.color = opts.color || generateRandomColor();
     this.volume = 0.3;
-    this.pitch = opts.pitch || 50;
+    this.pitch = 50;
 
-    this.pattern = euclideanRhythm({
+    const { pattern, pitchOffset } = euclideanRhythm({
       onNotes: this.onNotes,
       totalNotes: this.totalNotes,
       pitch: this.pitch,
     });
+    this.pattern = pattern;
+    this.pitchOffset = pitchOffset;
   }
 
   public async init(): Promise<Track> {
@@ -84,7 +87,7 @@ export class Track {
     return this.instrument;
   }
 
-  public play(time: number, pitchOverride?: number) {
+  public play(time: number, tick: number) {
     if (!this.sampler || !this.isReady) {
       console.warn('Audio file not yet ready...');
       return;
@@ -93,9 +96,11 @@ export class Track {
     const freq = Tone.Frequency(
       // use user specified pitch, falling back
       // to initial pitch
-      pitchOverride || this.pitch,
+      // calc offset here
+      this.pitch + (this.pitchOffset[tick] || 0),
       'midi'
     ).toFrequency();
+
     this.sampler.triggerAttack(freq, time, this.volume);
   }
 
@@ -122,7 +127,7 @@ export class Track {
   public async changeInstrument(value: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;
-    const file = `/sounds/${this._createSoundFile(value)}`;
+    const file = `/sounds/${this._createSoundFile(value).sound.files[0]}`;
 
     // dispose of old audio file
     if (this.sampler) {
@@ -148,28 +153,19 @@ export class Track {
   }
 
   public toggleNote(index: number): Track {
-    const self = this;
     this.pattern = this.pattern.map((p, i) => {
-      if (i === index) {
-        if (p > 0) {
-          return 0;
-        }
-        return self.pitch;
-      }
+      if (i === index) return 1 - p;
       return p;
     });
+
     return this;
   }
 
   public repitchNote(index: number, type: 'INCREMENT' | 'DECREMENT'): Track {
-    // TODO: Update pitch parent here...
-
-    this.pattern = this.pattern.map((p, i) => {
-      if (index === i) {
-        if (p === 0) return p;
-        return p + (type === 'INCREMENT' ? 1 : -1);
-      }
-      return p;
+    // loop through
+    this.pitchOffset = this.pitchOffset.map((p, i) => {
+      if (index !== i) return p;
+      return p + (type === 'INCREMENT' ? 1 : -1);
     });
 
     return this;

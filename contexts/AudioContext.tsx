@@ -164,6 +164,17 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const setRhythmPitch = useCallback(
+    ({ track, pitch }: { track: Track; pitch: number }) => {
+      // first set in sequencer
+      const tu = track.changePitch(pitch);
+
+      // now set in state
+      dispatch({ type: 'UPDATE_TRACK', value: tu });
+    },
+    []
+  );
+
   const setRhythmVolume = useCallback(
     ({ track, volume }: { track: Track; volume: number }) => {
       // first set in sequencer
@@ -190,7 +201,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       const { state: seqState } = seq.current;
       const { tracks } = seqState;
       const cleanTracks = tracks.map((track) => {
-        const { audio, updateSelfInParent, ...rest } = track;
+        const { pattern, updateSelfInParent, ...rest } = track;
         return rest;
       });
 
@@ -220,6 +231,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       toggleTick,
       setRhythmTicks,
       setRhythmVolume,
+      setRhythmPitch,
       changeInstrument,
       save,
     },

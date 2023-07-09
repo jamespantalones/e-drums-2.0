@@ -22,8 +22,8 @@ export function euclideanRhythm(opts: {
   totalNotes: number;
   pitch?: number;
   previousPattern?: number[];
-}): number[] {
-  const { totalNotes, onNotes, pitch, previousPattern } = opts;
+}): { pattern: number[]; pitchOffset: number[] } {
+  const { totalNotes, onNotes } = opts;
 
   // groups and slots are initially empty arrays.
   // groups will store the final rhythmic pattern and
@@ -31,14 +31,6 @@ export function euclideanRhythm(opts: {
   // the previous pattern (if one was given)
   let groups: number[][] = [];
   let slots: number[] = [];
-
-  if (previousPattern) {
-    previousPattern.forEach((slot) => {
-      if (slot > 0) {
-        slots.push(slot);
-      }
-    });
-  }
 
   // A loop creates the initial pattern in the groups array.
   // If the current iteration index is less than the maximum
@@ -85,24 +77,29 @@ export function euclideanRhythm(opts: {
 
   const binaryArray = groups.flat().map((a) => {
     if (a === 0) return 0;
-    return pitch || 1;
+    return 1;
   });
+
+  return {
+    pattern: binaryArray,
+    pitchOffset: binaryArray.map((b) => 0),
+  };
 
   // In the end, the rhythm pattern is converted to a
   // binary array where 'on' beats are replaced by the pitch
   // value (if provided) or 1, and 'off' beats are 0.
   // If there are 'on' beats left in the slots array from a
   // previousPattern, they are used first to populate.
-  return binaryArray.map((a) => {
-    if (a > 0) {
-      if (slots.length) {
-        let val = slots.shift();
-        if (val) return val;
-      }
-      return pitch || 1;
-    }
-    return a;
-  });
+  // return binaryArray.map((a) => {
+  //   if (a > 0) {
+  //     if (slots.length) {
+  //       let val = slots.shift();
+  //       if (val) return val;
+  //     }
+  //     return pitch || 1;
+  //   }
+  //   return a;
+  // });
 }
 
 export function createAsyncSampler(file: string): Promise<Tone.Sampler> {
