@@ -51,17 +51,23 @@ export function Slice({
       )}
       {editPitch && (
         <div
-          className={clsx('z-50', styles.slice, {
+          className={clsx(styles.slice, {
             [styles.active]: tick % length === index,
             [styles.enabled]: rhythm.pattern[index],
           })}
         >
           {rhythm.pattern[index] > 0 && (
             <>
-              <button className={styles.pitch} onClick={incrementPitch}>
+              <button
+                className={clsx(styles.pitch, styles.top)}
+                onClick={incrementPitch}
+              >
                 <Add />
               </button>
-              <button className={styles.pitch} onClick={decrementPitch}>
+              <button
+                className={clsx(styles.pitch, styles.bottom)}
+                onClick={decrementPitch}
+              >
                 <Remove />
               </button>
             </>
@@ -69,11 +75,8 @@ export function Slice({
 
           {rhythm.pattern[index] === 0 && (
             <button
+              className={styles.toggle}
               key={index}
-              className={clsx(styles.slice, {
-                [styles.active]: tick % length === index,
-                [styles.enabled]: rhythm.pattern[index],
-              })}
               type="button"
               onClick={handleClick}
             />

@@ -6,8 +6,8 @@
   --color-bg: rgb(3, 3, 3);
   --color-text: rgb(100, 100, 100);
   --border-width: 1px;
-  --box-shadow-sm: 0 0 10px rgb(80, 80, 80);
-  --box-shadow-lg: 0 0 20px rgb(190, 190, 190);
+  --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
+  --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
   --slice-size: 4rem;
 }
 
@@ -42,6 +42,7 @@ p {
 .button {
   @apply rounded;
   @apply p-2;
+  @apply border border-neutral-800;
   box-shadow: var(--box-shadow-sm);
   &.lg {
     @apply px-8 py-2;
@@ -50,9 +51,9 @@ p {
 
 .button:hover {
   box-shadow: var(--box-shadow-lg);
-  @apply bg-neutral-900;
+  @apply bg-neutral-500;
 }
 
 .button:active {
-  @apply bg-neutral-800;
+  @apply bg-neutral-400;
 }

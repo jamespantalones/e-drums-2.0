@@ -115,11 +115,13 @@ export class Track {
 
     if (value > length) {
       this.pattern.push(0);
+      this.pitchOffset.push(0);
       this.updateSelfInParent(this, {});
       return this;
     }
 
     this.pattern.pop();
+    this.pitchOffset.pop();
     this.updateSelfInParent(this, {});
     return this;
   }

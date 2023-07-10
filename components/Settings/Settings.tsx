@@ -7,8 +7,6 @@ import styles from './settings.module.css';
 import { useCallback, useState } from 'react';
 import { Track } from '../../lib/Track';
 import { SoundFile } from '../../types';
-import { SOUNDS } from '../../config';
-import { padNumber } from '../../utils';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { TrackInput } from '../Track/TrackInput';
 
@@ -32,9 +30,6 @@ export type Props = {
 };
 
 export function Settings(props: Props) {
-  // TODO: This needs to start on correct random index
-  const [index, setIndex] = useState(0);
-
   const {
     track,
     togglePitch,
@@ -50,11 +45,7 @@ export function Settings(props: Props) {
   const [openInner, setOpenInner] = useState(false);
 
   function nextSelection() {
-    setIndex((l) => {
-      const next = l + 1 > SOUNDS.length ? 0 : l + 1;
-      changeInstrument({ instrument: SOUNDS[next], track });
-      return next;
-    });
+    changeInstrument({ track });
   }
 
   function toggleOpen() {
@@ -69,14 +60,14 @@ export function Settings(props: Props) {
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       setRhythmVolume({ track, volume: parseFloat(ev.target.value) });
     },
-    []
+    [setRhythmVolume, track]
   );
 
   const handlePitchChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       setRhythmPitch({ track, pitch: parseFloat(ev.target.value) });
     },
-    []
+    [setRhythmPitch, track]
   );
 
   return (
@@ -96,33 +87,6 @@ export function Settings(props: Props) {
         <div className={styles.vert_group}>
           <button
             className={clsx(styles.toggle, 'border-b', 'border-neutral-700')}
-            onClick={nextSelection}
-            title="Instrument"
-          >
-            <span className="text-xs">{padNumber(index)}</span>
-          </button>
-          <button
-            className={clsx(styles.toggle)}
-            onClick={togglePitch}
-            title="Toggle Pitch"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 30"
-              x="0px"
-              y="0px"
-            >
-              <path
-                fill="gray"
-                d="M22.75,13a.75.75,0,0,1-.75.75H19a.75.75,0,0,1-.7114-.5127L18.103,12.68l-1.3755,5.5015a.75.75,0,0,1-.6987.5674L16,18.75a.7494.7494,0,0,1-.7114-.5127L12,8.3711,8.7114,18.2368a.7294.7294,0,0,1-.74.5123.75.75,0,0,1-.6987-.5674L5.897,12.68l-.1856.5566A.75.75,0,0,1,5,13.75H2a.75.75,0,0,1,0-1.5H4.46l.8291-2.4873a.75.75,0,0,1,1.4389.0552L8.103,15.3189l3.1856-9.5567a.75.75,0,0,1,1.4228,0l3.1856,9.5567,1.3755-5.5015a.75.75,0,0,1,.6987-.5674.7393.7393,0,0,1,.74.5122l.8291,2.4873H22A.75.75,0,0,1,22.75,13Z"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className={styles.vert_group}>
-          <button
-            className={clsx(styles.toggle, 'border-b', 'border-neutral-700')}
             onClick={handleTotalNoteChangeIncrement}
             title="Add Slice"
           >
@@ -134,6 +98,33 @@ export function Settings(props: Props) {
             title="Remove Slice"
           >
             <Remove />
+          </button>
+        </div>
+        <div className="ml-2">
+          <button
+            className={clsx('border-b', 'border-neutral-700', 'leading-3')}
+            onClick={nextSelection}
+            title="Instrument"
+          >
+            <span
+              style={{
+                fontSize: '8px',
+                lineHeight: 1,
+                width: '20px',
+                display: 'block',
+                textAlign: 'center',
+              }}
+            >
+              {track.instrument?.sound.name}
+            </span>
+          </button>
+          <button
+            className={clsx(styles.toggle, 'leading-3', 'uppercase')}
+            onClick={togglePitch}
+            title="Toggle Pitch"
+            style={{ fontSize: '8px' }}
+          >
+            Pitch Toggle
           </button>
         </div>
 

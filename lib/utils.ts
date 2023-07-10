@@ -21,7 +21,7 @@ export function euclideanRhythm(opts: {
   onNotes: number;
   totalNotes: number;
   pitch?: number;
-  previousPattern?: number[];
+  previousPitchOffsets?: number[];
 }): { pattern: number[]; pitchOffset: number[] } {
   const { totalNotes, onNotes } = opts;
 

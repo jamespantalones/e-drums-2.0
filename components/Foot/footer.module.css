@@ -1,0 +1,8 @@
+.footer {
+  @apply border-t fixed bottom-0 left-0 right-0 h-12;
+
+  input {
+    @apply mx-auto;
+    @apply max-w-[90%];
+  }
+}
