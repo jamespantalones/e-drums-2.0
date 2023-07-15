@@ -17,7 +17,7 @@ export type Props = {
     instrument,
   }: {
     track: Track;
-    instrument: SoundFile;
+    instrument?: SoundFile;
   }) => void;
   pitchEditOn: boolean;
   togglePitch: () => void;

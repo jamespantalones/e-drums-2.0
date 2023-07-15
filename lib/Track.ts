@@ -126,7 +126,7 @@ export class Track {
     return this;
   }
 
-  public async changeInstrument(value: SoundFile): Promise<Track> {
+  public async changeInstrument(value?: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;
     const file = `/sounds/${this._createSoundFile(value).sound.files[0]}`;

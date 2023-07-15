@@ -10,128 +10,170 @@ export type Config = {
 
 export const SOUNDS: SoundFile[] = [
   {
-    name: 'CABASA',
+    name: 'BASS',
     defaultFreqRange: [20, 80],
-    files: ['tr727/cabasa.wav'],
-  },
-  {
-    name: 'HI BONGO',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/hi_bongo.wav'],
-  },
-  {
-    name: 'LO BONGO',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/lo_bongo.wav'],
-  },
-
-  {
-    name: 'HI TIMBALE',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/hi_timba.wav'],
-  },
-
-  {
-    name: 'LO TIMBALE',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/lo_timba.wav'],
-  },
-
-  {
-    name: 'HI CONGA',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/hm_conga.wav'],
-  },
-
-  {
-    name: 'LO CONGA',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/lo_conga.wav'],
-  },
-
-  {
-    name: 'MARACAS',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/maracas.wav'],
-  },
-
-  {
-    name: 'STARCHIM',
-    defaultFreqRange: [20, 80],
-    files: ['tr727/starchim.wav'],
-  },
-  {
-    name: 'HIT',
-    defaultFreqRange: [20, 80],
-    files: ['raven/raven_hit.mp3'],
+    files: ['1_FM_BASS.wav'],
   },
   {
     name: 'KICK',
-    defaultFreqRange: [0, 40],
-    files: [
-      'minipops/pops-bd-1.wav',
-      'minipops/pops-bd-2.wav',
-      'minipops/pops-bd-3.wav',
-      'minipops/pops-bd-4.wav',
-    ],
+    defaultFreqRange: [20, 80],
+    files: ['2_FM_KICK.wav'],
   },
   {
-    name: 'CLAVE',
-    defaultFreqRange: [20, 60],
-    files: [
-      'minipops/pops-clave1.wav',
-      'minipops/pops-clave2.wav',
-      'minipops/pops-clave5.wav',
-      'minipops/pops-clave6.wav',
-    ],
+    name: 'BONGO',
+    defaultFreqRange: [20, 80],
+    files: ['3_FM_BONGO_.wav'],
   },
+
   {
     name: 'CONGA',
     defaultFreqRange: [20, 80],
-    files: [
-      'minipops/pops-con1.wav',
-      'minipops/pops-con2.wav',
-      'minipops/pops-con3.wav',
-      'minipops/pops-con4.wav',
-    ],
+    files: ['4_FM_CONGA.wav'],
+  },
+
+  {
+    name: 'CLAP',
+    defaultFreqRange: [20, 80],
+    files: ['5_FM_CLAP.wav'],
+  },
+
+  {
+    name: 'BELLS',
+    defaultFreqRange: [20, 80],
+    files: ['6_FM_BELLS.wav'],
+  },
+
+  {
+    name: 'DOG',
+    defaultFreqRange: [20, 80],
+    files: ['7_FM_DOG.wav'],
+  },
+
+  {
+    name: 'HAT1',
+    defaultFreqRange: [20, 80],
+    files: ['8_FM_HH.wav'],
+  },
+
+  {
+    name: 'HAT2',
+    defaultFreqRange: [20, 80],
+    files: ['9_FM_HH_2.wav'],
   },
   {
-    name: 'HAT_CLOSED',
-    defaultFreqRange: [60, 100],
-    files: [
-      'minipops/pops-hh-1.wav',
-      'minipops/pops-hh-2.wav',
-      'minipops/pops-hh-3.wav',
-      'minipops/pops-hh-4.wav',
-      'minipops/pops-hh-5.wav',
-      'minipops/pops-hh-6.wav',
-    ],
-  },
-  {
-    name: 'HAT_OPEN',
-    defaultFreqRange: [60, 100],
-    files: ['minipops/pops-hho1.wav', 'minipops/pops-hho2.wav'],
+    name: 'HONK',
+    defaultFreqRange: [20, 80],
+    files: ['10_FM_HONK.wav'],
   },
   {
     name: 'RIM',
-    defaultFreqRange: [40, 80],
-    files: [
-      'minipops/pops-rim1.wav',
-      'minipops/pops-rim2.wav',
-      'minipops/pops-rim3.wav',
-      'minipops/pops-rim4.wav',
-    ],
+    defaultFreqRange: [0, 40],
+    files: ['11_FM_RIM.wav'],
   },
   {
-    name: 'SNARE',
+    name: 'MARACAS',
+    defaultFreqRange: [20, 60],
+    files: ['12_FM_MARACAS.wav'],
+  },
+  {
+    name: 'NOISE',
+    defaultFreqRange: [20, 80],
+    files: ['13_FM_NOISE.wav'],
+  },
+  {
+    name: 'PLUCK',
+    defaultFreqRange: [20, 80],
+    files: ['14_FM_PLUCK.wav'],
+  },
+  {
+    name: 'CYMBAL',
+    defaultFreqRange: [20, 80],
+    files: ['15_FM_CYMBAL.wav'],
+  },
+  {
+    name: 'KAH!',
+    defaultFreqRange: [20, 80],
+    files: ['16_JB_KAH!.wav'],
+  },
+  {
+    name: 'RING',
     defaultFreqRange: [40, 80],
-    files: [
-      'minipops/pops-sd-1.wav',
-      'minipops/pops-sd-2.wav',
-      'minipops/pops-sd-3.wav',
-      'minipops/pops-sd-4.wav',
-      'minipops/pops-sd-5.wav',
-    ],
+    files: ['17_FM_RING.wav'],
+  },
+  {
+    name: 'CONGA2',
+    defaultFreqRange: [40, 80],
+    files: ['18_FM_CONGA_2.wav'],
+  },
+  {
+    name: 'ROTO',
+    defaultFreqRange: [40, 80],
+    files: ['19_FM_ROTO.wav'],
+  },
+  {
+    name: 'SCRATCH',
+    defaultFreqRange: [40, 80],
+    files: ['20_FM_SCRATCH.wav'],
+  },
+  {
+    name: 'SHAKER',
+    defaultFreqRange: [40, 80],
+    files: ['21_FM_SHAKER.wav'],
+  },
+  {
+    name: 'SWEEP',
+    defaultFreqRange: [40, 80],
+    files: ['22_FM_SWEEP.wav'],
+  },
+  {
+    name: 'SNR',
+    defaultFreqRange: [40, 80],
+    files: ['23_FM_SNR.wav'],
+  },
+  {
+    name: 'STAB',
+    defaultFreqRange: [40, 80],
+    files: ['24_JB_STAB.wav'],
+  },
+  {
+    name: 'T BASS',
+    defaultFreqRange: [40, 80],
+    files: ['25_TRITON_BASS.wav'],
+  },
+  {
+    name: 'T CUICA',
+    defaultFreqRange: [40, 80],
+    files: ['26_TRITON_CUICA.wav'],
+  },
+  {
+    name: 'TMG',
+    defaultFreqRange: [40, 80],
+    files: ['27_TRITON_MUTE_GIT.wav'],
+  },
+  {
+    name: 'T SCRATCH',
+    defaultFreqRange: [40, 80],
+    files: ['28_TRITON_SCRATCH.wav'],
+  },
+  {
+    name: 'JB KICK',
+    defaultFreqRange: [40, 80],
+    files: ['29_JB_KICK.wav'],
+  },
+  {
+    name: 'JB SNR',
+    defaultFreqRange: [40, 80],
+    files: ['30_JB_SNR.wav'],
+  },
+  {
+    name: 'HEY!',
+    defaultFreqRange: [40, 80],
+    files: ['31_JB_HEY!.wav'],
+  },
+  {
+    name: 'YP HEY!',
+    defaultFreqRange: [40, 80],
+    files: ['32_YP_HEY!.wav'],
   },
 ];
 

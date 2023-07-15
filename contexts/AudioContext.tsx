@@ -152,7 +152,13 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   );
 
   const changeInstrument = useCallback(
-    async ({ track, instrument }: { track: Track; instrument: SoundFile }) => {
+    async ({
+      track,
+      instrument = undefined,
+    }: {
+      track: Track;
+      instrument?: SoundFile;
+    }) => {
       // first set in sequencer
       const tu = await track.changeInstrument(instrument);
 
