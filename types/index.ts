@@ -1,13 +1,18 @@
 import { Track } from '../lib/Track';
 
-export enum Library {
-  MINIPOPS = 'MINIPOPS',
+export type TrackAction =
+  | {
+      method: 'changeInstrument';
+      value?: SoundFile;
+    }
+  | { method: 'changeVolume'; value: number }
+  | { method: 'changePitch'; value: number }
+  | { method: 'setRhythmTicks'; value: number };
 
-  TR727 = 'TR727',
-
-  RAVEN = 'RAVEN',
-}
-
+export type SequencerAction = {
+  method: 'setBpm';
+  value: number;
+};
 export type SoundFile = {
   name: string;
   files: string[];
@@ -23,7 +28,6 @@ export type TrackOpts = {
   onNotes?: number;
   totalNotes?: number;
   id?: string;
-  library?: Library;
   pitch?: number;
   color?: string;
   index: number;
@@ -49,6 +53,7 @@ export type AudioContextReturnType = {
   methods: {
     play: () => Promise<void>;
     stop: () => void;
+    clear: () => void;
     save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
@@ -59,22 +64,7 @@ export type AudioContextReturnType = {
       type: 'INCREMENT' | 'DECREMENT'
     ) => void;
     toggleTick: (id: string, index: number) => void;
-    setRhythmVolume: ({
-      track,
-      volume,
-    }: {
-      track: Track;
-      volume: number;
-    }) => void;
-    setRhythmPitch: ({ track, pitch }: { track: Track; pitch: number }) => void;
-    changeInstrument: ({
-      track,
-      instrument,
-    }: {
-      track: Track;
-      instrument?: SoundFile;
-    }) => Promise<Track>;
-    setRhythmTicks: ({ track, ticks }: { track: Track; ticks: number }) => void;
+    setTrackVal: (track: Track, action: TrackAction) => Promise<Track>;
   };
 };
 
@@ -82,10 +72,6 @@ export type AudioContextAction =
   | {
       type: 'INITIALIZE';
       value: Track[];
-    }
-  | {
-      type: 'CHANGE_LIBRARY';
-      value: Library;
     }
   | {
       type: '_PLAY';

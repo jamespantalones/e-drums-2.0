@@ -49,13 +49,6 @@ export function audioContextReducer(
       };
     }
 
-    case 'CHANGE_LIBRARY': {
-      return {
-        ...state,
-        library: action.value,
-      };
-    }
-
     case 'DELETE_TRACK': {
       return {
         ...state,
@@ -70,6 +63,9 @@ export function audioContextReducer(
       };
     }
 
+    /**
+     * updates singular track
+     */
     case 'UPDATE_TRACK': {
       return {
         ...state,

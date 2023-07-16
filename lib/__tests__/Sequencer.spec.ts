@@ -35,4 +35,9 @@ describe('Sequencer', () => {
       })
     );
   });
+
+  it('should allow clearing a sequencer', () => {
+    const instance = new Sequencer({ bpm: 74, onTick, initialTracks });
+    expect(instance.clear).toBe(expect.any(Function));
+  });
 });

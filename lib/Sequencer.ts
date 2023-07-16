@@ -86,19 +86,6 @@ export class Sequencer {
     }
   }
 
-  static generateTrack(index: number): SerializedTrack {
-    const random = Math.floor(Math.random() * 10) + 3;
-
-    return {
-      id: generateId(),
-      index,
-      onNotes: Math.floor(random / 2),
-      totalNotes: random,
-      pitch: 100,
-      color: generateRandomColor(),
-    };
-  }
-
   // stop the transport
   stop() {
     if (this.transport) {
@@ -221,6 +208,12 @@ export class Sequencer {
 
   public setBpm(val: number) {
     Tone.Transport.bpm.value = val;
+  }
+
+  public clear() {
+    this.state.tracks = this.state.tracks.map((track, index) => {
+      return track.noteOff();
+    });
   }
 
   updateChild = (

@@ -1,7 +1,6 @@
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import { config } from '../config';
-import { AudioContextReturnType, Library, SoundFile } from '../types';
+import { AudioContextReturnType, SequencerAction, TrackAction } from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
 import * as Tone from 'tone';
 import {
@@ -13,8 +12,8 @@ import {
   useReducer,
   useRef,
 } from 'react';
-import { loadFromLocalStorage } from '../utils';
-import localforage from 'localforage';
+import { generateTrack } from '../lib/utils';
+import { Config } from '../config';
 
 /**
  * Main goal of this AudioContext is
@@ -28,56 +27,34 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 export function AudioContextProvider({ children }: { children: ReactNode }) {
   // audio state
   const [state, dispatch] = useReducer(audioContextReducer, {
-    bpm: config.DEFAULT_BPM,
+    bpm: Config.DEFAULT_BPM,
     initialized: false,
     playing: false,
     tick: -1,
     tracks: [],
   });
 
-  // Local reference to the sequencer
+  /**
+   * Holds local ref to sequencer class instance
+   */
   const seq = useRef<Sequencer>();
 
-  // when we receive a message from the sequencer
-  // update the tick in the UI
-  const incrementTick = useCallback(
-    (t: number) => {
-      dispatch({ type: 'INCREMENT_TICK', value: t });
-    },
-    [dispatch]
-  );
-
-  const changeBpm = useCallback((bpm: number) => {
-    seq.current?.setBpm(bpm);
-    dispatch({ type: 'SET_BPM', value: bpm });
+  /**
+   * when we receive a message from the sequencer
+   * update the tick in the UI
+   */
+  const incrementTick = useCallback((tick: number) => {
+    dispatch({ type: 'INCREMENT_TICK', value: tick });
   }, []);
 
   // make sure the AudioContext is initialized
   const initialize = useCallback(async () => {
     try {
-      const initialState = await loadFromLocalStorage();
-
-      // if we have a previously saved song,
-      // load it
-      if (initialState) {
-        changeBpm(initialState.bpm);
-        seq.current = new Sequencer({
-          initialTracks: initialState.tracks,
-          onTick: incrementTick,
-          bpm: initialState.bpm,
-        });
-      }
-      // otherwise, make a new one
-      else {
-        seq.current = new Sequencer({
-          initialTracks: [
-            Sequencer.generateTrack(0),
-            Sequencer.generateTrack(1),
-          ],
-          onTick: incrementTick,
-          bpm: state.bpm,
-        });
-      }
+      seq.current = new Sequencer({
+        initialTracks: [generateTrack()],
+        onTick: incrementTick,
+        bpm: state.bpm,
+      });
 
       const s = await seq.current.init();
 
@@ -85,7 +62,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.log(err);
     }
-  }, [changeBpm, incrementTick, state.bpm]);
+  }, [incrementTick, state.bpm]);
 
   /**
    * Starts playback
@@ -109,7 +86,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const createTrack = useCallback(async () => {
     // add to Sequencer
     const track = await seq.current?.addNewRhythm(
-      Sequencer.generateTrack(state.tracks.length)
+      generateTrack(state.tracks.length)
     );
 
     if (track) {
@@ -140,57 +117,26 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     // update in sequencer
   }, []);
 
-  const setRhythmTicks = useCallback(
-    ({ track, ticks }: { track: Track; ticks: number }) => {
-      // first set in sequencer
-      const tu = track.setRhythmTicks(ticks);
-
-      // now set in state
-      dispatch({ type: 'UPDATE_TRACK', value: tu });
+  const setTrackVal = useCallback(
+    async (track: Track, action: TrackAction): Promise<Track> => {
+      if (!track[action.method]) {
+        throw new Error(`${action.method} not implemented on Track`);
+      }
+      const v = await track[action.method](action.value as any);
+      dispatch({ type: 'UPDATE_TRACK', value: v });
+      return v;
     },
     []
   );
 
-  const changeInstrument = useCallback(
-    async ({
-      track,
-      instrument = undefined,
-    }: {
-      track: Track;
-      instrument?: SoundFile;
-    }) => {
-      // first set in sequencer
-      const tu = await track.changeInstrument(instrument);
+  const clear = useCallback(() => {
+    seq.current?.clear();
+  }, []);
 
-      // now set in state
-      dispatch({ type: 'UPDATE_TRACK', value: tu });
-
-      return tu;
-    },
-    []
-  );
-
-  const setRhythmPitch = useCallback(
-    ({ track, pitch }: { track: Track; pitch: number }) => {
-      // first set in sequencer
-      const tu = track.changePitch(pitch);
-
-      // now set in state
-      dispatch({ type: 'UPDATE_TRACK', value: tu });
-    },
-    []
-  );
-
-  const setRhythmVolume = useCallback(
-    ({ track, volume }: { track: Track; volume: number }) => {
-      // first set in sequencer
-      const tu = track.changeVolume(volume);
-
-      // now set in state
-      dispatch({ type: 'UPDATE_TRACK', value: tu });
-    },
-    []
-  );
+  const changeBpm = useCallback((bpm: number) => {
+    seq.current?.setBpm(bpm);
+    dispatch({ type: 'SET_BPM', value: bpm });
+  }, []);
 
   const deleteTrack = useCallback(
     (id: string) => {
@@ -211,17 +157,9 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
         return rest;
       });
 
-      try {
-        const s = await localforage.setItem('state', {
-          ...seqState,
-          tracks: cleanTracks,
-          bpm: state.bpm,
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      // TODO: Reimplement Save here...
     }
-  }, [state]);
+  }, [state.tick]);
 
   const value = {
     state,
@@ -231,14 +169,12 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       deleteTrack,
       play,
       stop,
+      clear,
       changeBpm,
       createTrack,
       repitchTick,
       toggleTick,
-      setRhythmTicks,
-      setRhythmVolume,
-      setRhythmPitch,
-      changeInstrument,
+      setTrackVal,
       save,
     },
   };

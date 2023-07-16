@@ -6,19 +6,12 @@ import clsx from 'clsx';
 import styles from './settings.module.css';
 import { useCallback, useState } from 'react';
 import { Track } from '../../lib/Track';
-import { SoundFile } from '../../types';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { TrackInput } from '../Track/TrackInput';
+import { MoreVert } from '@mui/icons-material';
 
 export type Props = {
   track: Track;
-  changeInstrument: ({
-    track,
-    instrument,
-  }: {
-    track: Track;
-    instrument?: SoundFile;
-  }) => void;
   pitchEditOn: boolean;
   togglePitch: () => void;
   handleTotalNoteChangeDecrement: (
@@ -38,15 +31,11 @@ export function Settings(props: Props) {
   } = props;
 
   const {
-    methods: { deleteTrack, changeInstrument, setRhythmVolume, setRhythmPitch },
+    methods: { deleteTrack, setTrackVal },
   } = useAudioContext();
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [openInner, setOpenInner] = useState(false);
-
-  function nextSelection() {
-    changeInstrument({ track });
-  }
 
   function toggleOpen() {
     setOpen((o) => !o);
@@ -56,19 +45,38 @@ export function Settings(props: Props) {
     deleteTrack(track.id);
   }, [deleteTrack, track]);
 
+  /**
+   * Change volume for a specific track
+   */
   const handleVolChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setRhythmVolume({ track, volume: parseFloat(ev.target.value) });
+      setTrackVal(track, {
+        method: 'changeVolume',
+        value: parseFloat(ev.target.value),
+      });
     },
-    [setRhythmVolume, track]
+    [setTrackVal, track]
   );
 
+  /**
+   * Change pitch for a specific track
+   */
   const handlePitchChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      setRhythmPitch({ track, pitch: parseFloat(ev.target.value) });
+      setTrackVal(track, {
+        method: 'changePitch',
+        value: parseFloat(ev.target.value),
+      });
     },
-    [setRhythmPitch, track]
+    [setTrackVal, track]
   );
+
+  /**
+   * Change instrument for a specific track
+   */
+  const changeInstrument = useCallback(() => {
+    setTrackVal(track, { method: 'changeInstrument', value: undefined });
+  }, [setTrackVal, track]);
 
   return (
     <section
@@ -76,34 +84,36 @@ export function Settings(props: Props) {
         [styles.open]: open,
       })}
     >
+      <div className={styles.vert_group}>
+        <button
+          className={clsx(styles.toggle)}
+          onClick={handleTotalNoteChangeIncrement}
+          title="Add Slice"
+        >
+          <Add />
+        </button>
+        <button
+          className={clsx(styles.toggle)}
+          onClick={handleTotalNoteChangeDecrement}
+          title="Remove Slice"
+        >
+          <Remove />
+        </button>
+      </div>
       <button onClick={toggleOpen} className={clsx(styles.toggle)}>
-        <div className="rotate-90">⮂</div>
+        <div>
+          <MoreVert />
+        </div>
       </button>
 
       <div
         className="flex overflow-hidden items-center justify-around transition-all"
         style={{ width: open && openInner ? '200px' : open ? '150px' : '0' }}
       >
-        <div className={styles.vert_group}>
-          <button
-            className={clsx(styles.toggle, 'border-b', 'border-neutral-700')}
-            onClick={handleTotalNoteChangeIncrement}
-            title="Add Slice"
-          >
-            <Add />
-          </button>
-          <button
-            className={clsx(styles.toggle)}
-            onClick={handleTotalNoteChangeDecrement}
-            title="Remove Slice"
-          >
-            <Remove />
-          </button>
-        </div>
         <div className="ml-2">
           <button
             className={clsx('border-b', 'border-neutral-700', 'leading-3')}
-            onClick={nextSelection}
+            onClick={changeInstrument}
             title="Instrument"
           >
             <span

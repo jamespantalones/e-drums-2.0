@@ -80,7 +80,7 @@ export class Track {
     let sound = value || SOUNDS[Math.floor(Math.random() * SOUNDS.length)];
 
     this.instrument = {
-      sound,
+      sound: sound as SoundFile,
       frequency: this.pitch,
     };
 
@@ -159,6 +159,14 @@ export class Track {
       if (i === index) return 1 - p;
       return p;
     });
+
+    return this;
+  }
+
+  public noteOff(): Track {
+    this.pitchOffset = this.pitchOffset.map(() => 0);
+
+    this.pattern = this.pattern.map(() => 0);
 
     return this;
   }

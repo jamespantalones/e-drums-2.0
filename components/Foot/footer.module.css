@@ -1,6 +1,7 @@
 .footer {
-  @apply border-t fixed bottom-0 left-0 right-0 h-12;
-
+  @apply bg-black;
+  @apply fixed bottom-0 left-0 right-0 h-12;
+  box-shadow: var(--box-shadow-sm);
   input {
     @apply mx-auto;
     @apply max-w-[90%];

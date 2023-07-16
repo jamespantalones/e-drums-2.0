@@ -1,44 +1,40 @@
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
-import { config } from '../../config';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 import { Settings } from '../Settings/Settings';
 
 import { Slice } from './Slice';
+import { Config } from '../../config';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const [expanded, setExpanded] = useState(false);
   const [editPitch, setEditPitch] = useState(false);
   const {
-    methods: { deleteTrack, setRhythmTicks, changeInstrument, setRhythmVolume },
+    methods: { setTrackVal },
   } = useAudioContext();
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
 
   const handleTotalNoteChangeIncrement = useCallback(
     (ev: React.MouseEvent<HTMLButtonElement>) => {
-      setRhythmTicks({
-        track: rhythm,
-        ticks:
-          rhythm.totalNotes + 1 > config.MAX_SLICES
-            ? rhythm.totalNotes
-            : rhythm.totalNotes + 1,
-      });
+      const ticks =
+        rhythm.totalNotes + 1 > Config.MAX_SLICES
+          ? rhythm.totalNotes
+          : rhythm.totalNotes + 1;
+      setTrackVal(rhythm, { method: 'setRhythmTicks', value: ticks });
     },
-    [rhythm, setRhythmTicks]
+    [rhythm, setTrackVal]
   );
 
   const handleTotalNoteChangeDecrement = useCallback(
     (ev: React.MouseEvent<HTMLButtonElement>) => {
-      setRhythmTicks({
-        track: rhythm,
-        ticks:
-          rhythm.totalNotes - 1 < 2 ? rhythm.totalNotes : rhythm.totalNotes - 1,
-      });
+      const ticks =
+        rhythm.totalNotes - 1 < 2 ? rhythm.totalNotes : rhythm.totalNotes - 1;
+      setTrackVal(rhythm, { method: 'setRhythmTicks', value: ticks });
     },
-    [rhythm, setRhythmTicks]
+    [rhythm, setTrackVal]
   );
 
   const togglePitch = useCallback(() => {
@@ -63,18 +59,12 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
         handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}
         togglePitch={togglePitch}
-        changeInstrument={changeInstrument}
       />
-      <div
-        className={clsx(styles['slice-wrapper'], styles.group, {
-          [styles.shift]: expanded,
-        })}
-      >
+      <div className={clsx(styles['slice-wrapper'], styles.group)}>
         {rhythm.pattern.map((slice, index) => (
           <Slice
             key={`${slice}-${index}`}
             editPitch={editPitch}
-            expanded={expanded}
             index={index}
             rhythm={rhythm}
             length={length}

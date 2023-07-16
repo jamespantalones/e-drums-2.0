@@ -8,7 +8,19 @@
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
-  --slice-size: 4rem;
+  --slice-size: 3rem;
+}
+
+@media (min-width: 760px) {
+  :root {
+    --slice-size: 6rem;
+  }
+}
+
+@media (min-width: 1020px) {
+  :root {
+    --slice-size: 6rem;
+  }
 }
 
 html {

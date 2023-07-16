@@ -4,10 +4,11 @@ import PlayIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import NewIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
-import { config } from '../../config';
+import { Config } from '../../config';
 export function Nav() {
   const { state, methods } = useAudioContext();
 
@@ -24,6 +25,9 @@ export function Nav() {
           <IconButton onClick={methods.stop} disabled={!state.initialized}>
             <StopIcon />
           </IconButton>
+          <IconButton onClick={methods.clear} disabled={!state.initialized}>
+            <ClearAllIcon />
+          </IconButton>
         </div>
 
         <div className="flex">
@@ -31,7 +35,7 @@ export function Nav() {
             onClick={methods.createTrack}
             noBorder
             disabled={
-              state.tracks.length === config.MAX_TRACKS || !state.initialized
+              state.tracks.length === Config.MAX_TRACKS || !state.initialized
             }
           >
             <NewIcon />

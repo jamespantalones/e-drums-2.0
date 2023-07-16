@@ -6,10 +6,8 @@
   height: var(--slice-size);
 }
 
-@media (min-width: 1020px) {
-  .section {
-    --slice-size: 6rem;
-  }
+.toggle {
+  @apply w-full h-full absolute top-0;
 }
 
 .slice-wrapper {
@@ -20,97 +18,4 @@
   &.shift {
     transform: translate3d(0, 0, 0);
   }
-}
-
-.slice-outer {
-  @apply block;
-}
-
-.slice {
-  @apply mx-1;
-  @apply w-full h-full;
-  @apply select-none;
-  @apply relative;
-  min-height: 3rem;
-  width: var(--slice-size);
-  background: var(--color-track);
-  opacity: 0.25;
-  @apply rounded-sm;
-  @apply overflow-hidden;
-}
-
-/* tick */
-.slice.active {
-  &::after {
-    content: '';
-    @apply block w-full h-full;
-    @apply bg-current;
-    @apply opacity-80;
-  }
-}
-
-/* pressed */
-.slice.enabled {
-  opacity: 1;
-}
-
-/* tick & pressed */
-.slice.enabled.active {
-  opacity: 1;
-  box-shadow: 0 0 8px currentColor;
-  &::after {
-    content: '';
-    @apply block w-full h-full;
-    @apply bg-current;
-    @apply opacity-60;
-  }
-}
-
-.toggle {
-  @apply w-full h-full absolute top-0;
-}
-
-.pitch {
-  @apply w-full h-1/2 block bg-transparent;
-  color: var(--color-bg);
-  @apply absolute flex items-center justify-center;
-  @apply bg-transparent z-30;
-  &.top {
-    @apply top-0;
-  }
-  &.bottom {
-    @apply bottom-0;
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-    svg {
-      @apply mix-blend-darken;
-      @apply opacity-50;
-    }
-    &:active {
-      background: rgba(255, 255, 255, 0.1);
-      svg {
-        @apply mix-blend-darken;
-        @apply opacity-50;
-      }
-    }
-  }
-
-  > svg {
-    @apply mix-blend-screen;
-    @apply rounded-full;
-    @apply w-4 h-4;
-  }
-}
-
-.pitch-overlay {
-  @apply opacity-80;
-  @apply absolute w-full h-full;
-  @apply bottom-0 left-0 right-0 top-0;
-  @apply flex justify-center items-center;
-  @apply text-xs font-light text-center;
-  color: transparent;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
-  @apply pointer-events-none;
 }

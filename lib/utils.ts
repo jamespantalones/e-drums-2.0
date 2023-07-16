@@ -1,17 +1,34 @@
 import * as Tone from 'tone';
-import { Library } from '../types';
-
-export function getRandomLibrary() {
-  const arr = [Library.MINIPOPS, Library.TR727, Library.RAVEN];
-
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+import { generateId } from '../utils';
+import { Config } from '../config';
 
 export function generateRandomColor() {
   const color = `hsl(${Math.floor(Math.random() * 360)} 80% ${
     Math.floor(Math.random() * 80) + 20
   }%)`;
   return color;
+}
+
+export function generateTrack(index = 0) {
+  let random: number;
+  if (window.innerWidth >= Config.MOBILE_CUTOFF) {
+    random =
+      Math.floor(Math.random() * Config.SEED_SLICES_MAX_DESKTOP) +
+      Config.SEED_SLICES_MIN_DESKTOP;
+  } else {
+    random =
+      Math.floor(Math.random() * Config.SEED_SLICES_MAX_MOBILE) +
+      Config.SEED_SLICES_MIN_MOBILE;
+  }
+
+  return {
+    id: generateId(),
+    index,
+    onNotes: Math.floor(random / 2),
+    totalNotes: random,
+    pitch: 100,
+    color: generateRandomColor(),
+  };
 }
 
 function compareArrays(a: number[], b: number[]): boolean {
@@ -84,22 +101,6 @@ export function euclideanRhythm(opts: {
     pattern: binaryArray,
     pitchOffset: binaryArray.map((b) => 0),
   };
-
-  // In the end, the rhythm pattern is converted to a
-  // binary array where 'on' beats are replaced by the pitch
-  // value (if provided) or 1, and 'off' beats are 0.
-  // If there are 'on' beats left in the slots array from a
-  // previousPattern, they are used first to populate.
-  // return binaryArray.map((a) => {
-  //   if (a > 0) {
-  //     if (slots.length) {
-  //       let val = slots.shift();
-  //       if (val) return val;
-  //     }
-  //     return pitch || 1;
-  //   }
-  //   return a;
-  // });
 }
 
 export function createAsyncSampler(file: string): Promise<Tone.Sampler> {

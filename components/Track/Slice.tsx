@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import styles from './Track.module.css';
+import styles from './Slice.module.css';
 import Add from '@mui/icons-material/Add';
 import Remove from '@mui/icons-material/Remove';
 import { Track } from '../../lib/Track';
@@ -9,12 +9,10 @@ import { useCallback } from 'react';
 export function Slice({
   index,
   editPitch,
-  expanded,
   length,
   rhythm,
 }: {
   editPitch: boolean;
-  expanded: boolean;
   length: number;
   index: number;
   rhythm: Track;
