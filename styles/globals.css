@@ -77,4 +77,5 @@ p {
   overflow: auto;
   align-items: start;
   padding: 0.5rem;
+  padding-right: calc(var(--slice-size) * 2);
 }

@@ -1,8 +1,10 @@
+import { SoundFile } from '../types';
+
 export const Config = {
   DEFAULT_BPM: 102,
   MAX_BPM: 250,
   MIN_BPM: 60,
-  MIN_SLICES: 2,
+  MIN_SLICES: 0,
   MAX_SLICES: 20,
   MAX_TRACKS: 20,
   ID_LENGTH: 10,
@@ -13,7 +15,7 @@ export const Config = {
   SEED_SLICES_MIN_MOBILE: 2,
 } as const;
 
-export const SOUNDS = [
+export const SOUNDS: SoundFile[] = [
   {
     name: 'BASS',
     defaultFreqRange: [20, 80],
@@ -180,4 +182,4 @@ export const SOUNDS = [
     defaultFreqRange: [40, 80],
     files: ['32_YP_HEY!.wav'],
   },
-] as const;
+];

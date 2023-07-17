@@ -6,13 +6,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { Settings } from '../Track/Settings';
 
 import { Slice } from './Slice';
-import { Config } from '../../config';
+import { Config, SOUNDS } from '../../config';
+import { SoundFile } from '../../types';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const [expanded, setExpanded] = useState(false);
   const [editPitch, setEditPitch] = useState(false);
   const {
-    methods: { setTrackVal },
+    methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
@@ -30,16 +31,37 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
 
   const handleTotalNoteChangeDecrement = useCallback(
     (ev: React.MouseEvent<HTMLButtonElement>) => {
-      const ticks =
-        rhythm.totalNotes - 1 < 2 ? rhythm.totalNotes : rhythm.totalNotes - 1;
+      let ticks: number;
+      console.log('rhythm', rhythm.totalNotes);
+      if (rhythm.totalNotes - 1 === 0) {
+        ticks = rhythm.totalNotes;
+        // delete track
+        deleteTrack(rhythm.id);
+      } else {
+        ticks = rhythm.totalNotes - 1;
+      }
       setTrackVal(rhythm, { method: 'setRhythmTicks', value: ticks });
     },
-    [rhythm, setTrackVal]
+    [rhythm, setTrackVal, deleteTrack]
   );
 
   const togglePitch = useCallback(() => {
     setEditPitch((p) => !p);
   }, []);
+
+  const changeInstrument = useCallback(() => {
+    const currentInstIndex = SOUNDS.findIndex(
+      (s) => s.name === rhythm.instrument?.sound.name
+    );
+
+    const nextSoundIndex =
+      currentInstIndex + 1 > SOUNDS.length ? 0 : currentInstIndex + 1;
+
+    setTrackVal(rhythm, {
+      method: 'changeInstrument',
+      value: SOUNDS[nextSoundIndex] as SoundFile,
+    });
+  }, [rhythm, setTrackVal]);
 
   const style: React.CSSProperties = {
     '--color-track': rhythm.color,
@@ -61,6 +83,13 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         togglePitch={togglePitch}
       />
       <div className={clsx(styles['slice-wrapper'], styles.group)}>
+        <button
+          style={{ fontSize: '8px' }}
+          onClick={changeInstrument}
+          className="bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2"
+        >
+          {rhythm.instrument?.sound.name}
+        </button>
         {rhythm.pattern.map((slice, index) => (
           <Slice
             key={`${slice}-${index}`}
@@ -71,6 +100,12 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
             handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
           />
         ))}
+        <button
+          onClick={handleTotalNoteChangeIncrement}
+          className="bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2"
+        >
+          +
+        </button>
       </div>
     </section>
   );

@@ -2,14 +2,15 @@
   @apply block;
   flex-shrink: 0;
   touch-action: none;
+  width: var(--slice-size);
+  height: var(--slice-size);
+  padding: 0.33rem;
 }
 
 button.slice {
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
-  width: var(--slice-size);
-  height: var(--slice-size);
   background: var(--color-track);
   opacity: 0.25;
   @apply rounded-sm;

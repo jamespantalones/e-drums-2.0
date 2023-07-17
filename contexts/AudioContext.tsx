@@ -141,6 +141,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const deleteTrack = useCallback(
     (id: string) => {
       if (seq.current) {
+        console.log('TODO: DELETE TRAck', id);
         const [_id, tracks] = seq.current.deleteTrack(id);
         dispatch({ type: 'DELETE_TRACK', value: id });
       }
