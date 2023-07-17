@@ -3,17 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(3, 3, 3);
+  --color-bg: rgb(28, 26, 20);
   --color-text: rgb(100, 100, 100);
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
-  --slice-size: 3rem;
+  --slice-size: 5rem;
+  --layout-nav-height: 48px;
 }
 
 @media (min-width: 760px) {
   :root {
-    --slice-size: 6rem;
+    --slice-size: 5rem;
   }
 }
 
@@ -34,12 +35,6 @@ body {
   @apply font-mono;
   @apply w-full;
   @apply h-full;
-}
-
-main {
-  @apply px-2;
-  @apply w-full max-w-[100vw];
-  @apply overflow-hidden;
 }
 
 h1,
@@ -68,4 +63,18 @@ p {
 
 .button:active {
   @apply bg-neutral-400;
+}
+
+.edit__area {
+  @applypx-2;
+  position: fixed;
+  top: var(--layout-nav-height);
+  left: 0;
+  right: 0;
+  height: calc(100vh - var(--layout-nav-height));
+  display: flex;
+  flex-shrink: 0;
+  overflow: auto;
+  align-items: start;
+  padding: 0.5rem;
 }

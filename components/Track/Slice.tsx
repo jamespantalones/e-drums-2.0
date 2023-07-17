@@ -5,17 +5,21 @@ import Remove from '@mui/icons-material/Remove';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Config } from '../../config';
 
 export function Slice({
   index,
   editPitch,
   length,
   rhythm,
+  handleTotalNoteChangeDecrement,
 }: {
   editPitch: boolean;
   length: number;
   index: number;
   rhythm: Track;
+  handleTotalNoteChangeDecrement: (ev: any) => void;
 }) {
   const {
     state: { tick },
@@ -35,7 +39,15 @@ export function Slice({
   }, [rhythm, repitchTick, index]);
 
   return (
-    <div className={styles['slice-outer']}>
+    <motion.div
+      className={styles['slice-outer']}
+      drag={rhythm.totalNotes > Config.MIN_SLICES}
+      whileDrag={{ scale: 0.2, opacity: 0.5 }}
+      dragElastic={0.2}
+      dragMomentum={false}
+      dragSnapToOrigin
+      onDragEnd={handleTotalNoteChangeDecrement}
+    >
       {!editPitch && (
         <button
           key={index}
@@ -87,6 +99,6 @@ export function Slice({
           )}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

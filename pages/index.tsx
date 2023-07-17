@@ -17,10 +17,12 @@ const Home: NextPage = () => {
       <Nav />
       {!initialized && <Modal initialize={initialize} />}
 
-      <main className="pb-16">
-        {tracks.map((rhythm, index) => (
-          <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
-        ))}
+      <main>
+        <div className="edit__area">
+          {tracks.map((rhythm, index) => (
+            <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
+          ))}
+        </div>
       </main>
 
       <Foot />

@@ -1,9 +1,12 @@
 .section {
   @apply w-full;
-  @apply my-2 relative;
-  @apply flex;
+  @apply relative;
+  @apply flex flex-shrink-0;
   @apply transition-all;
-  height: var(--slice-size);
+  @apply pb-48;
+  width: var(--slice-size);
+  margin: 0.125rem;
+  min-height: 50vh;
 }
 
 .toggle {
@@ -11,8 +14,7 @@
 }
 
 .slice-wrapper {
-  @apply flex h-full overflow-x-auto overflow-y-hidden;
-  @apply w-full;
+  @apply w-full h-full;
   //transform: translate3d(-180px, 0, 0);
   transition: transform 0.2s ease;
   &.shift {

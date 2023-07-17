@@ -3,7 +3,7 @@ import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
-import { Settings } from '../Settings/Settings';
+import { Settings } from '../Track/Settings';
 
 import { Slice } from './Slice';
 import { Config } from '../../config';
@@ -68,6 +68,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
             index={index}
             rhythm={rhythm}
             length={length}
+            handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
           />
         ))}
       </div>

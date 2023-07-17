@@ -2,13 +2,14 @@ export const Config = {
   DEFAULT_BPM: 102,
   MAX_BPM: 250,
   MIN_BPM: 60,
+  MIN_SLICES: 2,
   MAX_SLICES: 20,
   MAX_TRACKS: 20,
   ID_LENGTH: 10,
   MOBILE_CUTOFF: 768,
   SEED_SLICES_MAX_DESKTOP: 8,
   SEED_SLICES_MIN_DESKTOP: 3,
-  SEED_SLICES_MAX_MOBILE: 5,
+  SEED_SLICES_MAX_MOBILE: 7,
   SEED_SLICES_MIN_MOBILE: 2,
 } as const;
 
@@ -26,7 +27,7 @@ export const SOUNDS = [
   {
     name: 'BONGO',
     defaultFreqRange: [20, 80],
-    files: ['3_FM_BONGO_.wav'],
+    files: ['3_FM_BONGO.wav'],
   },
 
   {

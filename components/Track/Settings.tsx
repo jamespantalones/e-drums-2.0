@@ -84,7 +84,7 @@ export function Settings(props: Props) {
         [styles.open]: open,
       })}
     >
-      <div className={styles.vert_group}>
+      {/* <div className={styles.vert_group}>
         <button
           className={clsx(styles.toggle)}
           onClick={handleTotalNoteChangeIncrement}
@@ -104,7 +104,7 @@ export function Settings(props: Props) {
         <div>
           <MoreVert />
         </div>
-      </button>
+      </button> */}
 
       <div
         className="flex overflow-hidden items-center justify-around transition-all"

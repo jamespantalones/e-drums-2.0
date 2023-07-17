@@ -1,14 +1,15 @@
 .slice-outer {
   @apply block;
+  flex-shrink: 0;
+  touch-action: none;
 }
 
-.slice {
-  @apply mx-1;
+button.slice {
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
-  min-height: 3rem;
   width: var(--slice-size);
+  height: var(--slice-size);
   background: var(--color-track);
   opacity: 0.25;
   @apply rounded-sm;
@@ -16,7 +17,7 @@
 }
 
 /* tick */
-.slice.active {
+button.slice.active {
   &::after {
     content: '';
     @apply block w-full h-full;
@@ -26,12 +27,12 @@
 }
 
 /* pressed */
-.slice.enabled {
+button.slice.enabled {
   opacity: 1;
 }
 
 /* tick & pressed */
-.slice.enabled.active {
+button.slice.enabled.active {
   opacity: 1;
   box-shadow: 0 0 8px currentColor;
   &::after {
