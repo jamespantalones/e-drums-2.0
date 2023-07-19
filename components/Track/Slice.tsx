@@ -13,17 +13,17 @@ export function Slice({
   editPitch,
   length,
   rhythm,
-  handleTotalNoteChangeDecrement,
+  removeNote,
 }: {
   editPitch: boolean;
   length: number;
   index: number;
   rhythm: Track;
-  handleTotalNoteChangeDecrement: (ev: any) => void;
+  removeNote: (index: number) => void;
 }) {
   const {
     state: { tick },
-    methods: { toggleTick, repitchTick },
+    methods: { toggleTick, repitchTick, deleteTrack },
   } = useAudioContext();
 
   const handleClick = useCallback(() => {
@@ -38,15 +38,18 @@ export function Slice({
     repitchTick(rhythm.id, index, 'INCREMENT');
   }, [rhythm, repitchTick, index]);
 
+  const handleRemoveNote = () => {
+    removeNote(index);
+  };
+
   return (
     <motion.div
       className={styles['slice-outer']}
       drag={rhythm.totalNotes > Config.MIN_SLICES}
       whileDrag={{ scale: 0.2, opacity: 0.5 }}
-      dragElastic={0.2}
       dragMomentum={false}
-      dragSnapToOrigin
-      onDragEnd={handleTotalNoteChangeDecrement}
+      dragElastic={0.9}
+      onDragEnd={handleRemoveNote}
     >
       {!editPitch && (
         <button

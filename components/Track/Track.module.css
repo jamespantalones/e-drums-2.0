@@ -1,7 +1,6 @@
 .section {
   @apply relative;
   @apply flex flex-shrink-0;
-  @apply transition-all;
   @apply pb-48;
   width: calc(var(--slice-size) - 0.25rem);
   margin: 0.125rem;

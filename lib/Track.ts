@@ -1,5 +1,5 @@
 import * as Tone from 'tone';
-import { SOUNDS } from '../config';
+import { Config, SOUNDS } from '../config';
 import { Instrument, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
 import {
@@ -18,9 +18,13 @@ export class Track {
 
   public volume: number;
 
+  public prevVolume: number;
+
   public id: string;
 
   public index: number;
+
+  public muted: boolean;
 
   public sampler!: Tone.Sampler;
 
@@ -49,7 +53,9 @@ export class Track {
     this.fileBuffer = null;
     this.color = opts.color || generateRandomColor();
     this.volume = 0.3;
+    this.prevVolume = 0.3;
     this.pitch = 50;
+    this.muted = false;
 
     const { pattern, pitchOffset } = euclideanRhythm({
       onNotes: this.onNotes,
@@ -87,6 +93,18 @@ export class Track {
     return this.instrument;
   }
 
+  public toggleMute(): Track {
+    this.muted = !this.muted;
+    if (this.muted) {
+      this.prevVolume = this.volume;
+      this.volume = 0;
+    } else {
+      this.volume = this.prevVolume;
+    }
+    return this;
+    // return this;
+  }
+
   public play(time: number, tick: number) {
     if (!this.sampler || !this.isReady) {
       console.warn('Audio file not yet ready...');
@@ -102,6 +120,28 @@ export class Track {
     ).toFrequency();
 
     this.sampler.triggerAttack(freq, time, this.volume);
+  }
+
+  public addNote(): Track {
+    if (this.totalNotes + 1 > Config.MAX_SLICES) {
+      this.updateSelfInParent(this, {});
+
+      return this;
+    }
+
+    this.totalNotes += 1;
+    this.pattern.push(0);
+    this.pitchOffset.push(0);
+    this.updateSelfInParent(this, {});
+    return this;
+  }
+
+  public removeNote(index: number): Track {
+    this.pattern = this.pattern.filter((_, i) => i !== index);
+    this.pitchOffset = this.pitchOffset.filter((_, i) => i !== index);
+    this.totalNotes -= 1;
+    this.updateSelfInParent(this, {});
+    return this;
   }
 
   public setRhythmTicks(value: number): Track {

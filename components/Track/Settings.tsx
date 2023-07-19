@@ -14,21 +14,10 @@ export type Props = {
   track: Track;
   pitchEditOn: boolean;
   togglePitch: () => void;
-  handleTotalNoteChangeDecrement: (
-    ev: React.MouseEvent<HTMLButtonElement>
-  ) => void;
-  handleTotalNoteChangeIncrement: (
-    ev: React.MouseEvent<HTMLButtonElement>
-  ) => void;
 };
 
 export function Settings(props: Props) {
-  const {
-    track,
-    togglePitch,
-    handleTotalNoteChangeIncrement,
-    handleTotalNoteChangeDecrement,
-  } = props;
+  const { track, togglePitch } = props;
 
   const {
     methods: { deleteTrack, setTrackVal },

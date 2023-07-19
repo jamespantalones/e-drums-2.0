@@ -2,6 +2,14 @@ import { Track } from '../lib/Track';
 
 export type TrackAction =
   | {
+      method: 'addNote';
+      value?: undefined;
+    }
+  | {
+      method: 'removeNote';
+      value: number;
+    }
+  | {
       method: 'changeInstrument';
       value?: SoundFile;
     }

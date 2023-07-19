@@ -2,14 +2,16 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import clsx from 'clsx';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Settings } from '../Track/Settings';
 
 import { Slice } from './Slice';
-import { Config, SOUNDS } from '../../config';
+import { SOUNDS } from '../../config';
 import { SoundFile } from '../../types';
+import MoreVert from '@mui/icons-material/MoreVert';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
+  const [muted, setMuted] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [editPitch, setEditPitch] = useState(false);
   const {
@@ -18,31 +20,15 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
 
-  const handleTotalNoteChangeIncrement = useCallback(
-    (ev: React.MouseEvent<HTMLButtonElement>) => {
-      const ticks =
-        rhythm.totalNotes + 1 > Config.MAX_SLICES
-          ? rhythm.totalNotes
-          : rhythm.totalNotes + 1;
-      setTrackVal(rhythm, { method: 'setRhythmTicks', value: ticks });
+  const addNote = useCallback(() => {
+    setTrackVal(rhythm, { method: 'addNote' });
+  }, [rhythm, setTrackVal]);
+
+  const removeNote = useCallback(
+    (index: number) => {
+      setTrackVal(rhythm, { method: 'removeNote', value: index });
     },
     [rhythm, setTrackVal]
-  );
-
-  const handleTotalNoteChangeDecrement = useCallback(
-    (ev: React.MouseEvent<HTMLButtonElement>) => {
-      let ticks: number;
-      console.log('rhythm', rhythm.totalNotes);
-      if (rhythm.totalNotes - 1 === 0) {
-        ticks = rhythm.totalNotes;
-        // delete track
-        deleteTrack(rhythm.id);
-      } else {
-        ticks = rhythm.totalNotes - 1;
-      }
-      setTrackVal(rhythm, { method: 'setRhythmTicks', value: ticks });
-    },
-    [rhythm, setTrackVal, deleteTrack]
   );
 
   const togglePitch = useCallback(() => {
@@ -63,9 +49,20 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     });
   }, [rhythm, setTrackVal]);
 
+  const toggleMute = useCallback(() => {
+    setMuted((m) => !m);
+    rhythm.toggleMute();
+  }, []);
+
   const style: React.CSSProperties = {
     '--color-track': rhythm.color,
   } as React.CSSProperties;
+
+  useEffect(() => {
+    if (rhythm.pattern.length === 0) {
+      deleteTrack(rhythm.id);
+    }
+  }, [rhythm.pattern.length, rhythm.id, deleteTrack]);
 
   return (
     <section
@@ -75,14 +72,28 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
       data-color={rhythm.color}
       style={style}
     >
-      <Settings
-        pitchEditOn={editPitch}
-        track={rhythm}
-        handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
-        handleTotalNoteChangeIncrement={handleTotalNoteChangeIncrement}
-        togglePitch={togglePitch}
-      />
       <div className={clsx(styles['slice-wrapper'], styles.group)}>
+        <button
+          className={clsx(
+            'bg-neutral-800',
+            'p-1',
+            'w-8/12',
+            'h-auto',
+            'flex',
+            'uppercase',
+            'items-center',
+            'justify-center',
+            'mx-auto',
+            'my-1',
+            {
+              'bg-red-400': muted,
+            }
+          )}
+          style={{ fontSize: '8px' }}
+          onClick={toggleMute}
+        >
+          Mute
+        </button>
         <button
           style={{ fontSize: '8px' }}
           onClick={changeInstrument}
@@ -97,11 +108,11 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
             index={index}
             rhythm={rhythm}
             length={length}
-            handleTotalNoteChangeDecrement={handleTotalNoteChangeDecrement}
+            removeNote={removeNote}
           />
         ))}
         <button
-          onClick={handleTotalNoteChangeIncrement}
+          onClick={addNote}
           className="bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2"
         >
           +
