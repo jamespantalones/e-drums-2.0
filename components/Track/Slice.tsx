@@ -49,7 +49,7 @@ export function Slice({
       whileDrag={{ opacity: 0.5 }}
       dragMomentum={false}
       dragElastic={0.9}
-      transition={{ layout: { duration: 1.3 } }}
+      transition={{ layout: { duration: 0.3 } }}
       layout
       onDragEnd={handleRemoveNote}
     >
