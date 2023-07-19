@@ -46,9 +46,11 @@ export function Slice({
     <motion.div
       className={styles['slice-outer']}
       drag={rhythm.totalNotes > Config.MIN_SLICES}
-      whileDrag={{ scale: 0.2, opacity: 0.5 }}
+      whileDrag={{ opacity: 0.5 }}
       dragMomentum={false}
       dragElastic={0.9}
+      transition={{ layout: { duration: 1.3 } }}
+      layout
       onDragEnd={handleRemoveNote}
     >
       {!editPitch && (
