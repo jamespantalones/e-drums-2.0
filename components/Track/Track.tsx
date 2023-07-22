@@ -3,7 +3,6 @@ import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Settings } from '../Track/Settings';
 
 import { Slice } from './Slice';
 import { SOUNDS } from '../../config';
@@ -103,7 +102,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         </button>
         {rhythm.pattern.map((slice, index) => (
           <Slice
-            key={`${slice}-${index}`}
+            key={`${rhythm.id}-${slice}-${index}`}
             editPitch={editPitch}
             index={index}
             rhythm={rhythm}
@@ -111,6 +110,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
             removeNote={removeNote}
           />
         ))}
+
         <button
           onClick={addNote}
           className="bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2"

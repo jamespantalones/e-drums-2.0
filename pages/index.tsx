@@ -14,8 +14,8 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Nav />
       {!initialized && <Modal initialize={initialize} />}
+      <Nav />
 
       <main>
         <div className="edit__area">
