@@ -119,7 +119,10 @@ export class Track {
       'midi'
     ).toFrequency();
 
-    this.sampler.triggerAttack(freq, time, this.volume);
+    const offset =
+      Math.random() > 0.5 ? -Math.random() * 1.2 : Math.random() * 1.2;
+
+    this.sampler.triggerAttack(freq + offset, time, this.volume);
   }
 
   public addNote(): Track {

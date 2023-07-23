@@ -18,3 +18,25 @@
     transform: translate3d(0, 0, 0);
   }
 }
+
+.button-add {
+  @apply block;
+  width: var(--slice-size);
+  height: var(--slice-size);
+  padding: 0.33rem;
+  .button-inner {
+    @apply flex items-center justify-center;
+    @apply bg-neutral-800;
+    @apply w-full h-full;
+  }
+}
+
+.button-mute {
+  @apply bg-neutral-800;
+  @apply p-1 w-8/12 h-auto;
+  @apply flex items-center justify-center;
+  @apply uppercase mx-auto my-1;
+  &.muted {
+    @apply bg-red-400;
+  }
+}

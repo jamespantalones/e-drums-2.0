@@ -10,6 +10,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.24.8",
     "@mui/icons-material": "^5.11.16",
     "@tippyjs/react": "^4.2.6",
     "clsx": "^1.2.1",

@@ -2,17 +2,18 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import clsx from 'clsx';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Slice } from './Slice';
-import { SOUNDS } from '../../config';
-import { SoundFile } from '../../types';
-import MoreVert from '@mui/icons-material/MoreVert';
+
+import { InstrumentPicker } from './Controls/InstrumentPicker';
+import { PitchPicker } from './Controls/PitchPicker';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const [muted, setMuted] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const [editPitch, setEditPitch] = useState(false);
+  const [instrumentPickerOpen, setInstrumentPickerOpen] = useState(false);
+
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
@@ -34,20 +35,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     setEditPitch((p) => !p);
   }, []);
 
-  const changeInstrument = useCallback(() => {
-    const currentInstIndex = SOUNDS.findIndex(
-      (s) => s.name === rhythm.instrument?.sound.name
-    );
-
-    const nextSoundIndex =
-      currentInstIndex + 1 > SOUNDS.length ? 0 : currentInstIndex + 1;
-
-    setTrackVal(rhythm, {
-      method: 'changeInstrument',
-      value: SOUNDS[nextSoundIndex] as SoundFile,
-    });
-  }, [rhythm, setTrackVal]);
-
   const toggleMute = useCallback(() => {
     setMuted((m) => !m);
     rhythm.toggleMute();
@@ -65,41 +52,30 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
 
   return (
     <section
-      className={clsx(styles.section, {
-        [styles.shift]: expanded,
-      })}
+      className={clsx(styles.section, {})}
       data-color={rhythm.color}
       style={style}
     >
       <div className={clsx(styles['slice-wrapper'], styles.group)}>
+        {/* MUTE BUTTON */}
         <button
-          className={clsx(
-            'bg-neutral-800',
-            'p-1',
-            'w-8/12',
-            'h-auto',
-            'flex',
-            'uppercase',
-            'items-center',
-            'justify-center',
-            'mx-auto',
-            'my-1',
-            {
-              'bg-red-400': muted,
-            }
-          )}
+          className={clsx(styles['button-mute'], {
+            [styles.muted]: muted,
+          })}
           style={{ fontSize: '8px' }}
           onClick={toggleMute}
         >
           Mute
         </button>
-        <button
-          style={{ fontSize: '8px' }}
-          onClick={changeInstrument}
-          className="bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2"
-        >
-          {rhythm.instrument?.sound.name}
-        </button>
+
+        <InstrumentPicker
+          open={instrumentPickerOpen}
+          rhythm={rhythm}
+          setInstrumentPickerOpen={setInstrumentPickerOpen}
+        />
+
+        <PitchPicker />
+
         {rhythm.pattern.map((slice, index) => (
           <Slice
             key={`${rhythm.id}-${slice}-${index}`}
@@ -111,12 +87,13 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
           />
         ))}
 
-        <button
+        <motion.button
           onClick={addNote}
-          className="bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2"
+          className={styles['button-add']}
+          layout
         >
-          +
-        </button>
+          <div className={styles['button-inner']}>+</div>
+        </motion.button>
       </div>
     </section>
   );
