@@ -17,7 +17,7 @@ import { useAudioContext } from '../../../contexts/AudioContext';
 import { Track } from '../../../lib/Track';
 import { SOUNDS } from '../../../config';
 import { SoundFile } from '../../../types';
-import styles from './styles.module.css';
+import styles from './instrument.module.css';
 import clsx from 'clsx';
 
 export type Props = {
@@ -30,7 +30,7 @@ export function InstrumentPicker(props: Props) {
   const { open, rhythm, setInstrumentPickerOpen } = props;
 
   const {
-    methods: { setTrackVal, deleteTrack },
+    methods: { setTrackVal },
   } = useAudioContext();
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -39,15 +39,15 @@ export function InstrumentPicker(props: Props) {
     placement: 'right-start',
     middleware: [
       flip(),
-      offset(5),
+      offset(10),
       size({
         apply({ rects, elements, availableHeight }) {
           Object.assign(elements.floating.style, {
             maxHeight: `${availableHeight}px`,
-            minWidth: `${rects.reference.width}px`,
+            minWidth: `${rects.reference.width + 20}px`,
           });
         },
-        padding: 10,
+        padding: 20,
       }),
     ],
     open,
@@ -99,7 +99,7 @@ export function InstrumentPicker(props: Props) {
               ref={refs.setFloating}
               style={floatingStyles}
               {...getFloatingProps()}
-              className="bg-neutral-800 box-shadow-sm rounded h-48 overflow-y-auto text-left p-2"
+              className={styles.dropdown}
             >
               {SOUNDS.map((s, i) => (
                 <div
@@ -110,8 +110,8 @@ export function InstrumentPicker(props: Props) {
                   role="option"
                   tabIndex={i === activeIndex ? 0 : -1}
                   aria-selected={i === selectedIndex && i === activeIndex}
-                  className={clsx('text-xs block mb-3 ', {
-                    underline: i === selectedIndex,
+                  className={clsx(styles.item, {
+                    [styles.active]: i === selectedIndex,
                   })}
                   {...getItemProps({
                     onClick() {

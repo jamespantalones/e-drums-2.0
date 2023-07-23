@@ -1,0 +1,17 @@
+.button-instrument {
+  @apply bg-neutral-800 p-2 w-8/12 h-8 flex items-center justify-center mx-auto my-2;
+}
+
+.dropdown {
+  @apply bg-neutral-400 rounded;
+  @apply h-1/2 overflow-y-auto text-left p-2;
+  @apply w-36;
+  @apply text-neutral-900;
+}
+
+.item {
+  @apply text-base block mb-3;
+  &.active {
+    @apply underline;
+  }
+}

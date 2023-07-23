@@ -74,7 +74,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
           setInstrumentPickerOpen={setInstrumentPickerOpen}
         />
 
-        <PitchPicker />
+        <PitchPicker rhythm={rhythm} />
 
         {rhythm.pattern.map((slice, index) => (
           <Slice

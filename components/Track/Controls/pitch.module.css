@@ -1,0 +1,18 @@
+.toggle {
+  @apply select-none;
+  pointer-events: auto;
+  @apply w-9/12 mx-1.5  bg-neutral-800;
+  touch-action: none;
+}
+
+.outer {
+  @apply bg-neutral-800 w-full h-screen;
+  @apply fixed top-0 left-0 right-0;
+  @apply pointer-events-none z-50;
+}
+
+.inner {
+  @apply bg-neutral-400;
+  @apply w-10/12 h-full mx-auto rounded-xl -bottom-8;
+  transform-origin: bottom left;
+}
