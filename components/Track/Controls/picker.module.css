@@ -1,7 +1,7 @@
 .toggle {
   @apply select-none;
   pointer-events: auto;
-  @apply w-9/12 mx-1.5  bg-neutral-800;
+  @apply w-9/12 mx-1.5 my-1  bg-neutral-800;
   touch-action: none;
 }
 
@@ -13,6 +13,6 @@
 
 .inner {
   @apply bg-neutral-400;
-  @apply w-10/12 h-full mx-auto rounded-xl -bottom-8;
+  @apply w-6/12 h-full mx-auto rounded-xl -bottom-8;
   transform-origin: bottom left;
 }

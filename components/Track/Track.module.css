@@ -1,6 +1,6 @@
 .section {
   @apply relative;
-  min-height: 75vh;
+  height: 90dvh;
   @apply pb-48;
   flex-shrink: 0;
   width: calc(var(--slice-size) - 0.25rem);

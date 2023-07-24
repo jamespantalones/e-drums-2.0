@@ -2,10 +2,10 @@ import { useCallback, useRef, useState } from 'react';
 import styles from './picker.module.css';
 import { Track } from '../../../lib/Track';
 import { useAudioContext } from '../../../contexts/AudioContext';
-import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
+import VolumeDownOutlinedIcon from '@mui/icons-material/VolumeDownOutlined';
 
 function normalizeValue(value: number) {
-  if (value < 0) {
+  if (value < 0.025) {
     value = 0;
   }
   if (value > 1) {
@@ -13,24 +13,20 @@ function normalizeValue(value: number) {
   }
 
   // Calculate the output value.
-  const outputValue = 10 + value * 100;
+  const outputValue = 0 + value * 2;
 
   // Return the output value.
-  return Math.round(outputValue);
+  return outputValue;
 }
 
-export function PitchPicker({ rhythm }: { rhythm: Track }) {
+export function VolumePicker({ rhythm }: { rhythm: Track }) {
   const ref = useRef<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
-  const [percent, setPercent] = useState(0.5);
+  const [percent, setPercent] = useState(0.3);
 
   const {
     methods: { setTrackVal },
   } = useAudioContext();
-
-  const toggleOpen = useCallback(() => {
-    setOpen((o) => !o);
-  }, []);
 
   const slide = useCallback(
     (ev: PointerEvent) => {
@@ -39,11 +35,11 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
       const perc = Math.min(Math.abs(1 - clientY / height), 1);
       setPercent(perc);
       setTrackVal(rhythm, {
-        method: 'changePitch',
+        method: 'changeVolume',
         value: normalizeValue(perc),
       });
     },
-    [setTrackVal, rhythm]
+    [rhythm, setTrackVal]
   );
 
   const handlePointerUp = useCallback(
@@ -73,7 +69,7 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
         onPointerUp={handlePointerUp}
         className={styles.toggle}
       >
-        <AudiotrackOutlinedIcon />
+        <VolumeDownOutlinedIcon />
       </button>
       {open && (
         <div className={styles.outer}>

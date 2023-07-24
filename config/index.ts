@@ -6,7 +6,7 @@ export const Config = {
   MIN_BPM: 60,
   MIN_SLICES: 0,
   MAX_SLICES: 10,
-  MAX_TRACKS: 8,
+  MAX_TRACKS: 6,
   ID_LENGTH: 10,
   MOBILE_CUTOFF: 768,
   SEED_SLICES_MAX_DESKTOP: 8,

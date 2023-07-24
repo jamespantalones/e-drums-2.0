@@ -2,6 +2,7 @@ import * as Tone from 'tone';
 import { Config, SOUNDS } from '../config';
 import { Instrument, SoundFile, TrackOpts } from '../types';
 import { generateId } from '../utils';
+
 import {
   createAsyncSampler,
   euclideanRhythm,
@@ -10,6 +11,8 @@ import {
 
 export class Track {
   public color: string;
+
+  public hue: number;
   public onNotes: number;
 
   public totalNotes: number;
@@ -43,6 +46,7 @@ export class Track {
   ) => void;
 
   constructor(opts: TrackOpts) {
+    const [color, hue] = generateRandomColor();
     this.id = opts.id || generateId();
     this.index = opts.index;
     this.updateSelfInParent = opts.updateSelfInParent;
@@ -51,7 +55,8 @@ export class Track {
     this.isReady = false;
     this.instrument = opts.instrument || null;
     this.fileBuffer = null;
-    this.color = opts.color || generateRandomColor();
+    this.color = opts.color || color;
+    this.hue = opts.hue || hue;
     this.volume = 0.3;
     this.prevVolume = 0.3;
     this.pitch = 50;
@@ -71,12 +76,8 @@ export class Track {
       this.sampler = await createAsyncSampler(
         `/sounds/${this.instrument.sound.files[0]}`
       );
-    } else {
-      this.sampler = await createAsyncSampler(
-        `/sounds/${this._createSoundFile().sound.files[0]}`
-      );
+      this.isReady = true;
     }
-    this.isReady = true;
 
     return this;
   }

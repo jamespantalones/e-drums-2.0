@@ -19,7 +19,7 @@ import { SOUNDS } from '../../../config';
 import { SoundFile } from '../../../types';
 import styles from './instrument.module.css';
 import clsx from 'clsx';
-
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 export type Props = {
   open: boolean;
   rhythm: Track;
@@ -87,9 +87,11 @@ export function InstrumentPicker(props: Props) {
         ref={refs.setReference}
         {...getReferenceProps()}
         style={{ fontSize: '8px' }}
-        className={styles['button-instrument']}
+        className={clsx(styles['button-instrument'], {
+          '!bg-neutral-500': !rhythm.instrument?.sound.name,
+        })}
       >
-        {rhythm.instrument?.sound.name}
+        {rhythm.instrument?.sound.name || <CheckBoxOutlineBlankOutlinedIcon />}
       </button>
 
       {open && (

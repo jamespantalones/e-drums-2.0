@@ -2,11 +2,10 @@ import * as Tone from 'tone';
 import { generateId } from '../utils';
 import { Config } from '../config';
 
-export function generateRandomColor() {
-  const color = `hsl(${Math.floor(Math.random() * 360)} 80% ${
-    Math.floor(Math.random() * 80) + 20
-  }%)`;
-  return color;
+export function generateRandomColor(): [string, number] {
+  const hue = Math.floor(Math.random() * 360);
+  const color = `hsl(${hue}, 80%, ${Math.floor(Math.random() * 60) + 20}%)`;
+  return [color, hue];
 }
 
 export function generateTrack(index = 0) {
@@ -27,7 +26,6 @@ export function generateTrack(index = 0) {
     onNotes: Math.floor(random / 2),
     totalNotes: random,
     pitch: 100,
-    color: generateRandomColor(),
   };
 }
 

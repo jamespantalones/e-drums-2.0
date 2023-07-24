@@ -8,20 +8,20 @@
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
-  --slice-size: 12vw;
+
   --layout-nav-height: 48px;
   --scroll-x-height: 40px;
 }
 
-@media (min-width: 760px) {
+@media (orientation: portrait) {
   :root {
-    --slice-size: 5rem;
+    --slice-size: 15vw;
   }
 }
 
-@media (min-width: 1020px) {
+@media (orientation: landscape) {
   :root {
-    --slice-size: 6rem;
+    --slice-size: 12vh;
   }
 }
 
@@ -73,8 +73,7 @@ button {
 
 .edit__area {
   @apply px-2;
-  height: calc(100dvh - var(--layout-nav-height));
-  margin-top: var(--layout-nav-height);
+  height: 100dvh;
   width: 100%;
   display: flex;
   overflow-x: hidden;

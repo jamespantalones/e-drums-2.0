@@ -5,9 +5,10 @@ import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Slice } from './Slice';
-
+import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
 import { InstrumentPicker } from './Controls/InstrumentPicker';
 import { PitchPicker } from './Controls/PitchPicker';
+import { VolumePicker } from './Controls/VolumePicker';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const [muted, setMuted] = useState(false);
@@ -31,15 +32,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setTrackVal]
   );
 
-  const togglePitch = useCallback(() => {
-    setEditPitch((p) => !p);
-  }, []);
-
-  const toggleMute = useCallback(() => {
-    setMuted((m) => !m);
-    rhythm.toggleMute();
-  }, []);
-
   const style: React.CSSProperties = {
     '--color-track': rhythm.color,
   } as React.CSSProperties;
@@ -58,22 +50,13 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     >
       <div className={clsx(styles['slice-wrapper'], styles.group)}>
         {/* MUTE BUTTON */}
-        <button
-          className={clsx(styles['button-mute'], {
-            [styles.muted]: muted,
-          })}
-          style={{ fontSize: '8px' }}
-          onClick={toggleMute}
-        >
-          Mute
-        </button>
 
         <InstrumentPicker
           open={instrumentPickerOpen}
           rhythm={rhythm}
           setInstrumentPickerOpen={setInstrumentPickerOpen}
         />
-
+        <VolumePicker rhythm={rhythm} />
         <PitchPicker rhythm={rhythm} />
 
         {rhythm.pattern.map((slice, index) => (
@@ -94,6 +77,14 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         >
           <div className={styles['button-inner']}>+</div>
         </motion.button>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0">
+        <button
+          className="button text-xs mx-auto w-full"
+          onClick={() => deleteTrack(rhythm.id)}
+        >
+          DEL
+        </button>
       </div>
     </section>
   );

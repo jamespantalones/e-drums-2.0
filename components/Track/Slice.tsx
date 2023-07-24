@@ -54,9 +54,6 @@ export function Slice({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 1 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
         key={`${rhythm.id}-${index}-${id}`}
         className={styles['slice-outer']}
         drag={rhythm.totalNotes > Config.MIN_SLICES ? 'x' : false}
@@ -67,7 +64,6 @@ export function Slice({
         dragSnapToOrigin
         dragTransition={{ bounceStiffness: 400, bounceDamping: 15 }}
         dragConstraints={{ left: -50, right: 50 }}
-        transition={{ layout: { duration: 0.3 } }}
         layout
         onDragEnd={handleRemoveNote}
       >

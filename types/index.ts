@@ -38,6 +38,7 @@ export type TrackOpts = {
   id?: string;
   pitch?: number;
   color?: string;
+  hue?: number;
   index: number;
   instrument?: Instrument;
   updateSelfInParent: (
@@ -121,7 +122,7 @@ export type SerializedTrack = {
   onNotes: number;
   totalNotes: number;
   pitch: number;
-  color: string;
+  color?: string;
   audio?: SoundFile;
 };
 

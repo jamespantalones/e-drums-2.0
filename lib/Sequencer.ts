@@ -1,9 +1,7 @@
 import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
 import { SequencerPlayState, SerializedTrack } from '../types';
-import { generateId, randomIntFromInterval } from '../utils';
 import { Track } from './Track';
-import { generateRandomColor } from './utils';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -72,7 +70,11 @@ export class Sequencer {
       const resolvedTracks = await Promise.all(trackPromises);
 
       // loop through each resolved track and connect to chain
-      resolvedTracks.forEach((track) => track.sampler.connect(this.chain));
+      resolvedTracks.forEach((track) => {
+        if (track.isReady) {
+          track.sampler.connect(this.chain);
+        }
+      });
       this.state.tracks = resolvedTracks;
 
       this.isInit = true;
@@ -152,7 +154,6 @@ export class Sequencer {
     const nextTrack = new Track({
       index: rhythm.index,
       onNotes: rhythm.onNotes,
-      color: generateRandomColor(),
       totalNotes: rhythm.totalNotes,
       pitch: rhythm.pitch,
       updateSelfInParent: this.updateChild,
@@ -160,7 +161,9 @@ export class Sequencer {
 
     await nextTrack.init();
 
-    nextTrack.sampler.connect(this.chain);
+    if (nextTrack.isReady) {
+      nextTrack.sampler.connect(this.chain);
+    }
 
     // add
     this.state.tracks = this.state.tracks.concat(nextTrack);

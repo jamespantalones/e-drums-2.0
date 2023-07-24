@@ -16,9 +16,6 @@ export function Nav() {
     <nav className={styles.nav}>
       <section className={styles.section}>
         <div className="flex items-center justify-between">
-          <Link href="/" passHref>
-            <h1 className="mr-8">E-RH</h1>
-          </Link>
           <IconButton onClick={methods.play} disabled={!state.initialized}>
             <PlayIcon />
           </IconButton>
