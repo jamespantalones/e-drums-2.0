@@ -86,12 +86,20 @@ export function InstrumentPicker(props: Props) {
       <button
         ref={refs.setReference}
         {...getReferenceProps()}
-        style={{ fontSize: '8px' }}
-        className={clsx(styles['button-instrument'], {
+        style={{
+          ...(rhythm.instrument?.sound.name && {
+            backgroundColor: rhythm.color,
+          }),
+        }}
+        className={clsx(styles['button-instrument'], 'text-xs', {
           '!bg-neutral-500': !rhythm.instrument?.sound.name,
         })}
       >
-        {rhythm.instrument?.sound.name || <CheckBoxOutlineBlankOutlinedIcon />}
+        <span style={{ mixBlendMode: 'difference' }}>
+          {rhythm.instrument?.sound.name || (
+            <CheckBoxOutlineBlankOutlinedIcon />
+          )}
+        </span>
       </button>
 
       {open && (
@@ -112,7 +120,7 @@ export function InstrumentPicker(props: Props) {
                   role="option"
                   tabIndex={i === activeIndex ? 0 : -1}
                   aria-selected={i === selectedIndex && i === activeIndex}
-                  className={clsx(styles.item, {
+                  className={clsx(styles.item, 'cursor-pointer', {
                     [styles.active]: i === selectedIndex,
                   })}
                   {...getItemProps({
