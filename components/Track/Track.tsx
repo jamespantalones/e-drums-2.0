@@ -3,23 +3,29 @@ import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
 import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Slice } from './Slice';
-import AudiotrackOutlinedIcon from '@mui/icons-material/AudiotrackOutlined';
-import { InstrumentPicker } from './Controls/InstrumentPicker';
-import { PitchPicker } from './Controls/PitchPicker';
-import { VolumePicker } from './Controls/VolumePicker';
+import More from '@mui/icons-material/MoreHorizOutlined';
+import { IconButton } from '../IconButton/IconButton';
+import { SettingsPanel } from './Controls/SettingsPanel';
+import { Config } from '../../config';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
-  const [muted, setMuted] = useState(false);
-  const [editPitch, setEditPitch] = useState(false);
-  const [instrumentPickerOpen, setInstrumentPickerOpen] = useState(false);
-
+  const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
+  const panel = useRef<HTMLDialogElement | null>(null);
+  const openSettingsPanel = useCallback(() => {
+    panel.current!.showModal();
+  }, []);
+
+  const closeSettingsPanel = useCallback(() => {
+    console.log('hit');
+    setSettingsPanelOpen(false);
+    panel.current!.close();
+  }, []);
 
   const addNote = useCallback(() => {
     setTrackVal(rhythm, { method: 'addNote' });
@@ -50,19 +56,26 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     >
       <div className={clsx(styles['slice-wrapper'], styles.group)}>
         {/* MUTE BUTTON */}
+        <IconButton
+          className="mx-auto"
+          noBorder
+          fill="#6a6a6a"
+          color="black"
+          onClick={openSettingsPanel}
+        >
+          <More />
+        </IconButton>
 
-        <InstrumentPicker
-          open={instrumentPickerOpen}
+        <SettingsPanel
+          ref={panel}
+          open={settingsPanelOpen}
           rhythm={rhythm}
-          setInstrumentPickerOpen={setInstrumentPickerOpen}
+          close={closeSettingsPanel}
         />
-        <VolumePicker rhythm={rhythm} />
-        <PitchPicker rhythm={rhythm} />
 
         {rhythm.pattern.map((slice, index) => (
           <Slice
             key={`${rhythm.id}-${slice}-${index}`}
-            editPitch={editPitch}
             index={index}
             rhythm={rhythm}
             length={length}
@@ -70,21 +83,17 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
           />
         ))}
 
-        <motion.button
-          onClick={addNote}
-          className={styles['button-add']}
-          layout
-        >
-          <div className={styles['button-inner']}>+</div>
-        </motion.button>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0">
-        <button
-          className="button text-xs mx-auto w-full"
-          onClick={() => deleteTrack(rhythm.id)}
-        >
-          DEL
-        </button>
+        {rhythm.totalNotes < Config.MAX_SLICES && (
+          <IconButton
+            noBorder
+            onClick={addNote}
+            layout
+            fill="#6a6a6a"
+            color="black"
+          >
+            +
+          </IconButton>
+        )}
       </div>
     </section>
   );

@@ -152,10 +152,7 @@ export class Sequencer {
     }
 
     const nextTrack = new Track({
-      index: rhythm.index,
-      onNotes: rhythm.onNotes,
-      totalNotes: rhythm.totalNotes,
-      pitch: rhythm.pitch,
+      ...rhythm,
       updateSelfInParent: this.updateChild,
     });
 

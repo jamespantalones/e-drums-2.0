@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 import { generateId } from '../utils';
-import { Config } from '../config';
+import { Config, SOUNDS } from '../config';
 
 export function generateRandomColor(): [string, number] {
   const hue = Math.floor(Math.random() * 360);
@@ -20,13 +20,18 @@ export function generateTrack(index = 0) {
       Config.SEED_SLICES_MIN_MOBILE;
   }
 
-  return {
+  const track = {
     id: generateId(),
     index,
     onNotes: Math.floor(random / 2),
     totalNotes: random,
     pitch: 100,
+    instrument: {
+      frequency: 50,
+      sound: SOUNDS[Math.floor(Math.random() * SOUNDS.length - 1)],
+    },
   };
+  return track;
 }
 
 function compareArrays(a: number[], b: number[]): boolean {

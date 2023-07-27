@@ -1,5 +1,12 @@
 import { Track } from '../lib/Track';
 
+declare module 'react' {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    // extends React's HTMLAttributes
+    orient?: string;
+  }
+}
+
 export type TrackAction =
   | {
       method: 'addNote';

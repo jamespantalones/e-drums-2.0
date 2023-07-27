@@ -1,0 +1,17 @@
+.dialog {
+  @apply w-10/12 h-3/4;
+  @apply z-50;
+  @apply p-2;
+  @apply w-10/12 h-[75%];
+  @apply bg-neutral-600;
+  @apply rounded shadow-xl shadow-neutral-700;
+  @apply relative;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  transform: scale3d(0, 0, 0);
+  opacity: 0;
+
+  &[open] {
+    transform: scale3d(1, 1, 1);
+    opacity: 1;
+  }
+}

@@ -15,7 +15,7 @@ export function Slice({
   rhythm,
   removeNote,
 }: {
-  editPitch: boolean;
+  editPitch?: boolean;
   length: number;
   index: number;
   rhythm: Track;

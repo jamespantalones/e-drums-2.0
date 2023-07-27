@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(28, 26, 20);
+  --color-bg: rgb(68, 66, 60);
   --color-text: rgb(100, 100, 100);
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
@@ -33,19 +33,9 @@ html {
 }
 
 body {
-  @apply font-mono;
   @apply w-full;
   @apply h-full;
   @apply min-h-screen;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-p {
-  @apply uppercase;
 }
 
 button {
@@ -53,14 +43,7 @@ button {
 }
 
 .button {
-  @apply rounded;
-  @apply p-2;
   @apply border border-neutral-800;
-
-  box-shadow: var(--box-shadow-sm);
-  &.lg {
-    @apply px-8 py-2;
-  }
 }
 
 .button:hover {
@@ -73,7 +56,7 @@ button {
 
 .edit__area {
   @apply px-2;
-  height: 100dvh;
+  min-height: 100dvh;
   width: 100%;
   display: flex;
   overflow-x: hidden;

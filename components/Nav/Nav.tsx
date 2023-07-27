@@ -15,14 +15,26 @@ export function Nav() {
   return (
     <nav className={styles.nav}>
       <section className={styles.section}>
-        <div className="flex items-center justify-between">
-          <IconButton onClick={methods.play} disabled={!state.initialized}>
+        <div className="flex items-center justify-between ml-1.5">
+          <IconButton
+            margin
+            onClick={methods.play}
+            disabled={!state.initialized}
+          >
             <PlayIcon />
           </IconButton>
-          <IconButton onClick={methods.stop} disabled={!state.initialized}>
+          <IconButton
+            margin
+            onClick={methods.stop}
+            disabled={!state.initialized}
+          >
             <StopIcon />
           </IconButton>
-          <IconButton onClick={methods.clear} disabled={!state.initialized}>
+          <IconButton
+            margin
+            onClick={methods.clear}
+            disabled={!state.initialized}
+          >
             <ClearAllIcon />
           </IconButton>
         </div>
@@ -31,6 +43,7 @@ export function Nav() {
           <IconButton
             onClick={methods.createTrack}
             noBorder
+            margin
             disabled={
               state.tracks.length === Config.MAX_TRACKS || !state.initialized
             }

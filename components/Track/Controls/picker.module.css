@@ -1,18 +1,23 @@
-.toggle {
-  @apply select-none;
-  pointer-events: auto;
-  @apply w-9/12 mx-1.5 my-1  bg-neutral-800;
-  touch-action: none;
-}
-
 .outer {
-  @apply bg-neutral-800 w-full h-screen;
-  @apply fixed top-0 left-0 right-0;
-  @apply pointer-events-none z-50;
+  @apply absolute bottom-0;
 }
 
-.inner {
-  @apply bg-neutral-400;
-  @apply w-6/12 h-full mx-auto rounded-xl -bottom-8;
-  transform-origin: bottom left;
+label.label {
+  @apply text-xs;
+}
+
+input[type='range'].input {
+  display: block;
+  writing-mode: bt-lr;
+  -webkit-appearance: slider-vertical;
+  width: auto;
+  height: 200px;
+  background: gray;
+  padding: 0 5px;
+}
+
+input[type='range'].input::-webkit-slider-runnable-track {
+  background: var(--track-bg);
+  @apply rounded;
+  @apply w-12;
 }

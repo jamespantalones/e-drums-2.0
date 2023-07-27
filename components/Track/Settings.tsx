@@ -8,7 +8,6 @@ import { useCallback, useState } from 'react';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { TrackInput } from '../Track/TrackInput';
-import { MoreVert } from '@mui/icons-material';
 
 export type Props = {
   track: Track;
