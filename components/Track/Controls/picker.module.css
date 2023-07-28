@@ -1,23 +1,36 @@
 .outer {
-  @apply absolute bottom-0;
+  @apply relative;
 }
 
 label.label {
   @apply text-xs;
+  span {
+    @apply absolute bottom-0 left-0 right-0;
+    @apply block text-center;
+  }
 }
 
 input[type='range'].input {
   display: block;
   writing-mode: bt-lr;
   -webkit-appearance: slider-vertical;
-  width: auto;
-  height: 200px;
+  min-height: 250px;
   background: gray;
-  padding: 0 5px;
+  @apply w-16;
 }
 
 input[type='range'].input::-webkit-slider-runnable-track {
   background: var(--track-bg);
   @apply rounded;
-  @apply w-12;
+  @apply w-full;
+  @apply border-2 border-black;
+}
+
+input[type='range'].input::-webkit-slider-thumb {
+  box-shadow: 0 0 2px rgba(255, 255, 255, 1);
+  height: 60px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  -webkit-appearance: none;
 }

@@ -26,7 +26,6 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
       }
     >
       <label className={styles.label}>
-        <span>Pitch</span>
         <input
           orient="vertical"
           type="range"
@@ -37,6 +36,7 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
           className={styles.input}
           onChange={onChange}
         />
+        <span>Pitch</span>
       </label>
     </div>
   );

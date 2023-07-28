@@ -59,7 +59,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         <IconButton
           className="mx-auto"
           noBorder
-          fill="#6a6a6a"
+          fill="transparent"
           color="black"
           onClick={openSettingsPanel}
         >

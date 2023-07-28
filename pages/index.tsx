@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import * as React from 'react';
-import { Foot } from '../components/Foot/Foot';
 import { Splash } from '../components/Splash/Splash';
 import { Nav } from '../components/Nav/Nav';
 import { TrackItem } from '../components/Track/Track';
@@ -26,7 +25,6 @@ const Home: NextPage = () => {
           ))}
         </div>
       </main>
-      <Foot />
     </>
   );
 };

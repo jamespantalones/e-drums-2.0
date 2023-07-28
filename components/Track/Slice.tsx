@@ -4,7 +4,7 @@ import Add from '@mui/icons-material/Add';
 import Remove from '@mui/icons-material/Remove';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
-import { useCallback, useId } from 'react';
+import { PointerEvent, useCallback, useId, useRef, useState } from 'react';
 import { AnimatePresence, PanInfo, motion } from 'framer-motion';
 import { Config } from '../../config';
 
@@ -23,10 +23,13 @@ export function Slice({
 }) {
   const {
     state: { tick },
-    methods: { toggleTick, repitchTick, deleteTrack },
+    methods: { toggleTick, repitchTick },
   } = useAudioContext();
 
   const id = useId();
+
+  const x = useRef<number>();
+  const y = useRef<number>();
 
   const handleClick = useCallback(() => {
     toggleTick(rhythm.id, index);
@@ -40,32 +43,52 @@ export function Slice({
     repitchTick(rhythm.id, index, 'INCREMENT');
   }, [rhythm, repitchTick, index]);
 
-  const handleRemoveNote = () => {
-    removeNote(index);
-  };
-
-  const handleDrag = useCallback(
-    (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      console.log(info.delta.x);
+  const handlePointerUp = useCallback(
+    (ev: PointerEvent<HTMLElement>) => {
+      if (
+        Math.abs(ev.clientX - x.current!) > 50 ||
+        Math.abs(ev.clientY - y.current!) > 50
+      ) {
+        removeNote(index);
+      }
     },
-    []
+    [removeNote, index]
   );
+
+  const handlePointerDown = useCallback((ev: PointerEvent<HTMLElement>) => {
+    x.current = ev.clientX;
+    y.current = ev.clientY;
+  }, []);
 
   return (
     <AnimatePresence>
       <motion.div
         key={`${rhythm.id}-${index}-${id}`}
         className={styles['slice-outer']}
-        drag={rhythm.totalNotes > Config.MIN_SLICES ? 'x' : false}
-        whileDrag={{ opacity: 0.4, scale: 1.2, background: 'red' }}
-        dragMomentum={true}
-        dragElastic={0.2}
-        onDrag={handleDrag}
+        drag={rhythm.totalNotes > Config.MIN_SLICES}
+        whileDrag={{
+          scale: 0.8,
+          zIndex: 99,
+          opacity: 0.7,
+          backgroundColor: ['hsl(0,0%,0%)', 'hsl(8, 100%, 59%)'],
+        }}
+        dragElastic={0.5}
+        dragMomentum={false}
         dragSnapToOrigin
-        dragTransition={{ bounceStiffness: 400, bounceDamping: 15 }}
-        dragConstraints={{ left: -50, right: 50 }}
+        dragTransition={{ bounceStiffness: 900, bounceDamping: 50 }}
+        dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
         layout
-        onDragEnd={handleRemoveNote}
+        onPointerUp={handlePointerUp}
+        onPointerDown={handlePointerDown}
+        onDragStart={(e) => {
+          console.log(e.target);
+          // Add the class to the div while dragging
+          (e.target as HTMLElement).classList.add(styles['is-dragging']);
+        }}
+        onDragEnd={(e) => {
+          // Remove the class after dragging
+          (e.target as HTMLElement).classList.remove(styles['is-dragging']);
+        }}
       >
         {!editPitch && (
           <button

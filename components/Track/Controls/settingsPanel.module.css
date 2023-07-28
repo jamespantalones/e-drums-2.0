@@ -1,11 +1,10 @@
 .dialog {
-  @apply w-10/12 h-3/4;
   @apply z-50;
-  @apply p-2;
-  @apply w-10/12 h-[75%];
-  @apply bg-neutral-600;
-  @apply rounded shadow-xl shadow-neutral-700;
-  @apply relative;
+  @apply p-3;
+  @apply w-11/12 h-[80%];
+  @apply bg-neutral-300;
+  @apply rounded;
+  @apply fixed;
   transition: transform 0.1s ease-out, opacity 0.1s ease-out;
   transform: scale3d(0, 0, 0);
   opacity: 0;
@@ -14,4 +13,16 @@
     transform: scale3d(1, 1, 1);
     opacity: 1;
   }
+}
+
+.top {
+  @apply flex w-full items-center justify-between;
+}
+
+.bottom {
+  @apply absolute bottom-0 left-0 right-0;
+}
+.faders {
+  @apply w-11/12 mx-auto;
+  @apply flex items-center justify-between;
 }

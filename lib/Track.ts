@@ -73,6 +73,9 @@ export class Track {
 
   public async init(): Promise<Track> {
     if (this.instrument) {
+      if (!this.instrument.sound.files[0]) {
+        throw new Error(`Missing instrument ${this.instrument.sound.name}`);
+      }
       this.sampler = await createAsyncSampler(
         `/sounds/${this.instrument.sound.files[0]}`
       );

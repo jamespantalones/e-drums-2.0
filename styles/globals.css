@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(68, 66, 60);
-  --color-text: rgb(100, 100, 100);
+  --color-bg: rgb(188, 186, 180);
+  --color-text: rgb(50, 50, 50);
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);
   --box-shadow-lg: 0 0 5px rgb(190, 190, 190);
@@ -27,9 +27,10 @@
 
 html {
   width: 100%;
-  min-height: 100%;
   background: var(--color-bg);
   color: var(--color-text);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 body {
@@ -40,18 +41,6 @@ body {
 
 button {
   @apply select-none;
-}
-
-.button {
-  @apply border border-neutral-800;
-}
-
-.button:hover {
-  @apply bg-neutral-800;
-}
-
-.button:active {
-  @apply bg-neutral-400;
 }
 
 .edit__area {

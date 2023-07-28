@@ -36,7 +36,6 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
       className={styles.outer}
       style={
         {
-          left: '128px',
           '--track-bg': `hsl(${rhythm.hue / 2}, ${rhythm.volume * 50}%, 50%)`,
         } as CSSProperties
       }

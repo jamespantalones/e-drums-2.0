@@ -4,7 +4,7 @@
   touch-action: none;
   width: var(--slice-size);
   height: var(--slice-size);
-  padding: 0.33rem;
+  padding: 0.15rem;
 }
 
 button.slice {
@@ -12,9 +12,13 @@ button.slice {
   @apply select-none;
   @apply relative;
   background: var(--color-track);
-  opacity: 0.25;
+  filter: grayscale(80%);
+  opacity: 0.35;
   @apply rounded-sm;
   @apply overflow-hidden;
+  &.is-dragging {
+    background: transparent !important;
+  }
 }
 
 /* tick */
@@ -22,20 +26,20 @@ button.slice.active {
   &::after {
     content: '';
     @apply block w-full h-full;
-    @apply bg-current;
+    @apply bg-gray-800;
     @apply opacity-80;
   }
 }
 
 /* pressed */
 button.slice.enabled {
+  filter: none;
   opacity: 1;
 }
 
 /* tick & pressed */
 button.slice.enabled.active {
   opacity: 1;
-  box-shadow: 0 0 8px currentColor;
   &::after {
     content: '';
     @apply block w-full h-full;

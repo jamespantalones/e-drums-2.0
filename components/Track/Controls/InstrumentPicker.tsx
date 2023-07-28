@@ -1,15 +1,18 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAudioContext } from '../../../contexts/AudioContext';
 import { Track } from '../../../lib/Track';
 import { SOUNDS } from '../../../config';
 import { SoundFile } from '../../../types';
+import styles from './instrument.module.css';
+import clsx from 'clsx';
 
 export type Props = {
+  open: boolean;
   rhythm: Track;
 };
 
 export function InstrumentPicker(props: Props) {
-  const { rhythm } = props;
+  const { rhythm, open } = props;
 
   const {
     methods: { setTrackVal },
@@ -29,11 +32,20 @@ export function InstrumentPicker(props: Props) {
     [setTrackVal, rhythm]
   );
 
+  useEffect(() => {
+    if (open) {
+      console.log('MOUNT');
+    }
+  }, [open]);
+
   return (
-    <div className="w-full h-48 overflow-y-scroll border border-black p-1">
+    <div className={styles.outer}>
       {SOUNDS.map((sound) => (
         <button
-          className="block text-xs w-full text-left py-2"
+          data-name={sound.name}
+          className={clsx(styles.button, {
+            [styles.active]: rhythm.instrument?.sound.name === sound.name,
+          })}
           key={sound.name}
           onClick={handleClick(sound)}
         >
