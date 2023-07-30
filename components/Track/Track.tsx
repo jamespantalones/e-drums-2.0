@@ -84,15 +84,17 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         ))}
 
         {rhythm.totalNotes < Config.MAX_SLICES && (
-          <IconButton
-            noBorder
-            onClick={addNote}
-            layout
-            fill="#6a6a6a"
-            color="black"
-          >
-            +
-          </IconButton>
+          <div className="my-2">
+            <IconButton
+              noBorder
+              onClick={addNote}
+              layout
+              fill="#6a6a6a"
+              color="black"
+            >
+              +
+            </IconButton>
+          </div>
         )}
       </div>
     </section>

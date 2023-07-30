@@ -3,6 +3,7 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import { AudioContextProvider } from '../contexts/AudioContext';
+import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
   return (
@@ -19,8 +20,11 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
       </Head>
 
       <AudioContextProvider>
-        <Component {...pageProps} />
+        <OfflineStorageProvider>
+          <Component {...pageProps} />
+        </OfflineStorageProvider>
       </AudioContextProvider>
+
       <Script
         async
         src="https://www.googletagmanager.com/gtag/js?id=G-G88B8QTZ67"

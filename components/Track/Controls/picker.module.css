@@ -9,28 +9,3 @@ label.label {
     @apply block text-center;
   }
 }
-
-input[type='range'].input {
-  display: block;
-  writing-mode: bt-lr;
-  -webkit-appearance: slider-vertical;
-  min-height: 250px;
-  background: gray;
-  @apply w-16;
-}
-
-input[type='range'].input::-webkit-slider-runnable-track {
-  background: var(--track-bg);
-  @apply rounded;
-  @apply w-full;
-  @apply border-2 border-black;
-}
-
-input[type='range'].input::-webkit-slider-thumb {
-  box-shadow: 0 0 2px rgba(255, 255, 255, 1);
-  height: 60px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  -webkit-appearance: none;
-}

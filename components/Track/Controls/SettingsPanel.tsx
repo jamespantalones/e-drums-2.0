@@ -25,20 +25,19 @@ export const SettingsPanel = forwardRef<HTMLDialogElement, Props>(
       <dialog
         ref={ref}
         open={open}
-        style={{ background: rhythm.color }}
         className={clsx(styles.dialog, {
           [styles.open]: open,
         })}
       >
-        <div className="flex items-end justify-end w-full mb-4 absolute top-4 right-4">
-          <button
-            className="block w-12 h-12 border-2 text-white rounded"
-            title="Close"
-            onClick={close}
-          >
+        <div className={styles.strip} style={{ background: rhythm.color }}>
+          <button className={styles.exit} title="Close" onClick={close}>
             <Close />
           </button>
         </div>
+
+        <p className="px-4 bg-red-500 text-white text-sm text-center">
+          THIS SECTION NOT DESIGNED AT ALL YET!
+        </p>
 
         <div className={styles.top}>
           <InstrumentPicker rhythm={rhythm} open={open} />
@@ -48,15 +47,14 @@ export const SettingsPanel = forwardRef<HTMLDialogElement, Props>(
           <div className={styles.faders}>
             <PitchPicker rhythm={rhythm} />
             <VolumePicker rhythm={rhythm} />
-            <VolumePicker rhythm={rhythm} />
-            <VolumePicker rhythm={rhythm} />
           </div>
+
           <button
-            className="w-11/12 mx-auto block h-8 text-white my-4 bg-red-500 rounded"
+            className="w-3/12 mx-auto block h-8 text-white my-4 bg-red-500 rounded text-xs uppercase"
             onClick={() => deleteTrack(rhythm.id)}
             title="Delete"
           >
-            Del
+            Delete
           </button>
         </div>
       </dialog>

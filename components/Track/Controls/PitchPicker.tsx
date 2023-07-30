@@ -2,14 +2,15 @@ import { CSSProperties } from 'react';
 import styles from './picker.module.css';
 import { Track } from '../../../lib/Track';
 import { useAudioContext } from '../../../contexts/AudioContext';
+import { Direction, Range } from 'react-range';
 
 export function PitchPicker({ rhythm }: { rhythm: Track }) {
   const {
     methods: { setTrackVal },
   } = useAudioContext();
 
-  function onChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    const num = parseFloat(ev.target.value);
+  function onChange(values: number[]) {
+    const [num] = values;
     setTrackVal(rhythm, {
       method: 'changePitch',
       value: num,
@@ -26,17 +27,41 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
       }
     >
       <label className={styles.label}>
-        <input
-          orient="vertical"
-          type="range"
+        <Range
+          step={1}
+          direction={Direction.Up}
           min={0}
           max={100}
-          step={1}
-          value={rhythm.pitch}
-          className={styles.input}
+          values={[rhythm.pitch]}
           onChange={onChange}
+          renderTrack={({ props, children }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: '200px',
+                width: '48px',
+                backgroundColor: '#eee',
+                borderRadius: '5px',
+              }}
+            >
+              {children}
+            </div>
+          )}
+          renderThumb={({ props }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: '48px',
+                width: '48px',
+                backgroundColor: '#999',
+              }}
+            />
+          )}
         />
-        <span>Pitch</span>
+
+        <span>Pitch {rhythm.pitch}</span>
       </label>
     </div>
   );

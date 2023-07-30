@@ -1,8 +1,9 @@
 .outer {
-  @apply flex-shrink-0;
-  @apply w-3/4 h-48 overflow-y-scroll;
+  @apply flex-shrink-0 mx-2 my-2;
+  @apply h-40 overflow-y-scroll;
   @apply border p-1 border-neutral-500;
   @apply bg-neutral-300 rounded-md;
+  width: calc(100% - 16px);
 }
 
 .button {
