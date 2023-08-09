@@ -2,9 +2,10 @@
   "name": "e-drums",
   "private": true,
   "version": "2.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node ./generate-cache.mjs && next dev",
+    "build": "node ./generate-cache.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run --coverage"
@@ -15,6 +16,7 @@
     "@tippyjs/react": "^4.2.6",
     "clsx": "^1.2.1",
     "framer-motion": "^10.12.21",
+    "idb-keyval": "^6.2.1",
     "nanoid": "^4.0.2",
     "next": "^13.4.8",
     "react": "^18.2.0",

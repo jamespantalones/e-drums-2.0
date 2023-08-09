@@ -133,6 +133,8 @@ export type SerializedTrack = {
   audio?: SoundFile;
 };
 
+export type SerializedSequencer = {};
+
 export enum SequencerPlayState {
   'STOPPED',
   'STARTED',

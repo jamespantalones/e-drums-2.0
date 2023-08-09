@@ -1,6 +1,10 @@
 import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
-import { SequencerPlayState, SerializedTrack } from '../types';
+import {
+  SequencerPlayState,
+  SerializedSequencer,
+  SerializedTrack,
+} from '../types';
 import { Track } from './Track';
 
 export interface SequencerOpts {
@@ -234,5 +238,9 @@ export class Sequencer {
   public deleteTrack(id: string): [string, Track[]] {
     this.state.tracks = this.state.tracks.filter((r) => r.id !== id);
     return [id, this.state.tracks];
+  }
+
+  public async exportJSON(): Promise<SerializedSequencer> {
+    return {};
   }
 }

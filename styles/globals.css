@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: rgb(188, 186, 180);
+  --color-bg: rgb(128, 126, 120);
   --color-text: rgb(50, 50, 50);
   --border-width: 1px;
   --box-shadow-sm: 0 0 2px rgb(80, 80, 80);

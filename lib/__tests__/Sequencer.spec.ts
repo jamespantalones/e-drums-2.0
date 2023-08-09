@@ -40,4 +40,6 @@ describe('Sequencer', () => {
     const instance = new Sequencer({ bpm: 74, onTick, initialTracks });
     expect(instance.clear).toBe(expect.any(Function));
   });
+
+  it('should export a JSON representation on save', () => {});
 });

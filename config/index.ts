@@ -13,6 +13,8 @@ export const Config = {
   SEED_SLICES_MIN_DESKTOP: 3,
   SEED_SLICES_MAX_MOBILE: 7,
   SEED_SLICES_MIN_MOBILE: 2,
+  CACHE_PREFIX: 'ER-1',
+  CACHE_MASTER: 'CACHE_MASTER',
 } as const;
 
 export const SOUNDS: SoundFile[] = [

@@ -4,8 +4,15 @@ import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import { AudioContextProvider } from '../contexts/AudioContext';
 import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
+import { useEffect } from 'react';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw-1.js', { type: 'module' });
+    }
+  });
+
   return (
     <>
       <Head>
