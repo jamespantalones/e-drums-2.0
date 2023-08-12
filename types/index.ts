@@ -70,7 +70,7 @@ export type AudioContextType = {
 export type AudioContextReturnType = {
   state: AudioContextType;
   dispatch: React.Dispatch<AudioContextAction>;
-  initialize: (data: SerializedSequencer) => Promise<void>;
+  initialize: (data?: SerializedSequencer) => Promise<void>;
   sequencer: Sequencer | undefined;
   methods: {
     play: () => Promise<void>;

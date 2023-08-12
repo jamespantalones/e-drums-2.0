@@ -54,7 +54,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
 
   // make sure the AudioContext is initialized
   const initialize = useCallback(
-    async (data: SerializedSequencer) => {
+    async (data?: SerializedSequencer) => {
       try {
         if (data) {
           seq.current = new Sequencer({
@@ -69,7 +69,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
           seq.current = new Sequencer({
             onTick: incrementTick,
             bpm: 110,
-            initialTracks: [],
+            initialTracks: [generateTrack(0)],
             id: 'asdf',
           });
         }
