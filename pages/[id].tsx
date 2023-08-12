@@ -32,20 +32,13 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     if (!id) return;
     loadProjectFromCache(id as string).then((project) => {
-      console.log({ project });
       if (project) {
         initialize(project);
+      } else {
+        initialize();
       }
     });
   }, [id, loadProjectFromCache, initialize]);
-
-  // if (!initialized) {
-  //   return <Splash initialize={initialize} />;
-  // }
-
-  // if (!loaded) {
-  //   return <p>Loading...</p>;
-  // }
 
   return (
     <>
