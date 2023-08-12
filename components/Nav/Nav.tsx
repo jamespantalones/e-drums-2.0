@@ -9,7 +9,7 @@ import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
-export function Nav() {
+export function Nav({ save }: { save: () => Promise<void> }) {
   const { state, methods } = useAudioContext();
 
   return (
@@ -49,6 +49,10 @@ export function Nav() {
             }
           >
             <NewIcon />
+          </IconButton>
+
+          <IconButton onClick={save} noBorder margin>
+            <SaveIcon />
           </IconButton>
         </div>
       </section>

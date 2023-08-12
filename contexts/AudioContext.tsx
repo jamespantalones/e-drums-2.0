@@ -1,6 +1,11 @@
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import { AudioContextReturnType, SequencerAction, TrackAction } from '../types';
+import {
+  AudioContextReturnType,
+  SequencerAction,
+  SerializedSequencer,
+  TrackAction,
+} from '../types';
 import { audioContextReducer } from './AudioContext.reducer';
 import * as Tone from 'tone';
 import {
@@ -48,21 +53,28 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // make sure the AudioContext is initialized
-  const initialize = useCallback(async () => {
-    try {
-      seq.current = new Sequencer({
-        initialTracks: [generateTrack()],
-        onTick: incrementTick,
-        bpm: state.bpm,
-      });
+  const initialize = useCallback(
+    async (data: SerializedSequencer) => {
+      console.log('INIT DATA', data);
+      try {
+        seq.current = new Sequencer({
+          ...data,
+          initialTracks: data.state.tracks,
+          bpm: data.bpm,
+          // TODO Fix
+          id: 'asdf',
+          onTick: incrementTick,
+        });
 
-      const s = await seq.current.init();
+        const s = await seq.current.init();
 
-      dispatch({ type: 'INITIALIZE', value: s.state.tracks });
-    } catch (err) {
-      console.log(err);
-    }
-  }, [incrementTick, state.bpm]);
+        dispatch({ type: 'INITIALIZE', value: s.state.tracks });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [incrementTick, state.bpm]
+  );
 
   /**
    * Starts playback
@@ -71,6 +83,8 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     if (seq.current && !seq.current.isInit) {
       await seq.current.init();
     }
+    // start the AudioContext engine (on user interactive only)
+    Tone.start();
     seq.current?.start();
     dispatch({ type: '_PLAY' });
   }, []);
@@ -166,6 +180,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     state,
     dispatch,
     initialize,
+    sequencer: seq.current,
     methods: {
       deleteTrack,
       play,
@@ -198,6 +213,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
 
 export function useAudioContext() {
   const context = useContext(AudioContext);
+
   if (context === undefined) {
     throw new Error(
       `useAudioContext must be used within an AudioContextProvider`

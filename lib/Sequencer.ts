@@ -6,13 +6,14 @@ import {
   SerializedTrack,
 } from '../types';
 import { Track } from './Track';
+import { generateId } from '../utils';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
 
   bpm: number;
 
-  onTick: (tickVal: number) => void;
+  id: string;
 }
 
 // ------------------------------------------------------------
@@ -26,6 +27,8 @@ export class Sequencer {
 
   public bpm: number;
 
+  public id: string;
+
   public onTick: (tick: number) => void;
 
   public isInit: boolean;
@@ -37,30 +40,29 @@ export class Sequencer {
 
   playState: SequencerPlayState;
 
-  constructor({ bpm, onTick, initialTracks = [] }: SequencerOpts) {
+  constructor(opts: SequencerOpts & { onTick: (tickVal: number) => void }) {
     this.isInit = false;
-    this.bpm = bpm;
-    this.onTick = onTick;
+    this.bpm = opts.bpm;
+    this.onTick = opts.onTick;
+    this.id = opts.id;
 
     this.state = {
       rhythmIndex: -1,
-      tracks: initialTracks.map(
-        (track) =>
-          new Track({
-            ...track,
-            updateSelfInParent: this.updateChild,
-          })
-      ),
+      tracks: (opts.initialTracks || []).map((track) => {
+        return new Track({
+          ...track,
+          updateSelfInParent: this.updateChild,
+        });
+      }),
     };
+
+    console.log(this.state);
 
     this.playState = SequencerPlayState.STOPPED;
   }
 
   async init() {
     try {
-      // start the AudioContext engine (on user interactive only)
-      Tone.start();
-
       // TODO: move this out
       // create an audio chain
       this.reverb = new Tone.Reverb();
@@ -215,9 +217,7 @@ export class Sequencer {
   }
 
   public clear() {
-    this.state.tracks = this.state.tracks.map((track, index) => {
-      return track.noteOff();
-    });
+    this.state.tracks = this.state.tracks.map((t) => t.noteOff());
   }
 
   updateChild = (
@@ -240,7 +240,17 @@ export class Sequencer {
     return [id, this.state.tracks];
   }
 
-  public async exportJSON(): Promise<SerializedSequencer> {
-    return {};
+  public async exportJSON(): Promise<string> {
+    return JSON.stringify(
+      {
+        state: {
+          rhythmIndex: this.state.rhythmIndex,
+          tracks: this.state.tracks.map((t) => t.exportJSON()),
+        },
+        bpm: this.bpm,
+      },
+      null,
+      2
+    );
   }
 }

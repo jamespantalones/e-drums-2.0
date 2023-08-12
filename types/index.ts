@@ -1,3 +1,4 @@
+import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 
 declare module 'react' {
@@ -47,6 +48,10 @@ export type TrackOpts = {
   color?: string;
   hue?: number;
   index: number;
+  muted?: boolean;
+  volume?: number;
+  pattern?: number[];
+  pitchOffset?: number[];
   instrument?: Instrument;
   updateSelfInParent: (
     child: Track,
@@ -65,7 +70,8 @@ export type AudioContextType = {
 export type AudioContextReturnType = {
   state: AudioContextType;
   dispatch: React.Dispatch<AudioContextAction>;
-  initialize: () => Promise<void>;
+  initialize: (data: SerializedSequencer) => Promise<void>;
+  sequencer: Sequencer | undefined;
   methods: {
     play: () => Promise<void>;
     stop: () => void;
@@ -130,10 +136,18 @@ export type SerializedTrack = {
   totalNotes: number;
   pitch: number;
   color?: string;
+  hue?: number;
   audio?: SoundFile;
 };
 
-export type SerializedSequencer = {};
+export type SerializedSequencer = {
+  bpm: number;
+  id: string;
+  state: {
+    rhythmIndex: number;
+    tracks: SerializedTrack[];
+  };
+};
 
 export enum SequencerPlayState {
   'STOPPED',

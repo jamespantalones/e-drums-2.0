@@ -32,12 +32,6 @@ export function InstrumentPicker(props: Props) {
     [setTrackVal, rhythm]
   );
 
-  useEffect(() => {
-    if (open) {
-      console.log('MOUNT');
-    }
-  }, [open]);
-
   return (
     <div className={styles.outer}>
       {SOUNDS.map((sound) => (

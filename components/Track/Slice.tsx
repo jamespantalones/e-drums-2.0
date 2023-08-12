@@ -45,6 +45,19 @@ export function Slice({
 
   const handlePointerUp = useCallback(
     (ev: PointerEvent<HTMLElement>) => {
+      console.log(ev.clientX, ev.clientY);
+      if (
+        Math.abs(ev.clientX - x.current!) > 50 ||
+        Math.abs(ev.clientY - y.current!) > 50
+      ) {
+        removeNote(index);
+      }
+    },
+    [removeNote, index]
+  );
+
+  const handleMouseUp = useCallback(
+    (ev: React.MouseEvent<HTMLElement>) => {
       if (
         Math.abs(ev.clientX - x.current!) > 50 ||
         Math.abs(ev.clientY - y.current!) > 50
@@ -56,6 +69,11 @@ export function Slice({
   );
 
   const handlePointerDown = useCallback((ev: PointerEvent<HTMLElement>) => {
+    x.current = ev.clientX;
+    y.current = ev.clientY;
+  }, []);
+
+  const handleMouseDown = useCallback((ev: React.MouseEvent<HTMLElement>) => {
     x.current = ev.clientX;
     y.current = ev.clientY;
   }, []);
@@ -78,10 +96,11 @@ export function Slice({
         dragTransition={{ bounceStiffness: 900, bounceDamping: 50 }}
         dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
         layout
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
         onPointerUp={handlePointerUp}
         onPointerDown={handlePointerDown}
         onDragStart={(e) => {
-          console.log(e.target);
           // Add the class to the div while dragging
           (e.target as HTMLElement).classList.add(styles['is-dragging']);
         }}

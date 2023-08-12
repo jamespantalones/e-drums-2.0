@@ -3,7 +3,9 @@ import { euclideanRhythm, generateRandomColor } from '../utils';
 
 describe('Utils', () => {
   it('should generate a random hsl color', () => {
-    expect(generateRandomColor()).toEqual(expect.stringContaining('hsl'));
+    const [color, hue] = generateRandomColor();
+    expect(color).toEqual(expect.stringContaining('hsl'));
+    expect(hue).toEqual(expect.any(Number));
   });
 
   describe('Euclidean Rhythm', () => {

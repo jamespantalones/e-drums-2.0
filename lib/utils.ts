@@ -25,7 +25,7 @@ export function generateTrack(index = 0) {
     index,
     onNotes: Math.floor(random / 2),
     totalNotes: random,
-    pitch: 100,
+    pitch: 50,
     instrument: {
       frequency: 50,
       sound: SOUNDS[Math.floor(Math.random() * SOUNDS.length - 1)],

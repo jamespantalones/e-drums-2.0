@@ -22,7 +22,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   }, []);
 
   const closeSettingsPanel = useCallback(() => {
-    console.log('hit');
     setSettingsPanelOpen(false);
     panel.current!.close();
   }, []);

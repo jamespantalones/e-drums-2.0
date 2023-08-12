@@ -14,7 +14,6 @@ const putInCache = async (request, response) => {
 const cacheFirst = async (request) => {
   const responseFromCache = await caches.match(request);
   if (responseFromCache) {
-    console.log('IN CACHe', request.url);
     return responseFromCache;
   }
   const responseFromNetwork = await fetch(request);
@@ -37,7 +36,6 @@ self.addEventListener('fetch', (event) => {
   let { request } = event;
 
   if (request.url.includes('.wav')) {
-    console.log(request);
     event.respondWith(cacheFirst(event.request));
   }
 

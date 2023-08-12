@@ -36,8 +36,6 @@ export class Track {
 
   public isReady: boolean;
 
-  public fileBuffer: null | string;
-
   public instrument: Instrument | null;
 
   public updateSelfInParent: (
@@ -54,21 +52,31 @@ export class Track {
     this.totalNotes = opts.totalNotes || 8;
     this.isReady = false;
     this.instrument = opts.instrument || null;
-    this.fileBuffer = null;
     this.color = opts.color || color;
     this.hue = opts.hue || hue;
-    this.volume = 0.3;
-    this.prevVolume = 0.3;
-    this.pitch = 50;
-    this.muted = false;
+    this.volume = opts.volume || 0.3;
+    this.prevVolume = this.volume;
+    this.pitch = opts.pitch || 50;
+    this.muted = opts.muted || false;
+    this.pattern = opts.pattern || [];
+    this.pitchOffset = opts.pitchOffset || [];
 
-    const { pattern, pitchOffset } = euclideanRhythm({
-      onNotes: this.onNotes,
-      totalNotes: this.totalNotes,
-      pitch: this.pitch,
-    });
-    this.pattern = pattern;
-    this.pitchOffset = pitchOffset;
+    if (!opts.pattern) {
+      const { pattern } = euclideanRhythm({
+        onNotes: this.onNotes,
+        totalNotes: this.totalNotes,
+        pitch: this.pitch,
+      });
+      this.pattern = pattern;
+    }
+    if (!opts.pitchOffset) {
+      const { pitchOffset } = euclideanRhythm({
+        onNotes: this.onNotes,
+        totalNotes: this.totalNotes,
+        pitch: this.pitch,
+      });
+      this.pitchOffset = pitchOffset;
+    }
   }
 
   public async init(): Promise<Track> {
@@ -144,6 +152,7 @@ export class Track {
   }
 
   public removeNote(index: number): Track {
+    console.log('REMOVE', index);
     this.pattern = this.pattern.filter((_, i) => i !== index);
     this.pitchOffset = this.pitchOffset.filter((_, i) => i !== index);
     this.totalNotes -= 1;
@@ -173,7 +182,7 @@ export class Track {
     return this;
   }
 
-  public async changeInstrument(value?: SoundFile): Promise<Track> {
+  public async changeInstrument(value: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;
     const file = `/sounds/${this._createSoundFile(value).sound.files[0]}`;
@@ -226,5 +235,11 @@ export class Track {
     });
 
     return this;
+  }
+
+  public exportJSON() {
+    const { sampler, updateSelfInParent, ...rest } = this;
+
+    return rest;
   }
 }
