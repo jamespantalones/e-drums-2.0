@@ -17,3 +17,9 @@
   @apply uppercase;
   @apply text-xs;
 }
+
+.tempo-button {
+  @apply ml-4 block border border-current px-2 rounded-sm w-12 py-1;
+  overscroll-behavior: none;
+  touch-action: none;
+}

@@ -18,9 +18,6 @@ const Home: NextPage = () => {
     sequencer,
   } = useAudioContext();
 
-  const [loaded, setLoaded] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
   async function save() {
@@ -31,6 +28,7 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     if (!id) return;
+
     loadProjectFromCache(id as string).then((project) => {
       if (project) {
         initialize(project);
@@ -38,7 +36,7 @@ const Home: NextPage = () => {
         initialize();
       }
     });
-  }, [id, loadProjectFromCache, initialize]);
+  }, [id]);
 
   return (
     <>

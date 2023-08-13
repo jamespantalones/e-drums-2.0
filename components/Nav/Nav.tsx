@@ -59,7 +59,6 @@ export function Nav({ save }: { save: () => Promise<void> }) {
           >
             <PlayIcon />
           </IconButton>
-
           <IconButton
             margin
             onClick={methods.stop}
@@ -69,7 +68,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
           </IconButton>
 
           <button
-            className="ml-4 block border border-current px-2 rounded-sm w-12 py-1"
+            className={styles['tempo-button']}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             ref={tempoButton}

@@ -42,6 +42,11 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
               className="h-48 rounded shadow w-12 bg-white"
               style={{
                 ...props.style,
+                background: `linear-gradient(to top, ${rhythm.color}, ${
+                  rhythm.color
+                } ${rhythm.volume * 100}%, white ${
+                  rhythm.volume * 100
+                }%, white)`,
               }}
             >
               {children}
@@ -50,7 +55,7 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
           renderThumb={({ props }) => (
             <div
               {...props}
-              className="w-12 h-6 bg-neutral-400"
+              className="w-12 h-6 bg-transparent"
               style={{
                 ...props.style,
               }}
