@@ -1,3 +1,4 @@
+import { Config } from '../config';
 import { AudioContextAction, AudioContextType } from '../types';
 
 export function audioContextReducer(
@@ -32,6 +33,20 @@ export function audioContextReducer(
       return {
         ...state,
         bpm: action.value,
+      };
+    }
+
+    case 'DECREMENT_BPM': {
+      return {
+        ...state,
+        bpm: state.bpm - 1 >= Config.MIN_BPM ? state.bpm - 1 : Config.MIN_BPM,
+      };
+    }
+
+    case 'INCREMENT_BPM': {
+      return {
+        ...state,
+        bpm: state.bpm + 1 <= Config.MAX_BPM ? state.bpm + 1 : Config.MAX_BPM,
       };
     }
 

@@ -1,16 +1,52 @@
 import * as React from 'react';
-import Link from 'next/link';
 import PlayIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import NewIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
+import throttle from 'lodash.throttle';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
 export function Nav({ save }: { save: () => Promise<void> }) {
   const { state, methods } = useAudioContext();
+  const tempoButton = React.useRef<null | HTMLButtonElement>(null);
+  const dy = React.useRef<number>(0);
+
+  const slide = React.useCallback(
+    (ev: PointerEvent) => {
+      if (ev.clientY < dy.current) {
+        methods.decrementBpm();
+      } else {
+        methods.incrementBpm();
+      }
+
+      dy.current = ev.clientY;
+    },
+    [methods]
+  );
+
+  const onPointerDown = React.useCallback(
+    (ev: React.PointerEvent<HTMLButtonElement>) => {
+      if (tempoButton.current) {
+        dy.current = ev.clientY;
+        tempoButton.current.onpointermove = throttle(slide, 20);
+        tempoButton.current.setPointerCapture(ev.pointerId);
+      }
+    },
+    [slide]
+  );
+
+  const onPointerUp = React.useCallback(
+    (ev: React.PointerEvent<HTMLButtonElement>) => {
+      if (tempoButton.current) {
+        tempoButton.current.onpointermove = null;
+        tempoButton.current.releasePointerCapture(ev.pointerId);
+        dy.current = ev.clientY;
+      }
+    },
+    []
+  );
 
   return (
     <nav className={styles.nav}>
@@ -23,6 +59,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
           >
             <PlayIcon />
           </IconButton>
+
           <IconButton
             margin
             onClick={methods.stop}
@@ -30,13 +67,15 @@ export function Nav({ save }: { save: () => Promise<void> }) {
           >
             <StopIcon />
           </IconButton>
-          <IconButton
-            margin
-            onClick={methods.clear}
-            disabled={!state.initialized}
+
+          <button
+            className="ml-4 block border border-current px-2 rounded-sm w-12 py-1"
+            onPointerDown={onPointerDown}
+            onPointerUp={onPointerUp}
+            ref={tempoButton}
           >
-            <ClearAllIcon />
-          </IconButton>
+            <p style={{ fontSize: '10px' }}>{state.bpm}</p>
+          </button>
         </div>
 
         <div className="flex">

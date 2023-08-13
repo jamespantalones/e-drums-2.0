@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useAudioContext } from '../../../contexts/AudioContext';
 import { Track } from '../../../lib/Track';
 import { SOUNDS } from '../../../config';
@@ -17,6 +17,7 @@ export function InstrumentPicker(props: Props) {
   const {
     methods: { setTrackVal },
   } = useAudioContext();
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const handleClick = useCallback(
     (sound: SoundFile) => {
@@ -32,16 +33,32 @@ export function InstrumentPicker(props: Props) {
     [setTrackVal, rhythm]
   );
 
+  useEffect(() => {
+    if (ref.current && open) {
+      ref.current.scrollTop = 60;
+      const target = ref.current.querySelector('[data-active="true"]');
+      target?.scrollIntoView({
+        block: 'center',
+      });
+    }
+  }, [open]);
+
   return (
-    <div className={styles.outer}>
+    <div className={styles.outer} ref={ref}>
       {SOUNDS.map((sound) => (
         <button
           data-name={sound.name}
+          data-active={rhythm.instrument?.sound.name === sound.name}
           className={clsx(styles.button, {
             [styles.active]: rhythm.instrument?.sound.name === sound.name,
           })}
           key={sound.name}
           onClick={handleClick(sound)}
+          style={{
+            ...(rhythm.instrument?.sound.name === sound.name && {
+              background: rhythm.color,
+            }),
+          }}
         >
           {sound.name}
         </button>

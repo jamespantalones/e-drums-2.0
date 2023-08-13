@@ -79,6 +79,8 @@ export type AudioContextReturnType = {
     save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
+    incrementBpm: () => void;
+    decrementBpm: () => void;
     createTrack: () => void;
     repitchTick: (
       id: string,
@@ -120,6 +122,8 @@ export type AudioContextAction =
       type: 'SET_BPM';
       value: number;
     }
+  | { type: 'DECREMENT_BPM' }
+  | { type: 'INCREMENT_BPM' }
   | {
       type: 'UPDATE_TRACKS';
       value: Track[];

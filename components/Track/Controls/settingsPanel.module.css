@@ -1,7 +1,7 @@
 .dialog {
   @apply z-50;
   @apply p-0;
-  @apply w-11/12 h-[80%];
+  @apply w-11/12 h-[70%];
   @apply bg-neutral-300;
   @apply rounded;
   @apply fixed;

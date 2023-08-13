@@ -17,20 +17,22 @@ const Home: NextPage = () => {
   async function createNew() {
     const id = generateId();
     await appendToIndexCache(id);
+
     router.push(`/${id}`);
   }
 
   return (
     <section className="p-4">
-      <p>PAGE NOT DESIGNED</p>
+      <h1>E-Rhythms</h1>
       <ul>
         {projects.map((p) => (
           <li
             key={p}
-            className="border-b border-current flex items-center justify-between"
+            className="border-b border-current flex items-center justify-between my-4"
           >
             <Link href={`/${p}`}>{p}</Link>
             <button
+              className="border border-current px-1 mb-2"
               onClick={() => {
                 removeFromCache(p);
               }}

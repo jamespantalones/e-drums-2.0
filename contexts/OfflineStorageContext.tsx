@@ -11,6 +11,7 @@ import { del, get, set } from 'idb-keyval';
 import { Config } from '../config';
 import { SerializedSequencer } from '../types';
 import { setDefaultResultOrder } from 'dns/promises';
+import { useRouter } from 'next/router';
 
 const OfflineStorageContext = createContext<
   | {
@@ -29,6 +30,8 @@ const OfflineStorageContext = createContext<
 const INDEX = `${Config.CACHE_PREFIX}/${Config.CACHE_MASTER}`;
 
 export function OfflineStorageProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
+
   const cacheMaster = useRef<string[]>();
   const [projects, setProjects] = useState<string[]>([]);
 
@@ -96,7 +99,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
         setProjects(cache);
       }
     });
-  }, [retrieveIndexCache]);
+  }, [retrieveIndexCache, router.asPath]);
 
   return (
     <OfflineStorageContext.Provider

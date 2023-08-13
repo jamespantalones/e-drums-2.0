@@ -29,15 +29,11 @@ export const SettingsPanel = forwardRef<HTMLDialogElement, Props>(
           [styles.open]: open,
         })}
       >
-        <div className={styles.strip} style={{ background: rhythm.color }}>
+        <div className={styles.strip}>
           <button className={styles.exit} title="Close" onClick={close}>
             <Close />
           </button>
         </div>
-
-        <p className="px-4 bg-red-500 text-white text-sm text-center">
-          THIS SECTION NOT DESIGNED AT ALL YET!
-        </p>
 
         <div className={styles.top}>
           <InstrumentPicker rhythm={rhythm} open={open} />
@@ -50,7 +46,7 @@ export const SettingsPanel = forwardRef<HTMLDialogElement, Props>(
           </div>
 
           <button
-            className="w-3/12 mx-auto block h-8 text-white my-4 bg-red-500 rounded text-xs uppercase"
+            className="w-3/12 mx-auto block h-8 my-4 text-red-500 rounded text-xs uppercase border border-current"
             onClick={() => deleteTrack(rhythm.id)}
             title="Delete"
           >

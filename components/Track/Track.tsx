@@ -19,6 +19,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
   const panel = useRef<HTMLDialogElement | null>(null);
   const openSettingsPanel = useCallback(() => {
     panel.current!.showModal();
+    setSettingsPanelOpen(true);
   }, []);
 
   const closeSettingsPanel = useCallback(() => {

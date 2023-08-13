@@ -2,7 +2,6 @@ import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
 import {
   AudioContextReturnType,
-  SequencerAction,
   SerializedSequencer,
   TrackAction,
 } from '../types';
@@ -57,6 +56,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     async (data?: SerializedSequencer) => {
       try {
         if (data) {
+          dispatch({ type: 'SET_BPM', value: data.bpm });
           seq.current = new Sequencer({
             ...data,
             initialTracks: data.state.tracks,
@@ -68,7 +68,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
         } else {
           seq.current = new Sequencer({
             onTick: incrementTick,
-            bpm: 110,
+            bpm: Config.DEFAULT_BPM,
             initialTracks: [generateTrack(0)],
             id: 'asdf',
           });
@@ -81,7 +81,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
         console.log(err);
       }
     },
-    [incrementTick, state.bpm]
+    [incrementTick]
   );
 
   /**
@@ -156,14 +156,20 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const changeBpm = useCallback((bpm: number) => {
-    seq.current?.setBpm(bpm);
     dispatch({ type: 'SET_BPM', value: bpm });
+  }, []);
+
+  const decrementBpm = useCallback(() => {
+    dispatch({ type: 'DECREMENT_BPM' });
+  }, []);
+
+  const incrementBpm = useCallback(() => {
+    dispatch({ type: 'INCREMENT_BPM' });
   }, []);
 
   const deleteTrack = useCallback(
     (id: string) => {
       if (seq.current) {
-        console.log('TODO: DELETE TRAck', id);
         const [_id, tracks] = seq.current.deleteTrack(id);
         dispatch({ type: 'DELETE_TRACK', value: id });
       }
@@ -184,6 +190,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     }
   }, [state.tick]);
 
+  useEffect(() => {
+    seq.current?.setBpm(state.bpm);
+  }, [state.bpm]);
+
   const value = {
     state,
     dispatch,
@@ -195,6 +205,8 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       stop,
       clear,
       changeBpm,
+      incrementBpm,
+      decrementBpm,
       createTrack,
       repitchTick,
       toggleTick,

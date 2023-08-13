@@ -37,12 +37,9 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
           renderTrack={({ props, children }) => (
             <div
               {...props}
+              className="h-48 rounded shadow w-12 bg-white"
               style={{
                 ...props.style,
-                height: '200px',
-                width: '48px',
-                backgroundColor: '#eee',
-                borderRadius: '5px',
               }}
             >
               {children}
@@ -51,17 +48,15 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
           renderThumb={({ props }) => (
             <div
               {...props}
+              className="w-12 h-6 bg-neutral-400"
               style={{
                 ...props.style,
-                height: '48px',
-                width: '48px',
-                backgroundColor: '#999',
               }}
             />
           )}
         />
 
-        <span>Pitch {rhythm.pitch}</span>
+        <span className="pointer-events-none">Pitch {rhythm.pitch}</span>
       </label>
     </div>
   );

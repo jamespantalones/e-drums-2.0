@@ -45,7 +45,6 @@ export function Slice({
 
   const handlePointerUp = useCallback(
     (ev: PointerEvent<HTMLElement>) => {
-      console.log(ev.clientX, ev.clientY);
       if (
         Math.abs(ev.clientX - x.current!) > 50 ||
         Math.abs(ev.clientY - y.current!) > 50

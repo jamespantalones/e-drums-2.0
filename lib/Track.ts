@@ -152,7 +152,6 @@ export class Track {
   }
 
   public removeNote(index: number): Track {
-    console.log('REMOVE', index);
     this.pattern = this.pattern.filter((_, i) => i !== index);
     this.pitchOffset = this.pitchOffset.filter((_, i) => i !== index);
     this.totalNotes -= 1;

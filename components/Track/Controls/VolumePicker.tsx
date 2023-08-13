@@ -32,19 +32,16 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
         <Range
           direction={Direction.Up}
           min={0}
-          max={2}
+          max={1}
           step={0.01}
           values={[rhythm.volume]}
           onChange={onChange}
           renderTrack={({ props, children }) => (
             <div
               {...props}
+              className="h-48 rounded shadow w-12 bg-white"
               style={{
                 ...props.style,
-                height: '200px',
-                width: '48px',
-                backgroundColor: '#eee',
-                borderRadius: '5px',
               }}
             >
               {children}
@@ -53,17 +50,17 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
           renderThumb={({ props }) => (
             <div
               {...props}
+              className="w-12 h-6 bg-neutral-400"
               style={{
                 ...props.style,
-                height: '48px',
-                width: '48px',
-                backgroundColor: '#999',
               }}
             />
           )}
         />
 
-        <span>Volume {rhythm.volume}</span>
+        <span className="pointer-events-none text-xs absolute bottom-10 left-0">
+          Volume {rhythm.volume}
+        </span>
       </label>
     </div>
   );

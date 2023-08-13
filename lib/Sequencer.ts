@@ -1,12 +1,7 @@
 import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
-import {
-  SequencerPlayState,
-  SerializedSequencer,
-  SerializedTrack,
-} from '../types';
+import { SequencerPlayState, SerializedTrack } from '../types';
 import { Track } from './Track';
-import { generateId } from '../utils';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -56,8 +51,6 @@ export class Sequencer {
       }),
     };
 
-    console.log(this.state);
-
     this.playState = SequencerPlayState.STOPPED;
   }
 
@@ -66,7 +59,7 @@ export class Sequencer {
       // TODO: move this out
       // create an audio chain
       this.reverb = new Tone.Reverb();
-      this.reverb.wet.value = 0.05;
+      this.reverb.wet.value = 0.1;
 
       this.chain = new Tone.Gain();
       this.chain.chain(this.reverb, Tone.Destination);
@@ -98,6 +91,8 @@ export class Sequencer {
   stop() {
     if (this.transport) {
       this.transport.pause();
+    } else {
+      this.transport = Tone.Transport.pause();
     }
   }
 
@@ -214,6 +209,8 @@ export class Sequencer {
 
   public setBpm(val: number) {
     Tone.Transport.bpm.value = val;
+    this.transport = Tone.Transport;
+    this.bpm = val;
   }
 
   public clear() {
