@@ -39,7 +39,7 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
           renderTrack={({ props, children }) => (
             <div
               {...props}
-              className="h-48 rounded shadow w-12 bg-white"
+              className={styles.track}
               style={{
                 ...props.style,
                 background: `linear-gradient(to top, ${rhythm.color}, ${

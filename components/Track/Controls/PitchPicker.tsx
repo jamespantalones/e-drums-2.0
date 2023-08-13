@@ -37,7 +37,7 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
           renderTrack={({ props, children }) => (
             <div
               {...props}
-              className="h-48 rounded w-12 shadow-xl"
+              className={styles.track}
               style={{
                 ...props.style,
                 background: `linear-gradient(to top, ${rhythm.color}, ${rhythm.color} ${rhythm.pitch}%, white ${rhythm.pitch}%, white)`,

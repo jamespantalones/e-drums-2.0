@@ -9,3 +9,8 @@ label.label {
     @apply block text-center;
   }
 }
+
+.track {
+  touch-action: none;
+  @apply h-40 rounded shadow w-12 bg-white;
+}
