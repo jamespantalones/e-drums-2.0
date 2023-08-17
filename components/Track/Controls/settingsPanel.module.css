@@ -1,10 +1,11 @@
 .dialog {
   @apply z-50;
   @apply p-0;
-  @apply w-11/12 h-[70%];
+  @apply w-auto h-auto;
   @apply bg-neutral-300;
   @apply rounded;
   @apply fixed;
+  @apply max-w-sm max-h-96;
   transition: transform 0.1s ease-out, opacity 0.1s ease-out;
   transform: scale3d(0, 0, 0);
   opacity: 0;
@@ -26,7 +27,7 @@
 }
 
 .bottom {
-  @apply absolute bottom-0 left-0 right-0;
+  @apply absolute bottom-4 left-0 right-0;
 }
 .faders {
   @apply w-11/12 mx-auto;

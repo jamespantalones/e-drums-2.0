@@ -32,7 +32,7 @@ export function VolumePicker({ rhythm }: { rhythm: Track }) {
         <Range
           direction={Direction.Up}
           min={0}
-          max={1}
+          max={2}
           step={0.01}
           values={[rhythm.volume]}
           onChange={onChange}

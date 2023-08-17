@@ -5,6 +5,11 @@
   flex-shrink: 0;
   width: calc(var(--slice-size) - 0.25rem);
   margin: 0.6vw;
+  @media (orientation: landscape) {
+    height: calc(var(--slice-size) - 0.25rem);
+    width: 100vw;
+    @apply pb-0;
+  }
 }
 
 .toggle {
@@ -16,6 +21,31 @@
   transition: transform 0.2s ease;
   &.shift {
     transform: translate3d(0, 0, 0);
+  }
+  @media (orientation: landscape) {
+    height: var(--slice-size);
+    width: 100%;
+    @apply flex items-start justify-start;
+  }
+}
+
+.edit {
+  width: var(--slice-size);
+  height: var(--slice-size);
+  flex-shrink: 0;
+  flex-grow: 0;
+  @apply rounded-sm;
+  & > button {
+    @apply block w-full mb-2;
+  }
+  @media (orientation: landscape) {
+    @apply flex items-center justify-between;
+    width: calc(var(--slice-size) / 2);
+    height: var(--slice-size);
+    @apply mb-0 mr-6;
+    & > button {
+      @apply inline-block;
+    }
   }
 }
 
@@ -31,12 +61,15 @@
   }
 }
 
-.button-mute {
-  @apply bg-neutral-800;
-  @apply p-1 w-8/12 h-auto;
+.add {
   @apply flex items-center justify-center;
-  @apply uppercase mx-auto my-1;
-  &.muted {
-    @apply bg-red-400;
+  width: calc(var(--slice-size) - 4px);
+  height: calc(var(--slice-size) - 4px);
+  margin: 2px;
+  @apply rounded-sm;
+  @apply bg-neutral-600;
+  flex-shrink: 0;
+  &:hover {
+    @apply bg-neutral-400;
   }
 }

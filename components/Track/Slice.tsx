@@ -44,38 +44,29 @@ export function Slice({
   }, [rhythm, repitchTick, index]);
 
   const handlePointerUp = useCallback(
+    (ev: PointerEvent) => {
+      if (
+        Math.abs(ev.clientX - x.current!) > 20 ||
+        Math.abs(ev.clientY - y.current!) > 20
+      ) {
+        removeNote(index);
+      }
+
+      window.onpointerup = null;
+    },
+    [removeNote, index]
+  );
+
+  const handlePointerDown = useCallback(
     (ev: PointerEvent<HTMLElement>) => {
-      if (
-        Math.abs(ev.clientX - x.current!) > 50 ||
-        Math.abs(ev.clientY - y.current!) > 50
-      ) {
-        removeNote(index);
-      }
+      x.current = ev.clientX;
+      y.current = ev.clientY;
+
+      // @ts-expect-error
+      window.onpointerup = handlePointerUp;
     },
-    [removeNote, index]
+    [handlePointerUp]
   );
-
-  const handleMouseUp = useCallback(
-    (ev: React.MouseEvent<HTMLElement>) => {
-      if (
-        Math.abs(ev.clientX - x.current!) > 50 ||
-        Math.abs(ev.clientY - y.current!) > 50
-      ) {
-        removeNote(index);
-      }
-    },
-    [removeNote, index]
-  );
-
-  const handlePointerDown = useCallback((ev: PointerEvent<HTMLElement>) => {
-    x.current = ev.clientX;
-    y.current = ev.clientY;
-  }, []);
-
-  const handleMouseDown = useCallback((ev: React.MouseEvent<HTMLElement>) => {
-    x.current = ev.clientX;
-    y.current = ev.clientY;
-  }, []);
 
   return (
     <AnimatePresence>
@@ -85,7 +76,7 @@ export function Slice({
         drag={rhythm.totalNotes > Config.MIN_SLICES}
         whileDrag={{
           scale: 0.8,
-          zIndex: 99,
+          zIndex: 999,
           opacity: 0.7,
           backgroundColor: ['hsl(0,0%,0%)', 'hsl(8, 100%, 59%)'],
         }}
@@ -95,8 +86,6 @@ export function Slice({
         dragTransition={{ bounceStiffness: 900, bounceDamping: 50 }}
         dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
         layout
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
         onPointerUp={handlePointerUp}
         onPointerDown={handlePointerDown}
         onDragStart={(e) => {

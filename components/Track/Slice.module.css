@@ -1,6 +1,7 @@
 .slice-outer {
   @apply block;
   flex-shrink: 0;
+  flex-grow: 0;
   touch-action: none;
   width: var(--slice-size);
   height: var(--slice-size);

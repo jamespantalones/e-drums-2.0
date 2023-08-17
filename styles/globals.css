@@ -55,4 +55,11 @@ button {
   @media (hover: hover) {
     overflow-y: auto;
   }
+  @media (orientation: landscape) {
+    min-width: 100dvw;
+    height: 100%;
+    display: block;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
 }

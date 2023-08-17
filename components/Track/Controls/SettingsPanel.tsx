@@ -44,14 +44,6 @@ export const SettingsPanel = forwardRef<HTMLDialogElement, Props>(
             <PitchPicker rhythm={rhythm} />
             <VolumePicker rhythm={rhythm} />
           </div>
-
-          <button
-            className="w-3/12 mx-auto block h-8 my-4 text-red-500 rounded text-xs uppercase border border-current"
-            onClick={() => deleteTrack(rhythm.id)}
-            title="Delete"
-          >
-            Delete
-          </button>
         </div>
       </dialog>
     );

@@ -89,15 +89,12 @@ export class Sequencer {
 
   // stop the transport
   stop() {
-    if (this.transport) {
-      this.transport.pause();
-    } else {
-      this.transport = Tone.Transport.pause();
-    }
+    this.transport.pause();
   }
 
   private _setupTransport() {
     this.transport = Tone.Transport;
+    this.transport.cancel();
 
     // ************************************************************
     // main loop
@@ -135,13 +132,19 @@ export class Sequencer {
   }
 
   async start() {
+    const context = Tone.getContext();
+
     if (!this.isInit) {
       await this.init();
     }
 
     // if transport hasn't been set up.. set it up
-    if (!this.transport) {
-      this._setupTransport();
+    this._setupTransport();
+
+    console.log(context, context.state);
+
+    if (context.state === 'suspended') {
+      await context.resume();
     }
 
     Tone.Transport.start();
@@ -208,9 +211,10 @@ export class Sequencer {
   }
 
   public setBpm(val: number) {
-    Tone.Transport.bpm.value = val;
-    this.transport = Tone.Transport;
     this.bpm = val;
+    if (this.transport) {
+      this.transport.bpm.value = val;
+    }
   }
 
   public clear() {

@@ -11,17 +11,17 @@ import { Config } from '../../config';
 export function Nav({ save }: { save: () => Promise<void> }) {
   const { state, methods } = useAudioContext();
   const tempoButton = React.useRef<null | HTMLButtonElement>(null);
-  const dy = React.useRef<number>(0);
+  const dx = React.useRef<number>(0);
 
   const slide = React.useCallback(
     (ev: PointerEvent) => {
-      if (ev.clientY < dy.current) {
+      if (ev.clientX < dx.current) {
         methods.decrementBpm();
       } else {
         methods.incrementBpm();
       }
 
-      dy.current = ev.clientY;
+      dx.current = ev.clientX;
     },
     [methods]
   );
@@ -29,7 +29,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
   const onPointerDown = React.useCallback(
     (ev: React.PointerEvent<HTMLButtonElement>) => {
       if (tempoButton.current) {
-        dy.current = ev.clientY;
+        dx.current = ev.clientX;
         tempoButton.current.onpointermove = throttle(slide, 20);
         tempoButton.current.setPointerCapture(ev.pointerId);
       }
@@ -42,7 +42,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
       if (tempoButton.current) {
         tempoButton.current.onpointermove = null;
         tempoButton.current.releasePointerCapture(ev.pointerId);
-        dy.current = ev.clientY;
+        dx.current = ev.clientX;
       }
     },
     []
@@ -52,11 +52,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
     <nav className={styles.nav}>
       <section className={styles.section}>
         <div className="flex items-center justify-between ml-1.5">
-          <IconButton
-            margin
-            onClick={methods.play}
-            disabled={!state.initialized}
-          >
+          <IconButton margin onClick={methods.play}>
             <PlayIcon />
           </IconButton>
           <IconButton

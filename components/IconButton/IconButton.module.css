@@ -1,12 +1,13 @@
 .button {
   @apply flex items-center justify-center;
-  @apply rounded;
+  @apply rounded-sm;
+  @apply m-0.5 p-0;
   @apply disabled:opacity-0 transition-opacity duration-500;
   &.no-border {
     @apply border-none;
   }
-  width: calc(var(--slice-size) - 0.75rem);
-  height: calc(var(--slice-size) - 0.75rem);
+  width: calc(var(--slice-size));
+  height: calc(var(--slice-size) - 4px);
 
   &.margin {
     @apply mr-1;

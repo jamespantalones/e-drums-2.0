@@ -91,8 +91,8 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     if (seq.current && !seq.current.isInit) {
       await seq.current.init();
     }
+
     // start the AudioContext engine (on user interactive only)
-    Tone.start();
     seq.current?.start();
     dispatch({ type: '_PLAY' });
   }, []);
