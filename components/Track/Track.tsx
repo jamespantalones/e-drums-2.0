@@ -105,10 +105,12 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
               noBorder
               onClick={addNote}
               layout
-              fill="#6a6a6a"
               color="black"
+              transition={{ duration: 0.2 }}
             >
-              +
+              <div className={styles['add-button']}>
+                <span className="-translate-y-0.5">+</span>
+              </div>
             </IconButton>
           </div>
         )}
