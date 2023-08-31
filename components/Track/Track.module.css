@@ -4,7 +4,7 @@
   @apply pb-48;
   flex-shrink: 0;
   width: calc(var(--slice-size) - 0.25rem);
-  margin: 0.6vw;
+  margin: 1vw;
   @media (orientation: landscape) {
     height: calc(var(--slice-size) - 0.25rem);
     width: 100vw;

@@ -1,21 +1,22 @@
 .slice-outer {
-  @apply block;
+  @apply block rounded-md;
   flex-shrink: 0;
   flex-grow: 0;
   touch-action: none;
+  margin: 0.25rem;
   width: var(--slice-size);
   height: var(--slice-size);
-  padding: 0.15rem;
 }
 
 button.slice {
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
+  border: 2px solid black;
+  @apply rounded;
   background: var(--color-track);
   filter: grayscale(80%);
   opacity: 0.35;
-  @apply rounded-sm;
   @apply overflow-hidden;
   &.is-dragging {
     background: transparent !important;

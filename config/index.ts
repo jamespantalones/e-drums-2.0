@@ -2,11 +2,11 @@ import { SoundFile } from '../types';
 
 export const Config = {
   DEFAULT_BPM: 102,
-  MAX_BPM: 250,
+  MAX_BPM: 200,
   MIN_BPM: 60,
   MIN_SLICES: 0,
-  MAX_SLICES: 10,
-  MAX_TRACKS: 6,
+  MAX_SLICES: 16,
+  MAX_TRACKS: 16,
   ID_LENGTH: 10,
   MOBILE_CUTOFF: 768,
   SEED_SLICES_MAX_DESKTOP: 8,
