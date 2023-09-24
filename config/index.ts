@@ -2,7 +2,7 @@ import { SoundFile } from '../types';
 
 export const Config = {
   DEFAULT_BPM: 102,
-  MAX_BPM: 200,
+  MAX_BPM: 300,
   MIN_BPM: 60,
   MIN_SLICES: 0,
   MAX_SLICES: 16,

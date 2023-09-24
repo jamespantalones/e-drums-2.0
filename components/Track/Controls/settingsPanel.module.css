@@ -2,10 +2,11 @@
   @apply z-50;
   @apply p-0;
   @apply w-auto h-auto;
-  @apply bg-neutral-300;
+  @apply bg-neutral-800;
   @apply rounded;
   @apply fixed;
   @apply max-w-sm max-h-96;
+  @apply shadow shadow-neutral-300;
   transition: transform 0.1s ease-out, opacity 0.1s ease-out;
   transform: scale3d(0, 0, 0);
   opacity: 0;
@@ -19,7 +20,7 @@
 .strip {
   @apply w-full h-8 relative flex items-center;
   .exit {
-    @apply absolute right-2;
+    @apply absolute right-2 text-neutral-200;
   }
 }
 .top {

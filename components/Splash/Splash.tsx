@@ -5,7 +5,7 @@ export function Splash({ initialize }: { initialize: () => Promise<void> }) {
     <section className={clsx(styles.modal)} tabIndex={-1}>
       <div className={styles.inner}>
         <button
-          className="border-b border-neutral-800 hover:bg-current "
+          className="border-b border-neutral-200 hover:bg-current "
           onClick={initialize}
         >
           <span className="">START</span>

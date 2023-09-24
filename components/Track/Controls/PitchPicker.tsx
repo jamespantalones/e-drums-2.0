@@ -28,9 +28,9 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
     >
       <label className={styles.label}>
         <Range
-          step={1}
+          step={0.2}
           direction={Direction.Up}
-          min={0}
+          min={30}
           max={100}
           values={[rhythm.pitch]}
           onChange={onChange}
@@ -57,7 +57,10 @@ export function PitchPicker({ rhythm }: { rhythm: Track }) {
           )}
         />
 
-        <span className="pointer-events-none">Pitch {rhythm.pitch}</span>
+        <span className="pointer-events-none">
+          Pitch <br />
+          {rhythm.pitch}
+        </span>
       </label>
     </div>
   );
