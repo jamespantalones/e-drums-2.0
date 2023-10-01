@@ -178,4 +178,39 @@ export const SOUNDS: SoundFile[] = [
     defaultFreqRange: [40, 80],
     files: ['32_YP_HEY!.wav'],
   },
+  {
+    name: 'FM BASS 2',
+    defaultFreqRange: [40, 80],
+    files: ['33_FM_BASS_2.wav'],
+  },
+  {
+    name: 'FM CLAP 2',
+    defaultFreqRange: [40, 80],
+    files: ['34_FM_CLAP_2.wav'],
+  },
+  {
+    name: 'FM DIB',
+    defaultFreqRange: [40, 80],
+    files: ['35_FM_DIB.wav'],
+  },
+  {
+    name: 'FM LOW TOM',
+    defaultFreqRange: [40, 80],
+    files: ['36_FM_LOW_TOM.wav'],
+  },
+  {
+    name: 'FM PIANO',
+    defaultFreqRange: [40, 80],
+    files: ['37_FM_PIANO.wav'],
+  },
+  {
+    name: 'FM PLUCK 2',
+    defaultFreqRange: [40, 80],
+    files: ['38_FM_PLUCK_2.wav'],
+  },
+  {
+    name: 'FM SHAKER 2',
+    defaultFreqRange: [40, 80],
+    files: ['39_FM_SHAKER_2.wav'],
+  },
 ];

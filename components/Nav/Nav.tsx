@@ -8,45 +8,14 @@ import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
+import { TempoInput } from './TempoInput';
+
 export function Nav({ save }: { save: () => Promise<void> }) {
-  const { state, methods } = useAudioContext();
-  const tempoButton = React.useRef<null | HTMLButtonElement>(null);
-  const dx = React.useRef<number>(0);
-
-  const slide = React.useCallback(
-    (ev: PointerEvent) => {
-      if (ev.clientX < dx.current) {
-        methods.decrementBpm();
-      } else {
-        methods.incrementBpm();
-      }
-
-      dx.current = ev.clientX;
-    },
-    [methods]
-  );
-
-  const onPointerDown = React.useCallback(
-    (ev: React.PointerEvent<HTMLButtonElement>) => {
-      if (tempoButton.current) {
-        dx.current = ev.clientX;
-        tempoButton.current.onpointermove = throttle(slide, 20);
-        tempoButton.current.setPointerCapture(ev.pointerId);
-      }
-    },
-    [slide]
-  );
-
-  const onPointerUp = React.useCallback(
-    (ev: React.PointerEvent<HTMLButtonElement>) => {
-      if (tempoButton.current) {
-        tempoButton.current.onpointermove = null;
-        tempoButton.current.releasePointerCapture(ev.pointerId);
-        dx.current = ev.clientX;
-      }
-    },
-    []
-  );
+  const {
+    state,
+    methods,
+    methods: { changeBpm },
+  } = useAudioContext();
 
   return (
     <nav className={styles.nav}>
@@ -63,14 +32,9 @@ export function Nav({ save }: { save: () => Promise<void> }) {
             <StopIcon />
           </IconButton>
 
-          <button
-            className={styles['tempo-button']}
-            onPointerDown={onPointerDown}
-            onPointerUp={onPointerUp}
-            ref={tempoButton}
-          >
-            <p style={{ fontSize: '10px' }}>{state.bpm}</p>
-          </button>
+          <div className="-translate-y-1">
+            <TempoInput onChange={changeBpm} label="BPM" value={state.bpm} />
+          </div>
         </div>
 
         <div className="flex">
