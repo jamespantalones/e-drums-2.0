@@ -9,7 +9,7 @@ type Props = {
   fill?: string;
   color?: string;
   onClick?: () => void | any;
-  noBorder?: boolean;
+  border?: boolean;
   disabled?: boolean;
   small?: boolean;
   margin?: boolean;
@@ -24,30 +24,16 @@ const Button = React.forwardRef<HTMLButtonElement, Props>(function Component(
     fill,
     color,
     children,
-    className,
     onClick,
     small,
-    margin,
-    muted,
     disabled,
-    noBorder,
+    border = false,
   } = props;
-  const cx = clsx(
-    'button',
-    'mx-auto',
-    'w-full',
-    'h-auto',
-    'disabled:opacity-50',
-    'disabled:pointer-events-none',
-    className,
-    {
-      [styles.margin]: margin,
-      [styles.button]: !small && !muted,
-      [styles.small]: small && !muted,
-      [styles.muted]: small && muted,
-      [styles['no-border']]: noBorder,
-    }
-  );
+
+  const cx = clsx(styles.button, {
+    [styles.small]: small,
+    [styles.useBorder]: border,
+  });
   return (
     <button
       ref={ref}

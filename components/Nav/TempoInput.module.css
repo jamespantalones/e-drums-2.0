@@ -1,13 +1,12 @@
 .label {
   @apply block -my-4;
   color: var(--color-text);
-  @apply font-mono;
-  font-size: 8px;
+  @apply font-mono text-xxs;
 }
 
 .input {
-  @apply block;
-  @apply text-base;
+  @apply block mt-1;
+  @apply text-xs;
   color: var(--color-bg);
   @apply px-2 py-1 rounded;
 }

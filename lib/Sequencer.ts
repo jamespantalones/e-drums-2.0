@@ -89,7 +89,7 @@ export class Sequencer {
 
   // stop the transport
   stop() {
-    this.transport.pause();
+    this.transport?.pause();
   }
 
   private _setupTransport() {

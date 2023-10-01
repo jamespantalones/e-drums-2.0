@@ -9,6 +9,7 @@ import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
 import { TempoInput } from './TempoInput';
+import Link from 'next/link';
 
 export function Nav({ save }: { save: () => Promise<void> }) {
   const {
@@ -21,11 +22,15 @@ export function Nav({ save }: { save: () => Promise<void> }) {
     <nav className={styles.nav}>
       <section className={styles.section}>
         <div className="flex items-center justify-between ml-1.5">
-          <IconButton margin onClick={methods.play}>
+          <Link href="/" className="underline -skew-x-12 block text-sm">
+            Rhythmo Sync
+          </Link>
+
+          <IconButton small onClick={methods.play} disabled={state.playing}>
             <PlayIcon />
           </IconButton>
           <IconButton
-            margin
+            small
             onClick={methods.stop}
             disabled={!state.initialized}
           >
@@ -40,8 +45,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
         <div className="flex">
           <IconButton
             onClick={methods.createTrack}
-            noBorder
-            margin
+            small
             disabled={
               state.tracks.length === Config.MAX_TRACKS || !state.initialized
             }
@@ -49,7 +53,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
             <NewIcon />
           </IconButton>
 
-          <IconButton onClick={save} noBorder margin>
+          <IconButton onClick={save} small>
             <SaveIcon />
           </IconButton>
         </div>

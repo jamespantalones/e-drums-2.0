@@ -11,7 +11,7 @@
 - [ ] allow pitching individual slices
 - [ ] allow delete of slice via button
 - [ ] print name of track near
-- [ ] bpm slider is hard to use
+- [x] bpm slider is hard to use
 - [ ] allow moving tracks up and down in order
 - [ ] fix black color
 - [ ] muted tracks need opacity change

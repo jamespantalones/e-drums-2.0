@@ -29,6 +29,8 @@ export function TempoInput({
         max="300"
         onChange={handleChange}
         className={styles.input}
+        name="Tempo"
+        autoComplete="off"
       />
     </label>
   );

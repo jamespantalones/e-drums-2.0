@@ -31,6 +31,7 @@ html {
   color: var(--color-text);
   min-height: 100vh;
   min-height: -webkit-fill-available;
+  font-family: 'Spinnaker', sans-serif;
 }
 
 body {
