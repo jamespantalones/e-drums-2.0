@@ -1,8 +1,6 @@
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
-import VolumeMuteIcon from '@mui/icons-material/VolumeMute';
-import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import clsx from 'clsx';
 import {
   ChangeEvent,
@@ -13,33 +11,17 @@ import {
   useState,
 } from 'react';
 import { Slice } from './Slice';
-import More from '@mui/icons-material/MoreHorizOutlined';
-import { SettingsPanel } from './Controls/SettingsPanel';
 import { Config, SOUNDS } from '../../config';
 import { IconButton } from '../IconButton/IconButton';
-import { TempoInput } from '../Nav/TempoInput';
+import { Knob } from '../inputs/Knob';
 
 export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
-  const [settingsPanelOpen, setSettingsPanelOpen] = useState(false);
   const [muted, setMuted] = useState(false);
   const {
-    methods,
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
 
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
-
-  const panel = useRef<HTMLDialogElement | null>(null);
-
-  const openSettingsPanel = useCallback(() => {
-    panel.current!.showModal();
-    setSettingsPanelOpen(true);
-  }, []);
-
-  const closeSettingsPanel = useCallback(() => {
-    setSettingsPanelOpen(false);
-    panel.current!.close();
-  }, []);
 
   const addNote = useCallback(() => {
     setTrackVal(rhythm, { method: 'addNote' });
@@ -74,6 +56,32 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     [setTrackVal, rhythm]
   );
 
+  const handlePitchChange = useCallback(
+    (val: number) => {
+      console.log({ val });
+      if (val) {
+        setTrackVal(rhythm, {
+          method: 'changePitch',
+          value: val,
+        });
+      }
+    },
+    [setTrackVal, rhythm]
+  );
+
+  const handleVolumeChange = useCallback(
+    (val: number) => {
+      console.log({ val });
+      if (val) {
+        setTrackVal(rhythm, {
+          method: 'changeVolume',
+          value: val,
+        });
+      }
+    },
+    [setTrackVal, rhythm]
+  );
+
   useEffect(() => {
     if (rhythm.pattern.length === 0) {
       deleteTrack(rhythm.id);
@@ -97,43 +105,35 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
                 [styles.muted]: rhythm.muted,
               })}
             ></button>
-            <div>
-              <select
-                value={rhythm.instrument?.sound.name}
-                className={styles['edit-name']}
-                onChange={handleInstrumentChange}
-              >
-                {SOUNDS.map((sound) => (
-                  <option key={sound.name} value={sound.name}>
-                    {sound.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+
+            <select
+              value={rhythm.instrument?.sound.name}
+              className={styles['edit-name']}
+              onChange={handleInstrumentChange}
+            >
+              {SOUNDS.map((sound) => (
+                <option key={sound.name} value={sound.name}>
+                  {sound.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <input type="range" value={rhythm.pitch} />
-
-          <button
+          {/* <button
             className="text-xxs p-2"
             onClick={() => deleteTrack(rhythm.id)}
           >
             DELETE
-          </button>
-
-          <p>knobs here</p>
-
-          {/* <button color="black" onClick={openSettingsPanel}>
-            <More />
           </button> */}
+          <div className="flex">
+            <Knob
+              onChange={handlePitchChange}
+              value={rhythm.pitch}
+              label="PITCH"
+            />
+            <Knob onChange={handleVolumeChange} value={1} label="VOL" />
+          </div>
         </div>
-
-        <SettingsPanel
-          ref={panel}
-          open={settingsPanelOpen}
-          rhythm={rhythm}
-          close={closeSettingsPanel}
-        />
 
         {rhythm.pattern.map((slice, index) => (
           <Slice

@@ -1,0 +1,15 @@
+.wrapper {
+  touch-action: none;
+  label {
+    height: auto;
+    display: block;
+    text-align: center;
+    & div {
+      @apply mx-auto;
+    }
+  }
+  circle,
+  path {
+    fill: transparent;
+  }
+}

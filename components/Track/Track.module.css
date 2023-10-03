@@ -1,10 +1,10 @@
 .section {
   @apply relative;
-  height: 90dvh;
+  height: 95dvh;
   @apply pb-48;
   flex-shrink: 0;
-  width: calc(var(--slice-size) - 0.25rem);
-  margin: 1vw;
+  width: calc(var(--slice-size));
+  margin: 0 1vw 1vw;
   @media (orientation: landscape) {
     height: calc(var(--slice-size) - 0.25rem);
     width: 100vw;
@@ -30,11 +30,16 @@
 }
 
 .edit {
-  width: var(--slice-size);
-  height: var(--slice-size);
+  width: calc(var(--slice-size) + 5px);
+  height: auto;
   flex-shrink: 0;
   flex-grow: 0;
   @apply rounded-sm;
+  @apply sticky top-0;
+  @apply z-50;
+  background: var(--color-bg);
+  opacity: 95%;
+
   & > button {
     @apply block w-full mb-2;
   }
@@ -50,22 +55,28 @@
   line-height: 1;
   @apply p-1 w-full m-0;
   @apply text-center;
-  @apply flex;
+  @apply flex items-center justify-center;
 }
 
 .toggle-mute {
-  @apply w-3 h-3 rounded-full bg-green-500;
-  @apply mr-2 block;
+  width: 12px;
+  height: 12px;
+  @apply rounded-full bg-green-500;
+  @apply mr-0.5 block;
   &.muted {
     @apply bg-red-500;
   }
 }
 
-.edit-name {
+.edit-name-wrapper {
   @apply block;
   background: var(--color-bg);
+}
+
+.edit-name {
   @apply border;
-  width: 68px;
+  background: var(--color-bg);
+  width: 90%;
   @apply text-current;
   @apply rounded-sm px-2 py-1;
 }
