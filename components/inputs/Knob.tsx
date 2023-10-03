@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Basic, White } from 'react-dial-knob';
 import styles from './Knob.module.css';
 
+// https://codepen.io/oscicen/details/LMjLLq
+
 export function Knob({
   label,
   onChange,
