@@ -1,15 +1,68 @@
-.wrapper {
-  touch-action: none;
-  label {
-    height: auto;
-    display: block;
-    text-align: center;
-    & div {
-      @apply mx-auto;
+.label {
+  @apply block relative;
+  &:focus-within {
+    font-width: bold;
+    .outer {
+      border: 1px red !important;
     }
   }
-  circle,
-  path {
-    fill: transparent;
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  input {
+    @apply absolute w-full left-0 right-0 bottom-0 top-0;
+    @apply mx-auto;
+    text-align: center;
+    width: var(--knob-width);
+    height: var(--knob-width);
+    background: transparent;
+    @apply rounded-full;
+    appearance: none;
+    pointer-events: none;
+    @apply text-xs;
+    &:focus {
+      border: 1px solid white;
+    }
+  }
+}
+
+.knob {
+  @apply relative flex;
+  @apply mx-1;
+  --knob-width: calc(var(--radius, 20px) * 2);
+  --gradient: radial-gradient(circle at 10%, transparent 50%, #ddd 90%);
+}
+
+.outer {
+  @apply rounded-full;
+  width: var(--knob-width);
+  height: var(--knob-width);
+  @apply border-current border;
+}
+
+.inner {
+  @apply cursor-pointer;
+  transform: rotate(var(--degrees));
+  width: var(--knob-width);
+  height: var(--knob-width);
+  @apply rounded;
+}
+
+.grip {
+  @apply pointer-events-none;
+  @apply absolute;
+  @apply w-1;
+  @apply h-1/6 bottom-0 left-1/2;
+  transform: translateX(-50%);
+  @apply bg-current;
+  opacity: 50%;
 }

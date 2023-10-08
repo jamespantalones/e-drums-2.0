@@ -34,6 +34,15 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     [rhythm, setTrackVal]
   );
 
+  const removeNoteOnClick = useCallback(
+    (index: number) => {
+      return function handler() {
+        removeNote(index);
+      };
+    },
+    [removeNote]
+  );
+
   const toggleMute = useCallback(() => {
     const track = rhythm.toggleMute();
     setMuted(track.muted);
@@ -58,7 +67,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
 
   const handlePitchChange = useCallback(
     (val: number) => {
-      console.log({ val });
       if (val) {
         setTrackVal(rhythm, {
           method: 'changePitch',
@@ -71,7 +79,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
 
   const handleVolumeChange = useCallback(
     (val: number) => {
-      console.log({ val });
       if (val) {
         setTrackVal(rhythm, {
           method: 'changeVolume',
@@ -127,29 +134,41 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
           </button> */}
           <div className="flex">
             <Knob
+              label="pitch"
+              step={1}
               onChange={handlePitchChange}
               value={rhythm.pitch}
-              label="PITCH"
+              min={10}
+              max={100}
             />
-            <Knob onChange={handleVolumeChange} value={1} label="VOL" />
+            <Knob
+              onChange={handleVolumeChange}
+              value={rhythm.volume}
+              label="vol"
+              min={0.1}
+              max={4}
+              step={0.1}
+            />
           </div>
         </div>
 
         {rhythm.pattern.map((slice, index) => (
-          <Slice
-            key={`${rhythm.id}-${slice}-${index}`}
-            index={index}
-            rhythm={rhythm}
-            length={length}
-            removeNote={removeNote}
-          />
+          <div key={`${rhythm.id}-${slice}-${index}`}>
+            <Slice
+              key={`${rhythm.id}-${slice}-${index}`}
+              index={index}
+              rhythm={rhythm}
+              length={length}
+              removeNote={removeNote}
+            />
+            <button onClick={removeNoteOnClick(index)}>-</button>
+          </div>
         ))}
 
         {rhythm.totalNotes < Config.MAX_SLICES && (
           <div>
             <IconButton
               onClick={addNote}
-              layout
               color="black"
               transition={{ duration: 0.2 }}
             >

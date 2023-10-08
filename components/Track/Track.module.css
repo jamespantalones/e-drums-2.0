@@ -8,6 +8,7 @@
   @media (orientation: landscape) {
     height: calc(var(--slice-size) - 0.25rem);
     width: 100vw;
+    margin: 2vw 0;
     @apply pb-0;
   }
 }
@@ -44,7 +45,7 @@
     @apply block w-full mb-2;
   }
   @media (orientation: landscape) {
-    width: 100px;
+    width: auto;
     height: var(--slice-size);
     @apply my-0 mr-2;
   }
@@ -74,11 +75,11 @@
 }
 
 .edit-name {
-  @apply border;
+  @apply border-b;
   background: var(--color-bg);
   width: 90%;
   @apply text-current;
-  @apply rounded-sm px-2 py-1;
+  @apply rounded-sm px-2 py-2 mb-1;
 }
 
 .add-button {

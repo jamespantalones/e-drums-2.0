@@ -23,7 +23,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
       <section className={styles.section}>
         <div className="flex items-center justify-between ml-1.5">
           <Link href="/" className="underline -skew-x-12 block text-sm">
-            Rhythmo Sync
+            TBZ-9000
           </Link>
 
           <IconButton small onClick={methods.play} disabled={state.playing}>
