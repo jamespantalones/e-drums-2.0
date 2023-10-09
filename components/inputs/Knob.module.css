@@ -1,11 +1,10 @@
 .label {
   @apply block relative;
-  &:focus-within {
-    font-width: bold;
-    .outer {
-      border: 1px red !important;
-    }
-  }
+  --knob-width: calc(var(--radius, 20px) * 2);
+  width: var(--knob-width);
+  height: var(--knob-width);
+  box-sizing: border-box;
+  @apply mx-1;
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -29,8 +28,10 @@
     appearance: none;
     pointer-events: none;
     @apply text-xs;
+    transition: transform 0.3s ease;
     &:focus {
       border: 1px solid white;
+      user-select: none;
     }
   }
 }
@@ -38,7 +39,6 @@
 .knob {
   @apply relative flex;
   @apply mx-1;
-  --knob-width: calc(var(--radius, 20px) * 2);
   --gradient: radial-gradient(circle at 10%, transparent 50%, #ddd 90%);
 }
 

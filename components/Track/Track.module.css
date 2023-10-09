@@ -8,7 +8,7 @@
   @media (orientation: landscape) {
     height: calc(var(--slice-size) - 0.25rem);
     width: 100vw;
-    margin: 2vw 0;
+    margin: 40px 0;
     @apply pb-0;
   }
 }
@@ -86,6 +86,25 @@
   @apply bg-neutral-300 w-1/2 h-1/2 flex items-center justify-center;
   @apply hover:bg-neutral-300 rounded-full;
   @media (orientation: landscape) {
-    @apply bg-neutral-500 w-12 h-12 flex items-center justify-center rounded-full hover:bg-neutral-300 -translate-x-4;
+    @apply bg-neutral-500 w-12 h-12 flex items-center justify-center rounded-full hover:bg-neutral-300;
   }
+}
+
+.delete-slice-button {
+  @apply hidden;
+  --margin: 10px;
+  @media (orientation: landscape) {
+    @apply w-12 p-1;
+    margin: 0 auto;
+    @apply block;
+    @apply h-6;
+    @apply hover:bg-red-500;
+    @apply border border-current flex items-center justify-center;
+  }
+}
+
+.delete-button {
+  @apply text-xs uppercase mx-auto w-12;
+  @apply mx-auto block my-2 border border-current;
+  @apply p-1;
 }

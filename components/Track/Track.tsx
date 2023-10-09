@@ -138,17 +138,26 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
               step={1}
               onChange={handlePitchChange}
               value={rhythm.pitch}
-              min={10}
-              max={100}
+              min={30}
+              max={70}
             />
             <Knob
               onChange={handleVolumeChange}
               value={rhythm.volume}
               label="vol"
               min={0.1}
-              max={4}
-              step={0.1}
+              max={2}
+              step={0.01}
             />
+          </div>
+          <div>
+            <button
+              className={styles['delete-button']}
+              title="Delete Track"
+              onClick={() => deleteTrack(rhythm.id)}
+            >
+              Del
+            </button>
           </div>
         </div>
 
@@ -161,17 +170,18 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
               length={length}
               removeNote={removeNote}
             />
-            <button onClick={removeNoteOnClick(index)}>-</button>
+            <button
+              onClick={removeNoteOnClick(index)}
+              className={styles['delete-slice-button']}
+            >
+              -
+            </button>
           </div>
         ))}
 
         {rhythm.totalNotes < Config.MAX_SLICES && (
           <div>
-            <IconButton
-              onClick={addNote}
-              color="black"
-              transition={{ duration: 0.2 }}
-            >
+            <IconButton onClick={addNote} color="black">
               <div className={styles['add-button']}>
                 <span className="-translate-y-0.5">+</span>
               </div>

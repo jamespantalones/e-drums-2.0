@@ -32,7 +32,7 @@ export function Knob(props: KnobProps) {
 
   let startAngle = (360 - degrees) / 2;
   let endAngle = startAngle + degrees;
-  value = parseFloat(value.toFixed(2));
+  value = parseFloat(value.toFixed(1));
 
   let [deg, setDeg] = useState(
     convertRange(min, max, startAngle, endAngle, value)
@@ -47,8 +47,10 @@ export function Knob(props: KnobProps) {
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
     const nextVal = parseFloat(ev.target.value);
 
-    onChange(nextVal);
-    setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
+    if (nextVal <= max && nextVal >= min) {
+      onChange(nextVal);
+      setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
+    }
   }
 
   const handlePointerMove = useCallback(
