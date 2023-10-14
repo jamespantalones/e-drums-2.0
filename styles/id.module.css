@@ -1,0 +1,5 @@
+.reorder {
+  @apply w-4 h-4;
+  @apply bg-pink-200;
+  @apply z-40 cursor-grab;
+}

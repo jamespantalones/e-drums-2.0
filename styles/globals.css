@@ -34,33 +34,17 @@ html {
   font-family: sans-serif;
 }
 
-body {
-  @apply w-full;
-  @apply h-full;
-  @apply min-h-screen;
-}
-
 button {
   @apply select-none;
 }
 
 .edit__area {
-  @apply px-2;
-  min-height: 100dvh;
-  width: 100%;
+  @apply px-1;
+  margin-top: 90px;
   display: flex;
-  overflow-x: auto;
-  overflow-y: auto;
-  align-items: flex-start;
-  padding: 0 2vw 0 1vw;
-  @media (hover: hover) {
-    overflow-y: auto;
-  }
+  flex-direction: row;
+
   @media (orientation: landscape) {
-    min-width: 100dvw;
-    height: 100%;
-    display: block;
-    overflow-x: auto;
-    overflow-y: auto;
+    flex-direction: column;
   }
 }

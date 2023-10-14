@@ -1,43 +1,19 @@
+.container {
+  @apply block h-auto;
+  --knob-width: calc(var(--radius, 20px) * 2);
+}
+
 .label {
   @apply block relative;
-  --knob-width: calc(var(--radius, 20px) * 2);
-  width: var(--knob-width);
-  height: var(--knob-width);
+
   box-sizing: border-box;
-  @apply mx-1;
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  input[type='number'] {
-    -moz-appearance: textfield;
-  }
-
-  input {
-    @apply absolute w-full left-0 right-0 bottom-0 top-0;
-    @apply mx-auto;
-    text-align: center;
-    width: var(--knob-width);
-    height: var(--knob-width);
-    background: transparent;
-    @apply rounded-full;
-    appearance: none;
-    pointer-events: none;
-    @apply text-xs;
-    transition: transform 0.3s ease;
-    &:focus {
-      border: 1px solid white;
-      user-select: none;
-    }
-  }
+  @apply mx-0.5;
 }
 
 .knob {
   @apply relative flex;
+  width: var(--knob-width);
+  height: var(--knob-width);
   @apply mx-1;
   --gradient: radial-gradient(circle at 10%, transparent 50%, #ddd 90%);
 }
@@ -60,9 +36,36 @@
 .grip {
   @apply pointer-events-none;
   @apply absolute;
-  @apply w-1;
-  @apply h-1/6 bottom-0 left-1/2;
+  @apply w-0.5;
+  @apply h-1/2 bottom-0 left-1/2;
   transform: translateX(-50%);
   @apply bg-current;
   opacity: 50%;
+}
+
+input.input {
+  @apply block;
+  width: var(--knob-width);
+  @apply text-center;
+  @apply mx-auto -mt-0.5;
+  @apply bg-transparent;
+  font-size: 8px;
+  transition: transform 0.3s ease;
+  border: 1px solid transparent;
+  &:focus {
+    border: 1px solid white;
+    user-select: none;
+  }
+  appearance: none;
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
 }

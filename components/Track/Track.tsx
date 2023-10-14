@@ -1,19 +1,21 @@
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
-import { scaleLinear } from 'd3-scale';
 import clsx from 'clsx';
-import { ChangeEvent, useCallback, useEffect, useMemo } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Slice } from './Slice';
 import { Config, SOUNDS } from '../../config';
 import { IconButton } from '../IconButton/IconButton';
 import { Knob } from '../inputs/Knob';
+import { Reorder, useDragControls } from 'framer-motion';
 
 export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
 
+  const [editPitch, setEditPitch] = useState(false);
+  const controls = useDragControls();
   const { length } = useMemo(() => rhythm.pattern, [rhythm.pattern]);
 
   const addNote = useCallback(() => {
@@ -89,7 +91,10 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
   }, [rhythm.pattern.length, rhythm.id, deleteTrack]);
 
   return (
-    <section
+    <Reorder.Item
+      dragListener={false}
+      dragControls={controls}
+      value={rhythm}
       className={clsx(styles.section, {})}
       data-color={rhythm.color}
       style={style}
@@ -97,6 +102,10 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
       <div className={clsx(styles['track-wrapper'], styles.group)}>
         {/* MUTE BUTTON */}
         <div className={styles.edit}>
+          <div
+            className="w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing"
+            onPointerDown={(event) => controls.start(event)}
+          />
           <div className={styles['top-edit-row']}>
             <button
               onClick={toggleMute}
@@ -119,7 +128,7 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
             </select>
           </div>
 
-          <div className="flex">
+          <div className="flex w-full items-center justify-between px-2">
             <Knob
               label="pitch"
               step={1}
@@ -137,13 +146,18 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
               step={1}
             />
           </div>
-          <div>
+          <div className="flex items-center justify-between w-full my-1 px-2">
             <button
-              className={styles['delete-button']}
-              title="Delete Track"
-              onClick={() => deleteTrack(rhythm.id)}
+              onClick={() => setEditPitch((p) => !p)}
+              className="text-xxs border p-1 rounded opacity-50 hover:opacity-100 transition-opacity"
             >
-              Del
+              PITCH
+            </button>
+            <button
+              onClick={() => deleteTrack(rhythm.id)}
+              className={styles['delete-slice-button']}
+            >
+              -
             </button>
           </div>
         </div>
@@ -155,13 +169,19 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
               index={index}
               rhythm={rhythm}
               length={length}
+              editPitch={editPitch}
             />
-            <button
-              onClick={removeNoteOnClick(index)}
-              className={styles['delete-slice-button']}
-            >
-              -
-            </button>
+            <div className="w-full mx-auto text-center">
+              <button
+                onClick={removeNoteOnClick(index)}
+                className={clsx(
+                  styles['delete-slice-button'],
+                  'mx-auto w-full'
+                )}
+              >
+                -
+              </button>
+            </div>
           </div>
         ))}
 
@@ -175,6 +195,6 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
           </div>
         )}
       </div>
-    </section>
+    </Reorder.Item>
   );
 }

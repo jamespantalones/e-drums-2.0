@@ -87,6 +87,7 @@ export type AudioContextReturnType = {
       index: number,
       type: 'INCREMENT' | 'DECREMENT'
     ) => void;
+    reorderTracks: (e: any) => void;
     toggleTick: (id: string, index: number) => void;
     setTrackVal: (track: Track, action: TrackAction) => Promise<Track>;
   };

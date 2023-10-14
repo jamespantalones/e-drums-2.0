@@ -1,11 +1,13 @@
 import type { NextPage } from 'next';
 import * as React from 'react';
-import { Splash } from '../components/Splash/Splash';
+import { Reorder, useDragControls } from 'framer-motion';
 import { Nav } from '../components/Nav/Nav';
 import { TrackItem } from '../components/Track/Track';
 import { useAudioContext } from '../contexts/AudioContext';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
+
+import styles from '../styles/id.module.css';
 
 const Home: NextPage = () => {
   const {
@@ -13,10 +15,13 @@ const Home: NextPage = () => {
   } = useRouter();
 
   const {
-    state: { tracks, initialized },
+    state: { tracks },
     initialize,
     sequencer,
+    methods,
   } = useAudioContext();
+
+  const controls = useDragControls();
 
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
@@ -42,11 +47,16 @@ const Home: NextPage = () => {
     <>
       <Nav save={save} />
       <main>
-        <div className="edit__area">
+        <Reorder.Group
+          axis="y"
+          className="edit__area"
+          onReorder={methods.reorderTracks}
+          values={tracks}
+        >
           {tracks.map((rhythm, index) => (
             <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
           ))}
-        </div>
+        </Reorder.Group>
       </main>
     </>
   );

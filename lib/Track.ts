@@ -10,7 +10,7 @@ import {
 } from './utils';
 import { scaleLinear } from 'd3-scale';
 
-export const volumeScale = scaleLinear([0, 100], [0, 3]);
+export const volumeScale = scaleLinear([0, 100], [0, 4]);
 
 export class Track {
   public color: string;
@@ -27,8 +27,6 @@ export class Track {
   public prevVolume: number;
 
   public id: string;
-
-  public index: number;
 
   public muted: boolean;
 
@@ -49,7 +47,6 @@ export class Track {
   constructor(opts: TrackOpts) {
     const [color, hue] = generateRandomColor();
     this.id = opts.id || generateId();
-    this.index = opts.index;
     this.updateSelfInParent = opts.updateSelfInParent;
     this.onNotes = opts.onNotes || 4;
     this.totalNotes = opts.totalNotes || 8;

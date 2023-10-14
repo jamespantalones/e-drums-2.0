@@ -23,13 +23,14 @@ export function Knob(props: KnobProps) {
     min,
     max,
     step,
-    radius = 30,
+    radius = 15,
     degrees = 270,
     label = '',
   } = props;
 
   let { value } = props;
 
+  const [localValue, setLocalValue] = useState(value);
   let startAngle = (360 - degrees) / 2;
   let endAngle = startAngle + degrees;
 
@@ -44,12 +45,31 @@ export function Knob(props: KnobProps) {
   const controller = useRef<AbortController | null>(null);
 
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
+    // convert to a number
     const nextVal = parseInt(ev.target.value, 10);
 
-    if (nextVal <= max && nextVal >= min) {
-      onChange(nextVal);
-      setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
+    setLocalValue(nextVal);
+    // set degrees if we can
+    setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
+  }
+
+  function handleBlur() {
+    // send local value upstream
+
+    let nextVal = localValue;
+
+    if (localValue > max) {
+      nextVal = max;
     }
+    if (localValue < min) {
+      nextVal = min;
+    }
+
+    onChange(nextVal);
+    setDeg(convertRange(min, max, startAngle, endAngle, nextVal));
+
+    //reset local val within bounds
+    setLocalValue(nextVal);
   }
 
   const handlePointerMove = useCallback(
@@ -78,6 +98,7 @@ export function Knob(props: KnobProps) {
       });
 
       onChange(newVal);
+      setLocalValue(newVal);
 
       // add some logic to not update degree if the jump
       // is significant
@@ -86,6 +107,8 @@ export function Knob(props: KnobProps) {
   );
 
   const handlePointerUp = useCallback((ev: PointerEvent) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     pointerDown.current = false;
     center.current = { x: 0, y: 0 };
 
@@ -97,32 +120,41 @@ export function Knob(props: KnobProps) {
     controller.current = null;
   }, []);
 
-  const handlePointerDown = useCallback(() => {
-    pointerDown.current = true;
+  /**
+   * Pointer down
+   */
+  const handlePointerDown = useCallback(
+    (ev: React.PointerEvent<HTMLDivElement>) => {
+      pointerDown.current = true;
 
-    const rect = dom.current?.getBoundingClientRect();
+      const rect = dom.current?.getBoundingClientRect();
 
-    if (!rect) return;
+      if (!rect) return;
 
-    controller.current = new AbortController();
+      ev.preventDefault();
+      ev.stopPropagation();
 
-    const { x, y, width, height } = rect;
+      controller.current = new AbortController();
 
-    center.current = { x: x + width / 2, y: y + height / 2 };
+      const { x, y, width, height } = rect;
 
-    document.addEventListener('pointerup', handlePointerUp, {
-      passive: true,
-      signal: controller.current.signal,
-    });
-    document.addEventListener('pointermove', handlePointerMove, {
-      passive: true,
-      signal: controller.current.signal,
-    });
-  }, [pointerDown, handlePointerMove, handlePointerUp]);
+      center.current = { x: x + width / 2, y: y + height / 2 };
+
+      document.addEventListener('pointerup', handlePointerUp, {
+        passive: true,
+        signal: controller.current.signal,
+      });
+      document.addEventListener('pointermove', handlePointerMove, {
+        passive: true,
+        signal: controller.current.signal,
+      });
+    },
+    [pointerDown, handlePointerMove, handlePointerUp]
+  );
 
   return (
-    <label
-      className={styles.label}
+    <div
+      className={styles.container}
       style={
         {
           '--radius': `${radius}px`,
@@ -130,14 +162,6 @@ export function Knob(props: KnobProps) {
         } as React.CSSProperties
       }
     >
-      <input
-        type="number"
-        min={min}
-        max={max}
-        step={step}
-        value={value.toFixed(1)}
-        onChange={handleChange}
-      />
       <div
         className={clsx(styles.knob, styles.outer)}
         ref={dom}
@@ -147,6 +171,20 @@ export function Knob(props: KnobProps) {
           <div className={clsx(styles.grip)} />
         </div>
       </div>
-    </label>
+      <label className={styles.label}>
+        <p className="uppercase text-center mt-1" style={{ fontSize: '7px' }}>
+          {label}
+        </p>
+
+        <input
+          type="number"
+          className={styles.input}
+          step={step}
+          value={Number.isNaN(localValue) ? '' : localValue.toFixed(0)}
+          onChange={handleChange}
+          onBlur={handleBlur}
+        />
+      </label>
+    </div>
   );
 }

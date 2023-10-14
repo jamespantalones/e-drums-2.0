@@ -177,6 +177,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     [dispatch]
   );
 
+  const reorderTracks = useCallback((tracks: Track[]) => {
+    dispatch({ type: 'UPDATE_TRACKS', value: tracks });
+  }, []);
+
   const save = useCallback(async () => {
     if (seq.current) {
       const { state: seqState } = seq.current;
@@ -201,6 +205,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     sequencer: seq.current,
     methods: {
       deleteTrack,
+      reorderTracks,
       play,
       stop,
       clear,

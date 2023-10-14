@@ -53,6 +53,12 @@ export const SOUNDS: SoundFile[] = [
   },
 
   {
+    name: 'DOG',
+    defaultFreqRange: [20, 80],
+    files: ['7_FM_DOG.wav'],
+  },
+
+  {
     name: 'HAT1',
     defaultFreqRange: [20, 80],
     files: ['8_FM_HH.wav'],

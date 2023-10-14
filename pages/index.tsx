@@ -1,9 +1,5 @@
 import type { NextPage } from 'next';
 import * as React from 'react';
-import { Splash } from '../components/Splash/Splash';
-import { Nav } from '../components/Nav/Nav';
-import { TrackItem } from '../components/Track/Track';
-import { useAudioContext } from '../contexts/AudioContext';
 import Link from 'next/link';
 import { generateId } from '../utils';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';

@@ -1,14 +1,12 @@
 .section {
   @apply relative;
-  height: 95dvh;
-  @apply pb-48;
   flex-shrink: 0;
-  width: calc(var(--slice-size));
-  margin: 0 1vw 1vw;
+  --track-margin: 0.25rem;
+  width: calc(var(--slice-size) + (var(--track-margin) * 2));
   @media (orientation: landscape) {
-    height: calc(var(--slice-size) - 0.25rem);
-    width: 100vw;
-    margin: 40px 0;
+    --track-margin: 0.15rem;
+    height: auto;
+    width: auto;
     @apply pb-0;
   }
 }
@@ -21,12 +19,9 @@
   @apply relative;
   width: var(--slice-size);
   transition: transform 0.2s ease;
-  &.shift {
-    transform: translate3d(0, 0, 0);
-  }
   @media (orientation: landscape) {
-    height: var(--slice-size);
-    width: 100%;
+    height: auto;
+    width: unset;
     @apply flex items-start justify-start;
   }
 }
@@ -36,7 +31,7 @@
   height: auto;
   flex-shrink: 0;
   flex-grow: 0;
-  @apply rounded-sm;
+
   @apply sticky top-0;
   /* @apply z-50; */
   background: var(--color-bg);
@@ -48,6 +43,7 @@
   @media (orientation: landscape) {
     width: auto;
     height: var(--slice-size);
+    position: relative;
   }
 }
 
@@ -94,12 +90,10 @@
   @apply hidden;
   --margin: 10px;
   @media (orientation: landscape) {
-    @apply w-8 h-4 p-2 border rounded-full border-red-300;
+    @apply w-8 h-4 p-1 border rounded-full border-red-300;
     @apply text-red-300;
-    margin: 0 auto;
-    @apply block;
     @apply flex items-center justify-center;
-    @apply opacity-20;
+    @apply opacity-30;
     @apply transition-transform;
     &:hover,
     &:focus {
@@ -114,5 +108,4 @@
 .delete-button {
   @apply text-xs uppercase mx-auto w-12;
   @apply mx-auto block my-2 border border-current;
-  @apply p-1;
 }

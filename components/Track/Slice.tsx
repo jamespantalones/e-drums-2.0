@@ -24,10 +24,6 @@ export function Slice({
   } = useAudioContext();
 
   const id = useId();
-  let div = useRef<HTMLDivElement>();
-
-  const x = useRef<number | undefined>(undefined);
-  const y = useRef<number | undefined>(undefined);
 
   const handleClick = useCallback(() => {
     toggleTick(rhythm.id, index);

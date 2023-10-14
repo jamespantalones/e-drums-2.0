@@ -8,7 +8,7 @@
   height: var(--slice-size);
 }
 
-button.slice {
+.slice {
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
@@ -23,7 +23,7 @@ button.slice {
 }
 
 /* tick */
-button.slice.active {
+.slice.active {
   &::after {
     content: '';
     @apply block w-full h-full;
@@ -33,13 +33,13 @@ button.slice.active {
 }
 
 /* pressed */
-button.slice.enabled {
+.slice.enabled {
   filter: none;
   opacity: 1;
 }
 
 /* tick & pressed */
-button.slice.enabled.active {
+.slice.enabled.active {
   opacity: 1;
   &::after {
     content: '';
@@ -47,6 +47,11 @@ button.slice.enabled.active {
     @apply bg-current;
     @apply opacity-60;
   }
+}
+
+.toggle {
+  @apply cursor-pointer;
+  @apply w-full h-full;
 }
 
 .pitch {
@@ -88,8 +93,8 @@ button.slice.enabled.active {
   @apply absolute w-full h-full;
   @apply bottom-0 left-0 right-0 top-0;
   @apply flex justify-center items-center;
-  @apply text-xs font-light text-center;
-  color: transparent;
-  text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+  @apply text-sm;
+  @apply font-sans;
+  color: var(--color-bg);
   @apply pointer-events-none;
 }
