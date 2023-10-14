@@ -94,12 +94,20 @@
   @apply hidden;
   --margin: 10px;
   @media (orientation: landscape) {
-    @apply w-12 p-1;
+    @apply w-8 h-4 p-2 border rounded-full border-red-300;
+    @apply text-red-300;
     margin: 0 auto;
     @apply block;
-    @apply h-6;
-    @apply hover:bg-red-500;
-    @apply border border-current flex items-center justify-center;
+    @apply flex items-center justify-center;
+    @apply opacity-20;
+    @apply transition-transform;
+    &:hover,
+    &:focus {
+      @apply opacity-100 scale-110 bg-red-100 text-red-700;
+    }
+    &:active {
+      @apply scale-90;
+    }
   }
 }
 

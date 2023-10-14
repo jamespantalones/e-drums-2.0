@@ -63,6 +63,8 @@ export function Slice({
         y: Math.abs(ev.clientY - y.current!),
       };
 
+      toggleParentActive(false);
+
       if (Number.isNaN(d.x)) {
         console.log(ev.clientX, x.current);
       }
@@ -86,6 +88,8 @@ export function Slice({
       x.current = ev.clientX;
       y.current = ev.clientY;
 
+      toggleParentActive(true);
+
       // @ts-expect-error
       window.onpointerup = handlePointerUp;
     },
@@ -105,80 +109,82 @@ export function Slice({
   });
 
   return (
-    <div
-      ref={div}
-      key={`${rhythm.id}-${index}-${id}`}
-      className={styles['slice-outer']}
-      onPointerUp={handlePointerUp}
-      onPointerDown={handlePointerDown}
-      onDrag={(e) => {
-        console.log(e.x, e.y);
-      }}
-      onDragStart={(e) => {
-        // Add the class to the div while dragging
-        (e.target as HTMLElement).classList.add(styles['is-dragging']);
+    <AnimatePresence>
+      <motion.div
+        ref={div}
+        key={`${rhythm.id}-${index}-${id}`}
+        className={styles['slice-outer']}
+        onPointerUp={handlePointerUp}
+        onPointerDown={handlePointerDown}
+        onDrag={(e) => {
+          console.log(e.x, e.y);
+        }}
+        onDragStart={(e) => {
+          // Add the class to the div while dragging
+          (e.target as HTMLElement).classList.add(styles['is-dragging']);
 
-        // bump z-index of parent
+          // bump z-index of parent
 
-        toggleParentActive(true);
-      }}
-      onDragEnd={(e) => {
-        // Remove the class after dragging
-        (e.target as HTMLElement).classList.remove(styles['is-dragging']);
-        toggleParentActive(false);
-      }}
-    >
-      {!editPitch && (
-        <button
-          key={index}
-          className={clsx(styles.slice, {
-            [styles.active]: tick % length === index,
-            [styles.enabled]: rhythm.pattern[index],
-          })}
-          type="button"
-          onClick={handleClick}
-        />
-      )}
-      {editPitch && (
-        <div
-          className={clsx(styles.slice, {
-            [styles.active]: tick % length === index,
-            [styles.enabled]: rhythm.pattern[index],
-          })}
-        >
-          {rhythm.pattern[index] > 0 && (
-            <>
+          toggleParentActive(true);
+        }}
+        onDragEnd={(e) => {
+          // Remove the class after dragging
+          (e.target as HTMLElement).classList.remove(styles['is-dragging']);
+          toggleParentActive(false);
+        }}
+      >
+        {!editPitch && (
+          <button
+            key={index}
+            className={clsx(styles.slice, {
+              [styles.active]: tick % length === index,
+              [styles.enabled]: rhythm.pattern[index],
+            })}
+            type="button"
+            onClick={handleClick}
+          />
+        )}
+        {editPitch && (
+          <div
+            className={clsx(styles.slice, {
+              [styles.active]: tick % length === index,
+              [styles.enabled]: rhythm.pattern[index],
+            })}
+          >
+            {rhythm.pattern[index] > 0 && (
+              <>
+                <button
+                  className={clsx(styles.pitch, styles.top)}
+                  onClick={incrementPitch}
+                >
+                  <Add />
+                </button>
+                <button
+                  className={clsx(styles.pitch, styles.bottom)}
+                  onClick={decrementPitch}
+                >
+                  <Remove />
+                </button>
+              </>
+            )}
+
+            {rhythm.pattern[index] === 0 && (
               <button
-                className={clsx(styles.pitch, styles.top)}
-                onClick={incrementPitch}
-              >
-                <Add />
-              </button>
-              <button
-                className={clsx(styles.pitch, styles.bottom)}
-                onClick={decrementPitch}
-              >
-                <Remove />
-              </button>
-            </>
-          )}
+                className={styles.toggle}
+                key={index}
+                type="button"
+                onClick={handleClick}
+              />
+            )}
 
-          {rhythm.pattern[index] === 0 && (
-            <button
-              className={styles.toggle}
-              key={index}
-              type="button"
-              onClick={handleClick}
-            />
-          )}
-
-          {rhythm.pattern[index] > 0 && (
-            <div className={styles['pitch-overlay']}>
-              <span>{rhythm.pitchOffset[index]}</span>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            {rhythm.pattern[index] > 0 && (
+              <div className={styles['pitch-overlay']}>
+                <span>{rhythm.pitchOffset[index]}</span>
+              </div>
+            )}
+          </div>
+        )}
+      </motion.div>
+    </AnimatePresence>
   );
 }

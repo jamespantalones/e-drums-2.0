@@ -51,6 +51,8 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
     setMuted(track.muted);
   }, [rhythm]);
 
+  console.log({ active });
+
   const style: React.CSSProperties = {
     '--color-track': rhythm.color,
     zIndex: active ? 999 : 1,
@@ -83,6 +85,7 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
 
   const toggleParentActive = (value: boolean) => {
     setActive(value);
+    console.log({ active: value });
   };
 
   const handleVolumeChange = useCallback(
@@ -164,7 +167,7 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
         </div>
 
         {rhythm.pattern.map((slice, index) => (
-          <Fragment key={`${rhythm.id}-${slice}-${index}`}>
+          <div key={`${rhythm.id}-${slice}-${index}`}>
             <Slice
               key={`${rhythm.id}-${slice}-${index}`}
               index={index}
@@ -179,7 +182,7 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
             >
               -
             </button>
-          </Fragment>
+          </div>
         ))}
 
         {rhythm.totalNotes < Config.MAX_SLICES && (
