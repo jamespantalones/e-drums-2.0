@@ -4,6 +4,7 @@ import styles from './Track.module.css';
 import clsx from 'clsx';
 import {
   ChangeEvent,
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -15,8 +16,10 @@ import { Config, SOUNDS } from '../../config';
 import { IconButton } from '../IconButton/IconButton';
 import { Knob } from '../inputs/Knob';
 
-export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
+export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
   const [muted, setMuted] = useState(false);
+  const [active, setActive] = useState(false);
+
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
@@ -50,6 +53,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
 
   const style: React.CSSProperties = {
     '--color-track': rhythm.color,
+    zIndex: active ? 999 : 1,
   } as React.CSSProperties;
 
   const handleInstrumentChange = useCallback(
@@ -77,6 +81,10 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
     [setTrackVal, rhythm]
   );
 
+  const toggleParentActive = (value: boolean) => {
+    setActive(value);
+  };
+
   const handleVolumeChange = useCallback(
     (val: number) => {
       if (val) {
@@ -101,7 +109,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
       data-color={rhythm.color}
       style={style}
     >
-      <div className={clsx(styles['slice-wrapper'], styles.group)}>
+      <div className={clsx(styles['track-wrapper'], styles.group)}>
         {/* MUTE BUTTON */}
         <div className={styles.edit}>
           <div className={styles['top-edit-row']}>
@@ -126,12 +134,6 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
             </select>
           </div>
 
-          {/* <button
-            className="text-xxs p-2"
-            onClick={() => deleteTrack(rhythm.id)}
-          >
-            DELETE
-          </button> */}
           <div className="flex">
             <Knob
               label="pitch"
@@ -141,14 +143,14 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
               min={30}
               max={70}
             />
-            <Knob
+            {/* <Knob
               onChange={handleVolumeChange}
               value={rhythm.volume}
               label="vol"
               min={0.1}
               max={2}
               step={0.01}
-            />
+            /> */}
           </div>
           <div>
             <button
@@ -162,13 +164,14 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
         </div>
 
         {rhythm.pattern.map((slice, index) => (
-          <div key={`${rhythm.id}-${slice}-${index}`}>
+          <Fragment key={`${rhythm.id}-${slice}-${index}`}>
             <Slice
               key={`${rhythm.id}-${slice}-${index}`}
               index={index}
               rhythm={rhythm}
               length={length}
               removeNote={removeNote}
+              toggleParentActive={toggleParentActive}
             />
             <button
               onClick={removeNoteOnClick(index)}
@@ -176,7 +179,7 @@ export function TrackItem({ rhythm }: { index: number; rhythm: Track }) {
             >
               -
             </button>
-          </div>
+          </Fragment>
         ))}
 
         {rhythm.totalNotes < Config.MAX_SLICES && (

@@ -17,7 +17,8 @@
   @apply w-full h-full absolute top-0;
 }
 
-.slice-wrapper {
+.track-wrapper {
+  @apply relative;
   width: var(--slice-size);
   transition: transform 0.2s ease;
   &.shift {
@@ -37,7 +38,7 @@
   flex-grow: 0;
   @apply rounded-sm;
   @apply sticky top-0;
-  @apply z-50;
+  /* @apply z-50; */
   background: var(--color-bg);
   opacity: 95%;
 
@@ -47,7 +48,6 @@
   @media (orientation: landscape) {
     width: auto;
     height: var(--slice-size);
-    @apply my-0 mr-2;
   }
 }
 
