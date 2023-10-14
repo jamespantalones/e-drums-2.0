@@ -12,15 +12,11 @@ export function Slice({
   editPitch,
   length,
   rhythm,
-  removeNote,
-  toggleParentActive,
 }: {
   editPitch?: boolean;
   length: number;
   index: number;
   rhythm: Track;
-  toggleParentActive: (val: boolean) => void;
-  removeNote: (index: number) => void;
 }) {
   const {
     state: { tick },

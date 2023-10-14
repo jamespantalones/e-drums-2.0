@@ -13,7 +13,7 @@ export function TempoInput({
   const handleChange = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
       if (ev.target.value) {
-        onChange(parseFloat(ev.target.value));
+        onChange(parseInt(ev.target.value, 10));
       }
     },
     [onChange]

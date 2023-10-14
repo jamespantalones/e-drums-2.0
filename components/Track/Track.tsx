@@ -1,25 +1,15 @@
 import { useAudioContext } from '../../contexts/AudioContext';
 import { Track } from '../../lib/Track';
 import styles from './Track.module.css';
+import { scaleLinear } from 'd3-scale';
 import clsx from 'clsx';
-import {
-  ChangeEvent,
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo } from 'react';
 import { Slice } from './Slice';
 import { Config, SOUNDS } from '../../config';
 import { IconButton } from '../IconButton/IconButton';
 import { Knob } from '../inputs/Knob';
 
 export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
-  const [muted, setMuted] = useState(false);
-  const [active, setActive] = useState(false);
-
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
@@ -47,15 +37,11 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
   );
 
   const toggleMute = useCallback(() => {
-    const track = rhythm.toggleMute();
-    setMuted(track.muted);
+    rhythm.toggleMute();
   }, [rhythm]);
-
-  console.log({ active });
 
   const style: React.CSSProperties = {
     '--color-track': rhythm.color,
-    zIndex: active ? 999 : 1,
   } as React.CSSProperties;
 
   const handleInstrumentChange = useCallback(
@@ -83,14 +69,10 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
     [setTrackVal, rhythm]
   );
 
-  const toggleParentActive = (value: boolean) => {
-    setActive(value);
-    console.log({ active: value });
-  };
-
   const handleVolumeChange = useCallback(
     (val: number) => {
       if (val) {
+        // scale the value
         setTrackVal(rhythm, {
           method: 'changeVolume',
           value: val,
@@ -148,11 +130,11 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
             />
             <Knob
               onChange={handleVolumeChange}
-              value={rhythm.volume}
+              value={rhythm.prevVolume}
               label="vol"
-              min={0.1}
-              max={2}
-              step={0.1}
+              min={0}
+              max={100}
+              step={1}
             />
           </div>
           <div>
@@ -173,8 +155,6 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
               index={index}
               rhythm={rhythm}
               length={length}
-              removeNote={removeNote}
-              toggleParentActive={toggleParentActive}
             />
             <button
               onClick={removeNoteOnClick(index)}

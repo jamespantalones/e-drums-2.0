@@ -8,6 +8,9 @@ import {
   euclideanRhythm,
   generateRandomColor,
 } from './utils';
+import { scaleLinear } from 'd3-scale';
+
+export const volumeScale = scaleLinear([0, 100], [0, 3]);
 
 export class Track {
   public color: string;
@@ -54,7 +57,7 @@ export class Track {
     this.instrument = opts.instrument || null;
     this.color = opts.color || color;
     this.hue = opts.hue || hue;
-    this.volume = opts.volume || 0.3;
+    this.volume = opts.volume || 30;
     this.prevVolume = this.volume;
     this.pitch = opts.pitch || 50;
     this.muted = opts.muted || false;
@@ -106,8 +109,12 @@ export class Track {
   }
 
   public toggleMute(): Track {
+    // flip muted
     this.muted = !this.muted;
+
+    // if now muted
     if (this.muted) {
+      // store the most previous volume
       this.prevVolume = this.volume;
       this.volume = 0;
     } else {
@@ -134,7 +141,7 @@ export class Track {
     const offset =
       Math.random() > 0.5 ? -Math.random() * 1.2 : Math.random() * 1.2;
 
-    this.sampler.triggerAttack(freq + offset, time, this.volume);
+    this.sampler.triggerAttack(freq + offset, time, volumeScale(this.volume));
   }
 
   public addNote(): Track {
@@ -205,7 +212,13 @@ export class Track {
   }
 
   public changeVolume(value: number): Track {
-    this.volume = value;
+    if (this.muted) {
+      this.prevVolume = value;
+    } else {
+      this.volume = value;
+      this.prevVolume = value;
+    }
+
     return this;
   }
 
