@@ -9,4 +9,11 @@
   @apply text-xs;
   color: var(--color-bg);
   @apply px-2 py-1 rounded;
+  background: transparent;
+  color: currentColor;
+  border-radius: 0;
+  font-size: 14px;
+  font-family: sans-serif;
+  font-weight: lighter;
+  border: 1px solid currentColor;
 }

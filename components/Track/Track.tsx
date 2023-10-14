@@ -146,14 +146,14 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
               min={30}
               max={70}
             />
-            {/* <Knob
+            <Knob
               onChange={handleVolumeChange}
               value={rhythm.volume}
               label="vol"
               min={0.1}
               max={2}
-              step={0.01}
-            /> */}
+              step={0.1}
+            />
           </div>
           <div>
             <button

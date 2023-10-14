@@ -21,7 +21,6 @@ export function TempoInput({
 
   return (
     <label className={styles.label}>
-      {label}
       <input
         value={value}
         type="number"
@@ -32,6 +31,7 @@ export function TempoInput({
         name="Tempo"
         autoComplete="off"
       />
+      <span className="block mt-1">TEMPO</span>
     </label>
   );
 }

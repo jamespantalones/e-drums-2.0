@@ -21,9 +21,12 @@ export function Nav({ save }: { save: () => Promise<void> }) {
   return (
     <nav className={styles.nav}>
       <section className={styles.section}>
-        <div className="flex items-center justify-between ml-1.5">
-          <Link href="/" className="underline -skew-x-12 block text-sm">
-            TBZ-9000
+        <div className="flex items-center justify-between ml-1.5 ">
+          <Link
+            href="/"
+            className="block text-sm hover:rotate-180 transition-translate mr-6"
+          >
+            /\
           </Link>
 
           <IconButton small onClick={methods.play} disabled={state.playing}>
