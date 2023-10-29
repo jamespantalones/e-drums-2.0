@@ -178,6 +178,9 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   );
 
   const reorderTracks = useCallback((tracks: Track[]) => {
+    // send copy to sequencer for serialization on save
+    seq.current?.updateTracks(tracks);
+    // send to UI
     dispatch({ type: 'UPDATE_TRACKS', value: tracks });
   }, []);
 

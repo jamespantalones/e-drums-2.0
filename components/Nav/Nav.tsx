@@ -10,6 +10,7 @@ import { useAudioContext } from '../../contexts/AudioContext';
 import { Config } from '../../config';
 import { TempoInput } from './TempoInput';
 import Link from 'next/link';
+import clsx from 'clsx';
 
 export function Nav({ save }: { save: () => Promise<void> }) {
   const {
@@ -24,9 +25,12 @@ export function Nav({ save }: { save: () => Promise<void> }) {
         <div className="flex items-center justify-between ml-1.5 ">
           <Link
             href="/"
-            className="block text-sm hover:rotate-180 transition-translate mr-6"
+            className={clsx(styles.link, 'block text-sm mr-6')}
+            passHref
           >
-            /\
+            <h1>
+              <span className="transition-translate inline-block">/\</span> GB
+            </h1>
           </Link>
 
           <IconButton small onClick={methods.play} disabled={state.playing}>

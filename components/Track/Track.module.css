@@ -1,11 +1,14 @@
 .section {
   @apply relative;
   flex-shrink: 0;
+  flex-grow: 0;
   --track-margin: 0.25rem;
   width: calc(var(--slice-size) + (var(--track-margin) * 2));
+
   @media (orientation: landscape) {
     --track-margin: 0.15rem;
     height: auto;
+    min-height: calc(var(--slice-size) + 20px);
     width: auto;
     @apply pb-0;
   }
@@ -31,7 +34,7 @@
   height: auto;
   flex-shrink: 0;
   flex-grow: 0;
-
+  @apply select-none;
   @apply sticky top-0 left-0;
   /* @apply z-50; */
   background: var(--color-bg);

@@ -7,8 +7,6 @@ import { useAudioContext } from '../contexts/AudioContext';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 
-import styles from '../styles/id.module.css';
-
 const Home: NextPage = () => {
   const {
     query: { id },
@@ -41,7 +39,7 @@ const Home: NextPage = () => {
         initialize();
       }
     });
-  }, [id]);
+  }, [id, loadProjectFromCache, initialize]);
 
   return (
     <>

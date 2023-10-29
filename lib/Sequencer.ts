@@ -141,8 +141,6 @@ export class Sequencer {
     // if transport hasn't been set up.. set it up
     this._setupTransport();
 
-    console.log(context, context.state);
-
     if (context.state === 'suspended') {
       await context.resume();
     }
@@ -219,6 +217,10 @@ export class Sequencer {
 
   public clear() {
     this.state.tracks = this.state.tracks.map((t) => t.noteOff());
+  }
+
+  public updateTracks(tracks: Track[]) {
+    this.state.tracks = tracks;
   }
 
   updateChild = (

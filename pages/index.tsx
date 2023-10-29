@@ -19,14 +19,16 @@ const Home: NextPage = () => {
 
   return (
     <section className="p-4">
-      <h1>E-Rhythms</h1>
+      <h1 className="text-8xl">/\ Gummersbach</h1>
       <ul>
         {projects.map((p) => (
           <li
             key={p}
             className="border-b border-current flex items-center justify-between my-4"
           >
-            <Link href={`/${p}`}>{p}</Link>
+            <Link href={`/${p}`} className="block ">
+              {p}
+            </Link>
             <button
               className="border border-current px-1 mb-2"
               onClick={() => {

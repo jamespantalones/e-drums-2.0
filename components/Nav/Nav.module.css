@@ -7,6 +7,16 @@
   border-bottom: 1px solid;
 }
 
+.link {
+  &:hover {
+    @apply text-yellow-400;
+    span {
+      display: inline-block;
+      @apply rotate-180;
+    }
+  }
+}
+
 .section {
   @apply my-2;
   @apply flex;
