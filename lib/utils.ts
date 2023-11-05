@@ -2,10 +2,16 @@ import * as Tone from 'tone';
 import { generateId } from '../utils';
 import { Config, SOUNDS } from '../config';
 
-export function generateRandomColor(): [string, number] {
-  const hue = Math.floor(Math.random() * 360);
-  const color = `hsl(${hue}, 80%, ${Math.floor(Math.random() * 60) + 20}%)`;
-  return [color, hue];
+export function randomRange(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
+export function generateRandomColor(): [number, number, number] {
+  const hue = randomRange(0, 360);
+  const saturation = randomRange(42, 97);
+  const lightness = randomRange(59, 75);
+
+  return [hue, saturation, lightness];
 }
 
 export function generateTrack(index = 0) {

@@ -13,7 +13,7 @@ import { scaleLinear } from 'd3-scale';
 export const volumeScale = scaleLinear([0, 100], [0, 4]);
 
 export class Track {
-  public color: string;
+  public color: [number, number, number];
 
   public hue: number;
   public onNotes: number;
@@ -45,14 +45,14 @@ export class Track {
   ) => void;
 
   constructor(opts: TrackOpts) {
-    const [color, hue] = generateRandomColor();
+    const [hue, saturation, lightness] = generateRandomColor();
     this.id = opts.id || generateId();
     this.updateSelfInParent = opts.updateSelfInParent;
     this.onNotes = opts.onNotes || 4;
     this.totalNotes = opts.totalNotes || 8;
     this.isReady = false;
     this.instrument = opts.instrument || null;
-    this.color = opts.color || color;
+    this.color = opts.color || [hue, saturation, lightness];
     this.hue = opts.hue || hue;
     this.volume = opts.volume || 30;
     this.prevVolume = this.volume;

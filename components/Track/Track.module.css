@@ -18,6 +18,14 @@
   @apply w-full h-full absolute top-0;
 }
 
+.grab {
+  @apply mt-2 w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing;
+  display: none;
+  @media (orientation: landscape) {
+    display: block;
+  }
+}
+
 .track-wrapper {
   @apply relative;
   width: var(--slice-size);
@@ -36,6 +44,7 @@
   flex-grow: 0;
   @apply select-none;
   @apply sticky top-0 left-0;
+  border-top: 1px solid currentColor;
   /* @apply z-50; */
   background: var(--color-bg);
   opacity: 95%;
@@ -93,7 +102,7 @@
   @apply hidden;
   --margin: 10px;
   @media (orientation: landscape) {
-    @apply w-8 h-4 p-1 border rounded-full border-red-300;
+    @apply w-8 h-4 p-1 border rounded border-red-300;
     @apply text-red-300;
     @apply flex items-center justify-center;
     @apply opacity-30;
@@ -111,4 +120,11 @@
 .delete-button {
   @apply text-xs uppercase mx-auto w-12;
   @apply mx-auto block my-2 border border-current;
+}
+
+.edit-pitch-button {
+  @apply text-xxs border p-1 rounded opacity-50 hover:opacity-100 transition-opacity;
+  &.active {
+    @apply bg-yellow-300 text-background border-background;
+  }
 }

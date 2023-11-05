@@ -8,18 +8,18 @@
   height: var(--slice-size);
 }
 
+/* default slice */
 .slice {
   @apply w-full h-full;
   @apply select-none;
   @apply relative;
   @apply rounded-sm;
-  background: var(--color-track);
-  filter: grayscale(80%);
-  opacity: 0.35;
+  background: hsl(
+    var(--color-track-h) calc(var(--color-track-s) - 40%)
+      calc(var(--color-track-l) - 40%)
+  );
+  /* opacity: 0.35; */
   @apply overflow-hidden;
-  &.is-dragging {
-    background: transparent !important;
-  }
 }
 
 /* tick */
@@ -27,8 +27,11 @@
   &::after {
     content: '';
     @apply block w-full h-full;
-    @apply bg-gray-800;
-    @apply opacity-80;
+    /* @apply bg-gray-300; */
+    background: hsl(
+      var(--color-track-h) calc(var(--color-track-s))
+        calc(var(--color-track-l) - 30%)
+    );
   }
 }
 
@@ -36,6 +39,10 @@
 .slice.enabled {
   filter: none;
   opacity: 1;
+  background: hsl(
+    calc(var(--color-track-h) + 10) calc(var(--color-track-s))
+      calc(var(--color-track-l))
+  );
 }
 
 /* tick & pressed */
@@ -44,8 +51,10 @@
   &::after {
     content: '';
     @apply block w-full h-full;
-    @apply bg-current;
-    @apply opacity-60;
+    /* @apply bg-current; */
+    background: hsl(
+      var(--color-track-h) var(--color-track-s) calc(var(--color-track-l) + 20%)
+    );
   }
 }
 

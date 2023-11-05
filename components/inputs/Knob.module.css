@@ -1,5 +1,6 @@
 .container {
   @apply block h-auto;
+  touch-action: none;
   --knob-width: calc(var(--radius, 20px) * 2);
 }
 

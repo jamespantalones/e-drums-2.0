@@ -22,22 +22,25 @@ const Home: NextPage = () => {
       <h1 className="text-8xl">/\ Gummersbach</h1>
       <ul>
         {projects.map((p) => (
-          <li
-            key={p}
-            className="border-b border-current flex items-center justify-between my-4"
-          >
-            <Link href={`/${p}`} className="block ">
-              {p}
-            </Link>
-            <button
-              className="border border-current px-1 mb-2"
-              onClick={() => {
-                removeFromCache(p);
-              }}
+          <Link href={`/${p}`} className="block " passHref key={p}>
+            <li
+              key={p}
+              className="border-b border-current flex items-center justify-between my-4 hover:bg-current"
             >
-              DEL
-            </button>
-          </li>
+              {p}
+
+              <button
+                className="border border-current px-1 mb-2"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  ev.preventDefault();
+                  removeFromCache(p);
+                }}
+              >
+                DEL
+              </button>
+            </li>
+          </Link>
         ))}
       </ul>
       <button className="border border-current p-2 rounded" onClick={createNew}>

@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        background: 'rgb(28, 28, 28)',
+      },
       fontSize: {
         xxs: ['8px', '8px'],
         xs: ['12px', '12px'],

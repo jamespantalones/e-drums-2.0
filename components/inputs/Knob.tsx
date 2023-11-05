@@ -109,6 +109,7 @@ export function Knob(props: KnobProps) {
   const handlePointerUp = useCallback((ev: PointerEvent) => {
     ev.preventDefault();
     ev.stopPropagation();
+
     pointerDown.current = false;
     center.current = { x: 0, y: 0 };
 
@@ -125,6 +126,9 @@ export function Knob(props: KnobProps) {
    */
   const handlePointerDown = useCallback(
     (ev: React.PointerEvent<HTMLDivElement>) => {
+      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointermove', handlePointerMove);
+
       pointerDown.current = true;
 
       const rect = dom.current?.getBoundingClientRect();
@@ -141,7 +145,6 @@ export function Knob(props: KnobProps) {
       center.current = { x: x + width / 2, y: y + height / 2 };
 
       document.addEventListener('pointerup', handlePointerUp, {
-        passive: true,
         signal: controller.current.signal,
       });
       document.addEventListener('pointermove', handlePointerMove, {

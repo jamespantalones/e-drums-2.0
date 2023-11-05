@@ -45,7 +45,7 @@ export type TrackOpts = {
   totalNotes?: number;
   id?: string;
   pitch?: number;
-  color?: string;
+  color?: [number, number, number];
   hue?: number;
   index: number;
   muted?: boolean;

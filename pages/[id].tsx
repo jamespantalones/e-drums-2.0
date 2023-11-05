@@ -6,6 +6,7 @@ import { TrackItem } from '../components/Track/Track';
 import { useAudioContext } from '../contexts/AudioContext';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
+import isMobile from 'is-mobile';
 
 const Home: NextPage = () => {
   const {
@@ -18,6 +19,7 @@ const Home: NextPage = () => {
     sequencer,
     methods,
   } = useAudioContext();
+  const [mobile] = React.useState(isMobile());
 
   const controls = useDragControls();
 
@@ -41,6 +43,8 @@ const Home: NextPage = () => {
     });
   }, [id, loadProjectFromCache, initialize]);
 
+  // listen for nav changes
+
   return (
     <>
       <Nav save={save} />
@@ -52,7 +56,12 @@ const Home: NextPage = () => {
           values={tracks}
         >
           {tracks.map((rhythm, index) => (
-            <TrackItem key={rhythm.id} rhythm={rhythm} index={index} />
+            <TrackItem
+              key={rhythm.id}
+              rhythm={rhythm}
+              index={index}
+              mobile={mobile}
+            />
           ))}
         </Reorder.Group>
       </main>

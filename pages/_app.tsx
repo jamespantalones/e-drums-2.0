@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import { AudioContextProvider } from '../contexts/AudioContext';
 import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
   useEffect(() => {

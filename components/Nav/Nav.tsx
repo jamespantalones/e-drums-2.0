@@ -16,6 +16,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
   const {
     state,
     methods,
+    sequencer,
     methods: { changeBpm },
   } = useAudioContext();
 
@@ -27,6 +28,11 @@ export function Nav({ save }: { save: () => Promise<void> }) {
             href="/"
             className={clsx(styles.link, 'block text-sm mr-6')}
             passHref
+            onClick={() => {
+              methods.stop();
+              // sequencer?.stop_all();
+              // sequencer?.clear();
+            }}
           >
             <h1>
               <span className="transition-translate inline-block">/\</span> GB

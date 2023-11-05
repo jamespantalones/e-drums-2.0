@@ -9,7 +9,15 @@ import { IconButton } from '../IconButton/IconButton';
 import { Knob } from '../inputs/Knob';
 import { Reorder, useDragControls } from 'framer-motion';
 
-export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
+export function TrackItem({
+  rhythm,
+  index,
+  mobile,
+}: {
+  index: number;
+  rhythm: Track;
+  mobile: boolean;
+}) {
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
@@ -29,6 +37,10 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
     [rhythm, setTrackVal]
   );
 
+  const toggleEditPitch = useCallback(() => {
+    setEditPitch((p) => !p);
+  }, []);
+
   const removeNoteOnClick = useCallback(
     (index: number) => {
       return function handler() {
@@ -42,8 +54,12 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
     rhythm.toggleMute();
   }, [rhythm]);
 
+  // console.log({ color: rhythm.color });
+
   const style: React.CSSProperties = {
-    '--color-track': rhythm.color,
+    '--color-track-h': rhythm.color[0],
+    '--color-track-s': `${rhythm.color[1]}%`,
+    '--color-track-l': `${rhythm.color[2]}%`,
   } as React.CSSProperties;
 
   const handleInstrumentChange = useCallback(
@@ -103,7 +119,7 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
         {/* MUTE BUTTON */}
         <div className={styles.edit}>
           <div
-            className="w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing"
+            className={styles.grab}
             onPointerDown={(event) => controls.start(event)}
           />
           <div className={styles['top-edit-row']}>
@@ -148,8 +164,10 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
           </div>
           <div className="flex items-center justify-between w-full my-1 px-2">
             <button
-              onClick={() => setEditPitch((p) => !p)}
-              className="text-xxs border p-1 rounded opacity-50 hover:opacity-100 transition-opacity"
+              onClick={toggleEditPitch}
+              className={clsx(styles['edit-pitch-button'], {
+                [styles.active]: editPitch,
+              })}
             >
               PITCH
             </button>
@@ -170,6 +188,8 @@ export function TrackItem({ rhythm, index }: { index: number; rhythm: Track }) {
               rhythm={rhythm}
               length={length}
               editPitch={editPitch}
+              removeNote={removeNote}
+              mobile={mobile}
             />
             <div className="w-full mx-auto text-center">
               <button

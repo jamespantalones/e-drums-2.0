@@ -87,6 +87,11 @@ export class Sequencer {
     }
   }
 
+  stop_all() {
+    this.transport?.stop();
+    this.playState = SequencerPlayState.STOPPED;
+  }
+
   // stop the transport
   stop() {
     this.transport?.pause();
