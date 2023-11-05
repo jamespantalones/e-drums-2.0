@@ -140,7 +140,7 @@ export type SerializedTrack = {
   onNotes: number;
   totalNotes: number;
   pitch: number;
-  color?: string;
+  color?: [number, number, number];
   hue?: number;
   audio?: SoundFile;
 };

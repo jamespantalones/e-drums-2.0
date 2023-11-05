@@ -8,8 +8,8 @@ export function randomRange(min: number, max: number) {
 
 export function generateRandomColor(): [number, number, number] {
   const hue = randomRange(0, 360);
-  const saturation = randomRange(42, 97);
-  const lightness = randomRange(59, 75);
+  const saturation = randomRange(52, 97);
+  const lightness = randomRange(59, 90);
 
   return [hue, saturation, lightness];
 }

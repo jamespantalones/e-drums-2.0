@@ -25,12 +25,12 @@ const Home: NextPage = () => {
           <Link href={`/${p}`} className="block " passHref key={p}>
             <li
               key={p}
-              className="border-b border-current flex items-center justify-between my-4 hover:bg-current"
+              className="my-1 flex items-center justify-between p-2 hover:bg-foreground hover:text-background"
             >
               {p}
 
               <button
-                className="border border-current px-1 mb-2"
+                className="border border-current px-1 hover:bg-alert"
                 onClick={(ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
@@ -43,7 +43,10 @@ const Home: NextPage = () => {
           </Link>
         ))}
       </ul>
-      <button className="border border-current p-2 rounded" onClick={createNew}>
+      <button
+        className="fixed bottom-8 right-8 border border-current p-2 rounded hover:bg-foreground hover:text-background"
+        onClick={createNew}
+      >
         + Create New
       </button>
     </section>

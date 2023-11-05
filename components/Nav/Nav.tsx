@@ -35,7 +35,7 @@ export function Nav({ save }: { save: () => Promise<void> }) {
             }}
           >
             <h1>
-              <span className="transition-translate inline-block">/\</span> GB
+              <span className="transition-translate inline-block">/\</span>
             </h1>
           </Link>
 

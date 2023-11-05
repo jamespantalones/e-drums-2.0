@@ -1,5 +1,5 @@
 .label {
-  @apply block -my-4;
+  @apply block mt-5 ml-6;
   color: var(--color-text);
   @apply font-mono text-xxs;
 }
@@ -11,7 +11,7 @@
   @apply px-2 py-1 rounded;
   background: transparent;
   color: currentColor;
-  border-radius: 0;
+  @apply rounded;
   font-size: 14px;
   font-family: sans-serif;
   font-weight: lighter;

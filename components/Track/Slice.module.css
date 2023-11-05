@@ -18,7 +18,7 @@
     var(--color-track-h) calc(var(--color-track-s) - 40%)
       calc(var(--color-track-l) - 40%)
   );
-  /* opacity: 0.35; */
+  opacity: 0.5;
   @apply overflow-hidden;
 }
 
@@ -29,19 +29,18 @@
     @apply block w-full h-full;
     /* @apply bg-gray-300; */
     background: hsl(
-      var(--color-track-h) calc(var(--color-track-s))
-        calc(var(--color-track-l) - 30%)
+      var(--color-track-h) calc(var(--color-track-s) - 20%)
+        calc(var(--color-track-l) - 40%)
     );
   }
 }
 
 /* pressed */
 .slice.enabled {
-  filter: none;
-  opacity: 1;
+  opacity: 0.75;
   background: hsl(
     calc(var(--color-track-h) + 10) calc(var(--color-track-s))
-      calc(var(--color-track-l))
+      calc(var(--color-track-l) - 10%)
   );
 }
 
@@ -49,11 +48,8 @@
 .slice.enabled.active {
   opacity: 1;
   &::after {
-    content: '';
-    @apply block w-full h-full;
-    /* @apply bg-current; */
     background: hsl(
-      var(--color-track-h) var(--color-track-s) calc(var(--color-track-l) + 20%)
+      var(--color-track-h) var(--color-track-s) calc(var(--color-track-l))
     );
   }
 }
