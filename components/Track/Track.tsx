@@ -5,13 +5,11 @@ import clsx from 'clsx';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Slice } from './Slice';
 import { Config, SOUNDS } from '../../config';
-import { IconButton } from '../IconButton/IconButton';
 import { Knob } from '../inputs/Knob';
 import { Reorder, useDragControls } from 'framer-motion';
 
 export function TrackItem({
   rhythm,
-  index,
   mobile,
 }: {
   index: number;
@@ -180,6 +178,28 @@ export function TrackItem({
           </div>
         </div>
 
+        <div className={styles['button-wrapper']}>
+          <button
+            onClick={addNote}
+            color="black"
+            disabled={rhythm.totalNotes >= Config.MAX_SLICES}
+          >
+            <div className={styles['add-button']}>
+              <span>+</span>
+            </div>
+          </button>
+          <button
+            onClick={() => removeNote(rhythm.pattern.length - 1)}
+            color="black"
+            disabled={rhythm.pattern.length <= 1}
+          >
+            <div className={styles['add-button']}>
+              <span>-</span>
+            </div>
+          </button>
+          <span className="text-xs">{rhythm.totalNotes}</span>
+        </div>
+
         {rhythm.pattern.map((slice, index) => (
           <div key={`${rhythm.id}-${slice}-${index}`}>
             <Slice
@@ -191,29 +211,8 @@ export function TrackItem({
               removeNote={removeNote}
               mobile={mobile}
             />
-            <div className="w-full mx-auto text-center">
-              <button
-                onClick={removeNoteOnClick(index)}
-                className={clsx(
-                  styles['delete-slice-button'],
-                  'mx-auto w-full'
-                )}
-              >
-                -
-              </button>
-            </div>
           </div>
         ))}
-
-        {rhythm.totalNotes < Config.MAX_SLICES && (
-          <div>
-            <IconButton onClick={addNote} color="black">
-              <div className={styles['add-button']}>
-                <span className="-translate-y-0.5">+</span>
-              </div>
-            </IconButton>
-          </div>
-        )}
       </div>
     </Reorder.Item>
   );

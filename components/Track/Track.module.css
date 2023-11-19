@@ -8,7 +8,7 @@
   @media (orientation: landscape) {
     --track-margin: 0.15rem;
     height: auto;
-    min-height: calc(var(--slice-size) + 20px);
+    min-height: calc(var(--slice-size) + 40px);
     width: auto;
     @apply pb-0;
   }
@@ -44,7 +44,6 @@
   flex-grow: 0;
   @apply select-none;
   @apply sticky top-0 left-0;
-  border-top: 1px solid currentColor;
   /* @apply z-50; */
   background: var(--color-bg);
   opacity: 95%;
@@ -90,30 +89,18 @@
   @apply rounded-sm px-2 py-2 mb-1;
 }
 
-.add-button {
-  @apply bg-neutral-300 w-1/2 h-1/2 flex items-center justify-center;
-  @apply hover:bg-neutral-300 rounded-full;
-  @media (orientation: landscape) {
-    @apply bg-neutral-500 w-12 h-12 flex items-center justify-center rounded-full hover:bg-neutral-300;
-  }
-}
-
 .delete-slice-button {
-  @apply hidden;
-  --margin: 10px;
-  @media (orientation: landscape) {
-    @apply w-8 h-4 p-1 border rounded border-red-300;
-    @apply text-red-300;
-    @apply flex items-center justify-center;
-    @apply opacity-30;
-    @apply transition-transform;
-    &:hover,
-    &:focus {
-      @apply opacity-100 scale-110 bg-red-100 text-red-700;
-    }
-    &:active {
-      @apply scale-90;
-    }
+  @apply w-8 h-4 p-1 border rounded border-red-300;
+  @apply text-red-300;
+  @apply flex items-center justify-center;
+  @apply opacity-30;
+  @apply transition-transform;
+  &:hover,
+  &:focus {
+    @apply opacity-100 scale-110 bg-red-100 text-red-700;
+  }
+  &:active {
+    @apply scale-90;
   }
 }
 
@@ -127,4 +114,30 @@
   &.active {
     @apply bg-yellow-300 text-background border-background;
   }
+}
+
+.button-wrapper {
+  width: var(--slice-size);
+  height: auto;
+  @apply translate-x-2;
+
+  @apply flex flex-col items-center justify-center m-0 space-y-2;
+  @apply mt-4;
+  @media (orientation: landscape) {
+    @apply translate-y-8;
+    height: var(--slice-size);
+    width: auto;
+    @apply mr-4;
+  }
+
+  > button {
+    &:disabled {
+      @apply opacity-50;
+    }
+  }
+}
+
+.add-button {
+  @apply w-16 h-6 flex items-center justify-center rounded-lg hover:bg-neutral-600;
+  @apply border border-current;
 }

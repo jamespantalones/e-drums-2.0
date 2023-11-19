@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 
   return (
     <section className="p-4">
-      <h1 className="text-8xl">/\ Gummersbach</h1>
+      <h1 className="text-8xl">/\ E-Drums</h1>
       <ul>
         {projects.map((p) => (
           <Link href={`/${p}`} className="block " passHref key={p}>

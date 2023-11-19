@@ -24,7 +24,7 @@
 
 @media (orientation: landscape) {
   :root {
-    --slice-size: max(8vw, 110px);
+    --slice-size: max(8vw, 100px);
   }
 }
 
