@@ -5,9 +5,8 @@ import { Track } from './Track';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
-
+  name: string;
   bpm: number;
-
   id: string;
 }
 
@@ -21,6 +20,11 @@ export class Sequencer {
   };
 
   public bpm: number;
+
+  public name: string | null;
+
+  public createdAt: string;
+  public updatedAt: string;
 
   public id: string;
 
@@ -38,8 +42,12 @@ export class Sequencer {
   constructor(opts: SequencerOpts & { onTick: (tickVal: number) => void }) {
     this.isInit = false;
     this.bpm = opts.bpm;
+
     this.onTick = opts.onTick;
     this.id = opts.id;
+    this.name = this.id;
+    this.createdAt = new Date().toISOString();
+    this.updatedAt = new Date().toISOString();
 
     this.state = {
       rhythmIndex: -1,
@@ -249,6 +257,11 @@ export class Sequencer {
   }
 
   public async exportJSON(): Promise<string> {
+    // update timestamp for save
+    this.updatedAt = new Date().toISOString();
+
+    console.log({ hey: this });
+
     return JSON.stringify(
       {
         state: {
@@ -256,6 +269,9 @@ export class Sequencer {
           tracks: this.state.tracks.map((t) => t.exportJSON()),
         },
         bpm: this.bpm,
+        name: this.name,
+        updatedAt: this.updatedAt,
+        createdAt: this.createdAt,
       },
       null,
       2

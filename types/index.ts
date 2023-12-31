@@ -59,8 +59,12 @@ export type TrackOpts = {
   ) => void;
 };
 
+/**
+ * Main State
+ */
 export type AudioContextType = {
   bpm: number;
+  name: string | null;
   initialized: boolean;
   playing: boolean;
   tick: number;
@@ -70,7 +74,7 @@ export type AudioContextType = {
 export type AudioContextReturnType = {
   state: AudioContextType;
   dispatch: React.Dispatch<AudioContextAction>;
-  initialize: (data?: SerializedSequencer) => Promise<void>;
+  initialize: (data?: SerializedSequencer) => Promise<Sequencer | null>;
   sequencer: Sequencer | undefined;
   methods: {
     play: () => Promise<void>;
@@ -79,6 +83,7 @@ export type AudioContextReturnType = {
     save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
+    changeName: (ev: React.ChangeEvent<HTMLInputElement>) => void;
     incrementBpm: () => void;
     decrementBpm: () => void;
     createTrack: () => void;
@@ -97,6 +102,10 @@ export type AudioContextAction =
   | {
       type: 'INITIALIZE';
       value: Track[];
+    }
+  | {
+      type: 'CHANGE_NAME';
+      value: string;
     }
   | {
       type: '_PLAY';
@@ -136,6 +145,7 @@ export type AudioContextAction =
 
 export type SerializedTrack = {
   id: string;
+  name: string | null;
   index: number;
   onNotes: number;
   totalNotes: number;
@@ -148,6 +158,7 @@ export type SerializedTrack = {
 export type SerializedSequencer = {
   bpm: number;
   id: string;
+  name: string;
   state: {
     rhythmIndex: number;
     tracks: SerializedTrack[];

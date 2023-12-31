@@ -8,20 +8,27 @@ import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 
-const Home: NextPage = () => {
+/**
+ *
+ * @returns
+ */
+const Track: NextPage = () => {
   const {
     query: { id },
   } = useRouter();
 
   const {
     state: { tracks },
+    state,
     initialize,
     sequencer,
     methods,
   } = useAudioContext();
+
+  console.log({ state });
   const [mobile] = React.useState(isMobile());
 
-  const controls = useDragControls();
+  const _controls = useDragControls();
 
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
@@ -32,22 +39,36 @@ const Home: NextPage = () => {
   }
 
   React.useEffect(() => {
+    async function load() {
+      const project = await loadProjectFromCache(id as string);
+      console.log({ project });
+      let _song = await initialize({
+        ...project,
+        bpm: project!.bpm!,
+        id: id! as string,
+      });
+    }
+
     if (!id) return;
 
-    loadProjectFromCache(id as string).then((project) => {
-      if (project) {
-        initialize(project);
-      } else {
-        initialize();
-      }
-    });
+    load();
   }, [id, loadProjectFromCache, initialize]);
 
   // listen for nav changes
 
   return (
     <>
-      <Nav save={save} />
+      <Nav save={save}>
+        <label>
+          Name
+          <input
+            type="text"
+            placeholder={id as string}
+            value={state.name || ''}
+            onChange={methods.changeName}
+          />
+        </label>
+      </Nav>
       <main>
         <Reorder.Group
           axis="y"
@@ -69,4 +90,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Track;

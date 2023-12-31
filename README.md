@@ -1,17 +1,21 @@
 # Todo
 
-- [ ] make separate page for landing
+- [ ] rename
+- [ ] print name of track near
+- [ ] more granular pitch control, less range
 - [ ] hot keys
 - [ ] click twice on stop, to move back to start
+- [ ] master volume
+- [ ] pwa
+- [ ] color selector
+- [ ] less transitions
+- [ ] add createdAt/updatedAt
 
-09/23 TBZ Feedback
-
-- [ ] more granular pitch control, less range
 - [x] increase max bpm
-- [ ] allow pitching individual slices
-- [ ] allow delete of slice via button
-- [ ] print name of track near
+- [x] allow pitching individual slices
+- [x] allow delete of slice via button
 - [x] bpm slider is hard to use
-- [ ] allow moving tracks up and down in order
-- [ ] fix black color
-- [ ] muted tracks need opacity change
+- [x] allow moving tracks up and down in order
+- [x] fix black color
+- [x] muted tracks need opacity change
+- [x] make separate page for landing

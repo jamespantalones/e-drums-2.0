@@ -22,6 +22,13 @@ export function audioContextReducer(
       };
     }
 
+    case 'CHANGE_NAME': {
+      return {
+        ...state,
+        name: action.value,
+      };
+    }
+
     case 'INCREMENT_TICK': {
       return {
         ...state,

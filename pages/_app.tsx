@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import { AudioContextProvider } from '../contexts/AudioContext';
 import { OfflineStorageProvider } from '../contexts/OfflineStorageContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function ERhythms({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -23,8 +23,6 @@ export default function ERhythms({ Component, pageProps }: AppProps) {
           content="A simple Euclidean rhythm generator"
         />
         <link rel="icon" type="image/png" href="/favicon.png" />
-
-        <meta name="viewport" content="width=device-width" />
       </Head>
 
       <AudioContextProvider>

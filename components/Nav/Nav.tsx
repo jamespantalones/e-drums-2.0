@@ -12,7 +12,13 @@ import { TempoInput } from './TempoInput';
 import Link from 'next/link';
 import clsx from 'clsx';
 
-export function Nav({ save }: { save: () => Promise<void> }) {
+export function Nav({
+  save,
+  children,
+}: {
+  save: () => Promise<void>;
+  children: React.ReactNode;
+}) {
   const {
     state,
     methods,
@@ -38,6 +44,8 @@ export function Nav({ save }: { save: () => Promise<void> }) {
               <span className="transition-translate inline-block">/\</span>
             </h1>
           </Link>
+
+          {children}
 
           <IconButton small onClick={methods.play} disabled={state.playing}>
             <PlayIcon />

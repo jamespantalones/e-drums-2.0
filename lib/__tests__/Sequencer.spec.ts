@@ -8,8 +8,9 @@ const initialTracks: SerializedTrack[] = [
   {
     id: 'foo',
     onNotes: 4,
+    name: null,
     totalNotes: 8,
-    color: 'red',
+    color: [255, 0, 0],
     hue: 265,
     index: 0,
     pitch: 150,

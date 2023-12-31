@@ -1,6 +1,7 @@
 import * as Tone from 'tone';
 import { generateId } from '../utils';
 import { Config, SOUNDS } from '../config';
+import { Instrument, SerializedTrack } from '../types';
 
 export function randomRange(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -26,8 +27,11 @@ export function generateTrack(index = 0) {
       Config.SEED_SLICES_MIN_MOBILE;
   }
 
-  const track = {
-    id: generateId(),
+  const id = generateId();
+
+  const track: SerializedTrack & { instrument: Instrument } = {
+    id,
+    name: id,
     index,
     onNotes: Math.floor(random / 2),
     totalNotes: random,

@@ -18,7 +18,7 @@
 
 @media (orientation: portrait) {
   :root {
-    --slice-size: 100px;
+    --slice-size: 50px;
   }
 }
 
@@ -40,6 +40,11 @@ html {
 body {
   width: 100%;
   /* overflow-x: hidden; */
+}
+
+#__next {
+  overflow: hidden;
+  overflow-x: auto;
 }
 
 button {

@@ -18,6 +18,7 @@ import {
 } from 'react';
 import { generateTrack } from '../lib/utils';
 import { Config } from '../config';
+import { generateId } from '../utils';
 
 /**
  * Main goal of this AudioContext is
@@ -34,6 +35,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     bpm: Config.DEFAULT_BPM,
     initialized: false,
     playing: false,
+    name: null,
     tick: -1,
     tracks: [],
   });
@@ -42,6 +44,16 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
    * Holds local ref to sequencer class instance
    */
   const seq = useRef<Sequencer>();
+
+  /**
+   * Allows name change
+   */
+  const changeName = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
+    if (!seq.current) return;
+    dispatch({ type: 'CHANGE_NAME', value: ev.target.value });
+    // send copy to sequencer for serialization on save
+    seq.current.name = ev.target.value;
+  }, []);
 
   /**
    * when we receive a message from the sequencer
@@ -55,6 +67,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const initialize = useCallback(
     async (data?: SerializedSequencer) => {
       try {
+        // if pulling from offline storage
         if (data) {
           dispatch({ type: 'SET_BPM', value: data.bpm });
           seq.current = new Sequencer({
@@ -62,23 +75,31 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
             initialTracks: data.state.tracks,
             bpm: data.bpm,
             // TODO Fix
-            id: 'asdf',
+            id: data.id,
+            name: data.name,
             onTick: incrementTick,
           });
-        } else {
+        }
+        // otherwise, create a new track
+        else {
+          const id = generateId();
           seq.current = new Sequencer({
+            name: id,
             onTick: incrementTick,
             bpm: Config.DEFAULT_BPM,
             initialTracks: [generateTrack(0)],
-            id: 'asdf',
+            id,
           });
         }
 
         const s = await seq.current.init();
 
         dispatch({ type: 'INITIALIZE', value: s.state.tracks });
+
+        return seq.current;
       } catch (err) {
         console.log(err);
+        return null;
       }
     },
     [incrementTick]
@@ -195,7 +216,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
 
       // TODO: Reimplement Save here...
     }
-  }, [state.tick]);
+  }, []);
 
   useEffect(() => {
     seq.current?.setBpm(state.bpm);
@@ -209,6 +230,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     methods: {
       deleteTrack,
       reorderTracks,
+      changeName,
       play,
       stop,
       clear,

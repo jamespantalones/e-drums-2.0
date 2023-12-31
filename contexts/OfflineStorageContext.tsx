@@ -56,6 +56,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     if (val) {
       return JSON.parse(val);
     }
+
     return undefined;
   }
 
