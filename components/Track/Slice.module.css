@@ -6,6 +6,7 @@
   margin: 0.5rem;
   width: var(--slice-size);
   height: var(--slice-size);
+  @apply mx-1 my-0;
 }
 
 /* default slice */

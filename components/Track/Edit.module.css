@@ -1,0 +1,83 @@
+.wrapper {
+  width: auto;
+  position: relative;
+  @apply flex;
+  @apply mr-2;
+  @apply flex-shrink-0;
+}
+
+.total {
+  @apply ml-2 text-xxs font-mono;
+  @apply text-center flex items-center justify-center;
+  @apply rounded-full;
+}
+
+.grab {
+  @apply w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing;
+  display: block;
+}
+
+.button-group {
+  @apply flex flex-row;
+}
+
+.poly-button-group {
+  width: var(--slice-size);
+  height: auto;
+  @apply translate-x-2;
+
+  @apply flex flex-col items-center justify-center m-0 space-y-2;
+  @apply mt-4;
+  width: 100%;
+  @apply justify-between flex-row;
+  @apply translate-x-0;
+  @apply space-y-0;
+  @apply my-1;
+
+  button {
+    @apply w-1/2 h-4 flex items-center justify-center;
+    @apply border border-current;
+    @apply text-xxs;
+    @apply mr-1;
+    @apply cursor-pointer;
+    @apply hover:bg-neutral-600;
+  }
+
+  &.large {
+    button {
+      @apply text-xs;
+    }
+  }
+}
+
+.toggle-solo {
+  &.solo {
+    @apply bg-yellow-300;
+    @apply text-background border-transparent;
+    @apply hover:bg-yellow-400;
+  }
+}
+
+.toggle-mute {
+  &.muted {
+    @apply bg-red-500;
+    @apply border-transparent;
+    @apply hover:bg-red-600;
+  }
+}
+
+.knob-group {
+  @apply flex w-full items-center justify-between px-2;
+}
+
+.instrument-select {
+  @apply text-xxs;
+  @apply w-full;
+  @apply bg-transparent;
+}
+
+.delete-slice-button {
+  &:hover {
+    @apply !bg-red-500;
+  }
+}

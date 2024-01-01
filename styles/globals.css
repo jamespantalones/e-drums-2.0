@@ -16,16 +16,8 @@
   --scroll-x-height: 40px;
 }
 
-@media (orientation: portrait) {
-  :root {
-    --slice-size: 50px;
-  }
-}
-
-@media (orientation: landscape) {
-  :root {
-    --slice-size: max(8vw, 100px);
-  }
+:root {
+  --slice-size: 70px;
 }
 
 html {
@@ -55,9 +47,7 @@ button {
   @apply px-1;
   margin-top: 90px;
   display: flex;
-
-  @media (orientation: landscape) {
-    flex-direction: column;
-    @apply p-4;
-  }
+  flex-direction: column;
+  @apply p-4;
+  @apply min-h-screen;
 }

@@ -2,92 +2,26 @@
   @apply relative;
   flex-shrink: 0;
   flex-grow: 0;
-  --track-margin: 0.25rem;
-  width: calc(var(--slice-size) + (var(--track-margin) * 2));
-
-  @media (orientation: landscape) {
-    --track-margin: 0.15rem;
-    height: auto;
-    min-height: calc(var(--slice-size) + 80px);
-    width: auto;
-    @apply pb-0;
-  }
+  --track-margin: 0.15rem;
+  height: auto;
+  min-height: calc(var(--slice-size) + 10px);
+  width: auto;
+  @apply pb-0;
+  @apply border-b border-neutral-700;
+  @apply pt-2;
 }
 
 .toggle {
   @apply w-full h-full absolute top-0;
 }
 
-.grab {
-  @apply w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing;
-  display: none;
-  @media (orientation: landscape) {
-    display: block;
-  }
-}
-
 .track-wrapper {
   @apply relative;
   width: var(--slice-size);
   transition: transform 0.2s ease;
-  @media (orientation: landscape) {
-    height: auto;
-    width: unset;
-    @apply flex items-start justify-start;
-  }
-}
-
-.edit {
-  width: calc(var(--slice-size) + 5px);
   height: auto;
-  flex-shrink: 0;
-  flex-grow: 0;
-  @apply select-none;
-  @apply sticky top-0 left-0;
-  /* @apply z-50; */
-  background: var(--color-bg);
-  opacity: 95%;
-
-  & > button {
-    @apply block w-full mb-2;
-  }
-  @media (orientation: landscape) {
-    width: auto;
-    position: relative;
-  }
-}
-
-.top-edit-row {
-  font-size: 8px;
-  line-height: 1;
-  @apply p-1 w-full m-0;
-  @apply text-center;
-  @apply flex items-center justify-between;
-}
-
-.toggle-solo {
-  @apply w-5 h-5 block;
-
-  @apply rounded-full;
-  @apply flex-shrink-0;
-  @apply border-current border;
-  &.solo {
-    @apply bg-yellow-300;
-    @apply text-background;
-  }
-}
-
-.toggle-mute {
-  @apply w-5 h-5;
-  @apply flex-shrink-0;
-  @apply rounded-full;
-  @apply mr-0.5 block;
-  @apply z-50;
-  @apply border-current border;
-  &.muted {
-    @apply bg-red-500;
-    @apply border-foreground;
-  }
+  width: unset;
+  @apply flex items-start justify-start;
 }
 
 .edit-name-wrapper {
@@ -127,25 +61,4 @@
   &.active {
     @apply bg-yellow-300 text-background border-background;
   }
-}
-
-.button-wrapper {
-  width: var(--slice-size);
-  height: auto;
-  @apply translate-x-2;
-
-  @apply flex flex-col items-center justify-center m-0 space-y-2;
-  @apply mt-4;
-  @media (orientation: landscape) {
-    width: 100%;
-    @apply justify-between flex-row;
-    @apply translate-x-0;
-    @apply space-y-0;
-    @apply my-1;
-  }
-}
-
-.add-button {
-  @apply w-1/2 h-4 flex items-center justify-center hover:bg-neutral-600;
-  @apply border border-current;
 }

@@ -7,6 +7,10 @@ export function randomRange(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
+/**
+ * Random color
+ * @returns
+ */
 export function generateRandomColor(): [number, number, number] {
   const hue = randomRange(0, 360);
   const saturation = randomRange(52, 97);
@@ -29,6 +33,13 @@ export function generateTrack(index = 0) {
 
   const id = generateId();
 
+  const soundIndex = Math.floor(Math.random() * (SOUNDS.length - 1));
+  const sound = SOUNDS[soundIndex];
+
+  if (!sound) {
+    throw new Error(`Missing sound ${soundIndex}`);
+  }
+
   const track: SerializedTrack & { instrument: Instrument } = {
     id,
     index,
@@ -37,15 +48,16 @@ export function generateTrack(index = 0) {
     pitch: 50,
     instrument: {
       frequency: 50,
-      sound: SOUNDS[Math.floor(Math.random() * SOUNDS.length - 1)],
+      sound,
     },
   };
   return track;
 }
 
-function compareArrays(a: number[], b: number[]): boolean {
+export function compareArrays(a: number[], b: number[]): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
+
 export function euclideanRhythm(opts: {
   onNotes: number;
   totalNotes: number;

@@ -1,0 +1,10 @@
+.wrapper {
+  @apply w-3 h-3;
+  @apply cursor-grab;
+  &:active {
+    @apply cursor-grabbing;
+  }
+  svg {
+    @apply w-full h-full;
+  }
+}
