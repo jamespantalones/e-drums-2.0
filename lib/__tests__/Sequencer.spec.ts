@@ -56,37 +56,31 @@ describe('Sequencer', () => {
       initialTracks,
       id: 'asdf',
     });
-    expect(await instance.exportJSON()).toEqual(
-      JSON.stringify(
-        {
-          bpm: 74,
-          id: 'asdf',
-          state: {
-            rhythmIndex: -1,
-            tracks: [
-              {
-                id: 'foo',
-                index: 0,
-                onNotes: 4,
-                totalNotes: 8,
-                isReady: false,
-                instrument: null,
-                color: 'red',
-                hue: 265,
-                volume: 0.3,
-                prevVolume: 0.3,
-                pitch: 150,
-                muted: false,
-                pattern: [1, 0, 1, 0, 1, 0, 1, 0],
-                pitchOffset: [0, 0, 0, 0, 0, 0, 0, 0],
-              },
-            ],
+    expect(await instance.exportJSON()).toEqual({
+      bpm: 74,
+      id: 'asdf',
+      state: {
+        rhythmIndex: -1,
+        tracks: [
+          {
+            id: 'foo',
+            index: 0,
+            onNotes: 4,
+            totalNotes: 8,
+            isReady: false,
+            instrument: null,
+            color: 'red',
+            hue: 265,
+            volume: 0.3,
+            prevVolume: 0.3,
+            pitch: 150,
+            muted: false,
+            pattern: [1, 0, 1, 0, 1, 0, 1, 0],
+            pitchOffset: [0, 0, 0, 0, 0, 0, 0, 0],
           },
-          playState: 0,
-        },
-        null,
-        2
-      )
-    );
+        ],
+      },
+      playState: 0,
+    });
   });
 });

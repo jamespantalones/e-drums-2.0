@@ -3,7 +3,6 @@ import PlayIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import NewIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
-import throttle from 'lodash.throttle';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
@@ -22,7 +21,6 @@ export function Nav({
   const {
     state,
     methods,
-    sequencer,
     methods: { changeBpm },
   } = useAudioContext();
 

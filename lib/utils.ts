@@ -31,7 +31,6 @@ export function generateTrack(index = 0) {
 
   const track: SerializedTrack & { instrument: Instrument } = {
     id,
-    name: id,
     index,
     onNotes: Math.floor(random / 2),
     totalNotes: random,

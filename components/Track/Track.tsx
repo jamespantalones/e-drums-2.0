@@ -18,7 +18,11 @@ export function TrackItem({
 }) {
   const {
     methods: { setTrackVal, deleteTrack },
+    sequencer,
   } = useAudioContext();
+
+  const [muted, setMuted] = useState(rhythm.muted);
+  const [soloed, setSoloed] = useState(rhythm.soloed);
 
   const [editPitch, setEditPitch] = useState(false);
   const controls = useDragControls();
@@ -39,17 +43,21 @@ export function TrackItem({
     setEditPitch((p) => !p);
   }, []);
 
-  const removeNoteOnClick = useCallback(
-    (index: number) => {
-      return function handler() {
-        removeNote(index);
-      };
-    },
-    [removeNote]
-  );
-
   const toggleMute = useCallback(() => {
     rhythm.toggleMute();
+    setMuted((m) => !m);
+  }, [rhythm]);
+
+  const toggleSolo = useCallback(() => {
+    sequencer?.clearSolos();
+
+    setSoloed((m) => {
+      const s = !m;
+      if (s) {
+        setMuted(false);
+      }
+      return s;
+    });
   }, [rhythm]);
 
   // console.log({ color: rhythm.color });
@@ -106,8 +114,6 @@ export function TrackItem({
 
   return (
     <Reorder.Item
-      dragListener={false}
-      dragControls={controls}
       value={rhythm}
       className={clsx(styles.section, {})}
       data-color={rhythm.color}
@@ -116,30 +122,59 @@ export function TrackItem({
       <div className={clsx(styles['track-wrapper'], styles.group)}>
         {/* MUTE BUTTON */}
         <div className={styles.edit}>
-          <div
-            className={styles.grab}
-            onPointerDown={(event) => controls.start(event)}
-          />
           <div className={styles['top-edit-row']}>
-            <button
-              onClick={toggleMute}
-              className={clsx({
-                [styles['toggle-mute']]: true,
-                [styles.muted]: rhythm.muted,
-              })}
-            ></button>
+            <div
+              className={styles.grab}
+              onPointerDown={(event) => controls.start(event)}
+            />
+            <div className="flex justify-between">
+              <button
+                onClick={toggleSolo}
+                className={clsx('mr-1', {
+                  [styles['toggle-solo']]: true,
+                  [styles.solo]: soloed,
+                })}
+              >
+                S
+              </button>
+              <button
+                onClick={toggleMute}
+                className={clsx({
+                  [styles['toggle-mute']]: true,
+                  [styles.muted]: muted,
+                })}
+              >
+                M
+              </button>
+            </div>
+          </div>
 
-            <select
-              value={rhythm.instrument?.sound.name}
-              className={styles['edit-name']}
-              onChange={handleInstrumentChange}
+          <div className="text-xs">
+            <span className="text-xs bg-foreground w-4 h-4  text-center flex items-center justify-center rounded-full text-background">
+              {rhythm.totalNotes}
+            </span>
+          </div>
+
+          <div className={styles['button-wrapper']}>
+            <button
+              className={styles['add-button']}
+              onClick={() => removeNote(rhythm.pattern.length - 1)}
+              disabled={rhythm.pattern.length <= 1}
             >
-              {SOUNDS.map((sound) => (
-                <option key={sound.name} value={sound.name}>
-                  {sound.name}
-                </option>
-              ))}
-            </select>
+              <div>
+                <span>-</span>
+              </div>
+            </button>
+            <button
+              className={styles['add-button']}
+              onClick={addNote}
+              color="black"
+              disabled={rhythm.totalNotes >= Config.MAX_SLICES}
+            >
+              <div>
+                <span>+</span>
+              </div>
+            </button>
           </div>
 
           <div className="flex w-full items-center justify-between px-2">
@@ -176,28 +211,20 @@ export function TrackItem({
               -
             </button>
           </div>
-        </div>
 
-        <div className={styles['button-wrapper']}>
-          <button
-            onClick={addNote}
-            color="black"
-            disabled={rhythm.totalNotes >= Config.MAX_SLICES}
-          >
-            <div className={styles['add-button']}>
-              <span>+</span>
-            </div>
-          </button>
-          <button
-            onClick={() => removeNote(rhythm.pattern.length - 1)}
-            color="black"
-            disabled={rhythm.pattern.length <= 1}
-          >
-            <div className={styles['add-button']}>
-              <span>-</span>
-            </div>
-          </button>
-          <span className="text-xs">{rhythm.totalNotes}</span>
+          <div className="text-xs">
+            <select
+              value={rhythm.instrument?.sound.name}
+              className={styles['edit-name']}
+              onChange={handleInstrumentChange}
+            >
+              {SOUNDS.map((sound) => (
+                <option key={sound.name} value={sound.name}>
+                  {sound.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {rhythm.pattern.map((slice, index) => (

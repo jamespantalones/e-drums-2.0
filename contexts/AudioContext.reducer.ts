@@ -23,10 +23,11 @@ export function audioContextReducer(
     }
 
     case 'CHANGE_NAME': {
-      return {
+      const nextState = {
         ...state,
         name: action.value,
       };
+      return nextState;
     }
 
     case 'INCREMENT_TICK': {

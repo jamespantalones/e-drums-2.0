@@ -25,28 +25,26 @@ const Track: NextPage = () => {
     methods,
   } = useAudioContext();
 
-  console.log({ state });
   const [mobile] = React.useState(isMobile());
 
   const _controls = useDragControls();
 
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
-  async function save() {
-    if (sequencer) {
-      saveProjectToCache(id as string, await sequencer.exportJSON());
-    }
-  }
+  const save = async (localName?: string) => {
+    console.log({ localName });
+    if (!sequencer) return;
+    await saveProjectToCache(id as string, {
+      ...sequencer.exportJSON(),
+      name: localName || state.name,
+      updatedAt: new Date().toISOString(),
+    });
+  };
 
   React.useEffect(() => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
-      console.log({ project });
-      let _song = await initialize({
-        ...project,
-        bpm: project!.bpm!,
-        id: id! as string,
-      });
+      let _song = await initialize(project);
     }
 
     if (!id) return;
@@ -54,18 +52,35 @@ const Track: NextPage = () => {
     load();
   }, [id, loadProjectFromCache, initialize]);
 
-  // listen for nav changes
+  async function updateName(ev: React.ChangeEvent<HTMLInputElement>) {
+    if (!sequencer) return;
+    methods.changeName(ev);
+    // send copy to sequencer for serialization on save
+    sequencer.name = ev.target.value;
+
+    save(ev.target.value);
+  }
+
+  function handleKeyDown(ev: React.KeyboardEvent<HTMLInputElement>) {
+    if (ev.key === 'Enter') {
+      if (ev.target) {
+        (ev.target as HTMLInputElement).blur();
+      }
+    }
+  }
 
   return (
     <>
-      <Nav save={save}>
-        <label>
+      <Nav save={() => save()}>
+        <label className="block text-xxs">
           Name
           <input
+            className="text-xs block py-1 bg-transparent border-b border-current"
             type="text"
             placeholder={id as string}
-            value={state.name || ''}
-            onChange={methods.changeName}
+            defaultValue={state.name || ''}
+            onChange={updateName}
+            onKeyDown={handleKeyDown}
           />
         </label>
       </Nav>

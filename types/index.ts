@@ -8,6 +8,13 @@ declare module 'react' {
   }
 }
 
+export type IndexTrack = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type TrackAction =
   | {
       method: 'addNote';
@@ -80,7 +87,6 @@ export type AudioContextReturnType = {
     play: () => Promise<void>;
     stop: () => void;
     clear: () => void;
-    save: () => void;
     deleteTrack: (id: string) => void;
     changeBpm: (bpm: number) => void;
     changeName: (ev: React.ChangeEvent<HTMLInputElement>) => void;
@@ -145,7 +151,6 @@ export type AudioContextAction =
 
 export type SerializedTrack = {
   id: string;
-  name: string | null;
   index: number;
   onNotes: number;
   totalNotes: number;
@@ -159,6 +164,8 @@ export type SerializedSequencer = {
   bpm: number;
   id: string;
   name: string;
+  createdAt: string;
+  updatedAt: string;
   state: {
     rhythmIndex: number;
     tracks: SerializedTrack[];

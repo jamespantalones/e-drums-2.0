@@ -15,6 +15,10 @@ export const volumeScale = scaleLinear([0, 100], [0, 4]);
 export class Track {
   public color: [number, number, number];
 
+  public soloed: boolean;
+
+  public index: number;
+
   public hue: number;
   public onNotes: number;
 
@@ -46,6 +50,7 @@ export class Track {
 
   constructor(opts: TrackOpts) {
     const [hue, saturation, lightness] = generateRandomColor();
+    this.index = opts.index;
     this.id = opts.id || generateId();
     this.updateSelfInParent = opts.updateSelfInParent;
     this.onNotes = opts.onNotes || 4;
@@ -60,6 +65,7 @@ export class Track {
     this.muted = opts.muted || false;
     this.pattern = opts.pattern || [];
     this.pitchOffset = opts.pitchOffset || [];
+    this.soloed = false;
 
     if (!opts.pattern) {
       const { pattern } = euclideanRhythm({
@@ -81,8 +87,10 @@ export class Track {
 
   public async init(): Promise<Track> {
     if (this.instrument) {
-      if (!this.instrument.sound.files[0]) {
-        throw new Error(`Missing instrument ${this.instrument.sound.name}`);
+      if (!this.instrument.sound?.files[0]) {
+        throw new Error(
+          `Missing instrument ${JSON.stringify(this.instrument)}`
+        );
       }
       this.sampler = await createAsyncSampler(
         `/sounds/${this.instrument.sound.files[0]}`
@@ -105,10 +113,41 @@ export class Track {
     return this.instrument;
   }
 
+  public clearSolo() {
+    this.soloed = false;
+    return this;
+  }
+
+  public toggleSolo(): Track {
+    // TODO: Toggle solo for all tracks to false
+
+    // flip muted
+    this.soloed = !this.soloed;
+
+    if (this.soloed) {
+      // clear all other solo tracks
+
+      this.muted = false;
+      this.handleMuteChange();
+    }
+
+    this.updateSelfInParent(this, {});
+
+    return this;
+
+    // return this;
+  }
+
   public toggleMute(): Track {
     // flip muted
     this.muted = !this.muted;
 
+    this.handleMuteChange();
+    return this;
+    // return this;
+  }
+
+  private handleMuteChange() {
     // if now muted
     if (this.muted) {
       // store the most previous volume
@@ -117,8 +156,6 @@ export class Track {
     } else {
       this.volume = this.prevVolume;
     }
-    return this;
-    // return this;
   }
 
   public play(time: number, tick: number) {

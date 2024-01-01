@@ -10,6 +10,8 @@
 - [ ] color selector
 - [ ] less transitions
 - [ ] add createdAt/updatedAt
+- [ ] change idb-keyval store name
+- [ ] clear sequencer on route change
 
 - [x] increase max bpm
 - [x] allow pitching individual slices

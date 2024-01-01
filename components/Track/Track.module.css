@@ -8,7 +8,7 @@
   @media (orientation: landscape) {
     --track-margin: 0.15rem;
     height: auto;
-    min-height: calc(var(--slice-size) + 40px);
+    min-height: calc(var(--slice-size) + 80px);
     width: auto;
     @apply pb-0;
   }
@@ -19,7 +19,7 @@
 }
 
 .grab {
-  @apply mt-2 w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing;
+  @apply w-4 h-2 border-t border-b cursor-grab active:cursor-grabbing;
   display: none;
   @media (orientation: landscape) {
     display: block;
@@ -53,7 +53,6 @@
   }
   @media (orientation: landscape) {
     width: auto;
-    height: var(--slice-size);
     position: relative;
   }
 }
@@ -63,16 +62,31 @@
   line-height: 1;
   @apply p-1 w-full m-0;
   @apply text-center;
-  @apply flex items-center justify-center;
+  @apply flex items-center justify-between;
+}
+
+.toggle-solo {
+  @apply w-5 h-5 block;
+
+  @apply rounded-full;
+  @apply flex-shrink-0;
+  @apply border-current border;
+  &.solo {
+    @apply bg-yellow-300;
+    @apply text-background;
+  }
 }
 
 .toggle-mute {
-  width: 12px;
-  height: 12px;
-  @apply rounded-full bg-green-500;
+  @apply w-5 h-5;
+  @apply flex-shrink-0;
+  @apply rounded-full;
   @apply mr-0.5 block;
+  @apply z-50;
+  @apply border-current border;
   &.muted {
     @apply bg-red-500;
+    @apply border-foreground;
   }
 }
 
@@ -85,8 +99,8 @@
   @apply border-b;
   background: var(--color-bg);
   width: 90%;
-  @apply text-current;
-  @apply rounded-sm px-2 py-2 mb-1;
+  @apply text-current text-xxs;
+  @apply rounded-sm px-2 py-2;
 }
 
 .delete-slice-button {
@@ -94,7 +108,6 @@
   @apply text-red-300;
   @apply flex items-center justify-center;
   @apply opacity-30;
-  @apply transition-transform;
   &:hover,
   &:focus {
     @apply opacity-100 scale-110 bg-red-100 text-red-700;
@@ -124,20 +137,15 @@
   @apply flex flex-col items-center justify-center m-0 space-y-2;
   @apply mt-4;
   @media (orientation: landscape) {
-    @apply translate-y-8;
-    height: var(--slice-size);
-    width: auto;
-    @apply mr-4;
-  }
-
-  > button {
-    &:disabled {
-      @apply opacity-50;
-    }
+    width: 100%;
+    @apply justify-between flex-row;
+    @apply translate-x-0;
+    @apply space-y-0;
+    @apply my-1;
   }
 }
 
 .add-button {
-  @apply w-16 h-6 flex items-center justify-center rounded-lg hover:bg-neutral-600;
+  @apply w-1/2 h-4 flex items-center justify-center hover:bg-neutral-600;
   @apply border border-current;
 }

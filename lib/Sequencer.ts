@@ -1,6 +1,10 @@
 import * as Tone from 'tone';
 import { Transport } from 'tone/build/esm/core/clock/Transport';
-import { SequencerPlayState, SerializedTrack } from '../types';
+import {
+  SequencerPlayState,
+  SerializedSequencer,
+  SerializedTrack,
+} from '../types';
 import { Track } from './Track';
 
 export interface SequencerOpts {
@@ -228,6 +232,10 @@ export class Sequencer {
     }
   }
 
+  public clearSolos() {
+    this.state.tracks = this.state.tracks.map((t) => t.clearSolo());
+  }
+
   public clear() {
     this.state.tracks = this.state.tracks.map((t) => t.noteOff());
   }
@@ -256,25 +264,19 @@ export class Sequencer {
     return [id, this.state.tracks];
   }
 
-  public async exportJSON(): Promise<string> {
+  public exportJSON(): SerializedSequencer {
     // update timestamp for save
-    this.updatedAt = new Date().toISOString();
 
-    console.log({ hey: this });
-
-    return JSON.stringify(
-      {
-        state: {
-          rhythmIndex: this.state.rhythmIndex,
-          tracks: this.state.tracks.map((t) => t.exportJSON()),
-        },
-        bpm: this.bpm,
-        name: this.name,
-        updatedAt: this.updatedAt,
-        createdAt: this.createdAt,
+    return {
+      id: this.id,
+      state: {
+        rhythmIndex: this.state.rhythmIndex,
+        tracks: this.state.tracks.map((t) => t.exportJSON()),
       },
-      null,
-      2
-    );
+      bpm: this.bpm,
+      name: this.name || '',
+      createdAt: this.createdAt,
+      updatedAt: new Date().toISOString(),
+    };
   }
 }

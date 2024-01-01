@@ -50,9 +50,9 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
    */
   const changeName = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
     if (!seq.current) return;
+
+    // change in state
     dispatch({ type: 'CHANGE_NAME', value: ev.target.value });
-    // send copy to sequencer for serialization on save
-    seq.current.name = ev.target.value;
   }, []);
 
   /**
@@ -69,7 +69,12 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       try {
         // if pulling from offline storage
         if (data) {
+          // set local state bpm
           dispatch({ type: 'SET_BPM', value: data.bpm });
+          dispatch({ type: 'CHANGE_NAME', value: data.name });
+
+          // TODO: Deal with updatedAt/createdAt here...
+
           seq.current = new Sequencer({
             ...data,
             initialTracks: data.state.tracks,
@@ -82,14 +87,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
         }
         // otherwise, create a new track
         else {
-          const id = generateId();
-          seq.current = new Sequencer({
-            name: id,
-            onTick: incrementTick,
-            bpm: Config.DEFAULT_BPM,
-            initialTracks: [generateTrack(0)],
-            id,
-          });
+          throw new Error('No data passed');
         }
 
         const s = await seq.current.init();
@@ -205,19 +203,6 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'UPDATE_TRACKS', value: tracks });
   }, []);
 
-  const save = useCallback(async () => {
-    if (seq.current) {
-      const { state: seqState } = seq.current;
-      const { tracks } = seqState;
-      const cleanTracks = tracks.map((track) => {
-        const { pattern, updateSelfInParent, ...rest } = track;
-        return rest;
-      });
-
-      // TODO: Reimplement Save here...
-    }
-  }, []);
-
   useEffect(() => {
     seq.current?.setBpm(state.bpm);
   }, [state.bpm]);
@@ -241,7 +226,6 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       repitchTick,
       toggleTick,
       setTrackVal,
-      save,
     },
   };
 
