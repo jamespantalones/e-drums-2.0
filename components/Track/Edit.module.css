@@ -67,6 +67,7 @@
 }
 
 .knob-group {
+  @apply pt-2;
   @apply flex w-full items-center justify-between px-2;
 }
 

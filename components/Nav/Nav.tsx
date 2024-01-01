@@ -1,8 +1,10 @@
 import * as React from 'react';
-import PlayIcon from '@mui/icons-material/PlayArrow';
-import StopIcon from '@mui/icons-material/Stop';
-import NewIcon from '@mui/icons-material/Add';
-import SaveIcon from '@mui/icons-material/Save';
+import {
+  Save as SaveIcon,
+  Plus as NewIcon,
+  Play as PlayIcon,
+  Square as StopIcon,
+} from 'lucide-react';
 import { IconButton } from '../IconButton/IconButton';
 import styles from './Nav.module.css';
 import { useAudioContext } from '../../contexts/AudioContext';
@@ -32,28 +34,36 @@ export function Nav({
             href="/"
             className={clsx(styles.link, 'block text-sm mr-6')}
             passHref
-            onClick={() => {
-              methods.stop();
-              // sequencer?.stop_all();
-              // sequencer?.clear();
+            onClick={(ev) => {
+              if (
+                window.confirm(
+                  'Are you sure you want to go back to index page?'
+                )
+              ) {
+                methods.stop();
+              } else {
+                ev.preventDefault();
+              }
             }}
           >
             <h1>
-              <span className="transition-translate inline-block">/\</span>
+              <span className="transition-translate inline-block text-lg">
+                E
+              </span>
             </h1>
           </Link>
 
           {children}
 
           <IconButton small onClick={methods.play} disabled={state.playing}>
-            <PlayIcon />
+            <PlayIcon strokeWidth={1} />
           </IconButton>
           <IconButton
             small
             onClick={methods.stop}
             disabled={!state.initialized}
           >
-            <StopIcon />
+            <StopIcon strokeWidth={1} />
           </IconButton>
 
           <div className="-translate-y-1">
@@ -69,11 +79,11 @@ export function Nav({
               state.tracks.length === Config.MAX_TRACKS || !state.initialized
             }
           >
-            <NewIcon />
+            <NewIcon strokeWidth={1} />
           </IconButton>
 
           <IconButton onClick={save} small>
-            <SaveIcon />
+            <SaveIcon strokeWidth={1} />
           </IconButton>
         </div>
       </section>

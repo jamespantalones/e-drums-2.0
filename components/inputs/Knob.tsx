@@ -23,7 +23,7 @@ export function Knob(props: KnobProps) {
     min,
     max,
     step,
-    radius = 14.8,
+    radius = 12.8,
     degrees = 270,
     label = '',
   } = props;

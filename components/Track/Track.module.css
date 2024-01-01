@@ -9,6 +9,7 @@
   @apply pb-0;
   @apply border-b border-neutral-700;
   @apply pt-2;
+  @apply bg-background;
 }
 
 .toggle {

@@ -161,7 +161,7 @@ export function Edit({
           </button>
         </div>
       </section>
-      <section>
+      <section className="flex flex-col justify-between">
         <div className={styles['knob-group']}>
           <Knob
             label="tone"
