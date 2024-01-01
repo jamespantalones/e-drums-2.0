@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import styles from './Slice.module.css';
-import Add from '@mui/icons-material/Add';
-import Remove from '@mui/icons-material/Remove';
+import { Plus as Add, Minus as Remove } from 'lucide-react';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
 import { PointerEvent, useCallback, useId, useMemo, useRef } from 'react';
@@ -12,7 +11,6 @@ export function Slice({
   length,
   rhythm,
   removeNote,
-  mobile,
 }: {
   editPitch?: boolean;
   length: number;

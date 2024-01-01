@@ -14,7 +14,6 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "^0.24.8",
-    "@mui/icons-material": "^5.11.16",
     "@node-projects/input-knob": "^1.1.0",
     "@tippyjs/react": "^4.2.6",
     "clsx": "^1.2.1",
