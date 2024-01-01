@@ -1,8 +1,6 @@
 # Todo
 
 - [ ] rename
-- [ ] print name of track near
-- [ ] more granular pitch control, less range
 - [ ] hot keys
 - [ ] click twice on stop, to move back to start
 - [ ] master volume
@@ -12,7 +10,9 @@
 - [ ] add createdAt/updatedAt
 - [ ] change idb-keyval store name
 - [ ] clear sequencer on route change
-
+- [ ] Delete from index page does not immediately clear
+- [ ] add sub menu on index page
+- [ ] allow rename from index page
 - [x] increase max bpm
 - [x] allow pitching individual slices
 - [x] allow delete of slice via button
@@ -21,3 +21,4 @@
 - [x] fix black color
 - [x] muted tracks need opacity change
 - [x] make separate page for landing
+- [x] print name of track near nav
