@@ -4,7 +4,7 @@ import { Config, SOUNDS } from '../config';
 import { Instrument, SerializedTrack } from '../types';
 
 export function randomRange(min: number, max: number) {
-  return Math.random() * (max - min) + min;
+  return Math.floor(Math.random() * (max - min) + min);
 }
 
 /**
@@ -13,8 +13,8 @@ export function randomRange(min: number, max: number) {
  */
 export function generateRandomColor(): [number, number, number] {
   const hue = randomRange(0, 360);
-  const saturation = randomRange(52, 97);
-  const lightness = randomRange(59, 90);
+  const saturation = randomRange(45, 97);
+  const lightness = randomRange(49, 90);
 
   return [hue, saturation, lightness];
 }

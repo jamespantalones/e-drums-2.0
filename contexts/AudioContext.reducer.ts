@@ -61,13 +61,24 @@ export function audioContextReducer(
     case '_PLAY': {
       return {
         ...state,
+        stopCount: 0,
         playing: true,
       };
     }
 
     case '_STOP': {
+      const nextStopCount = state.stopCount + 1;
+
+      if (nextStopCount > 1) {
+        return {
+          ...state,
+          stopCount: nextStopCount,
+          tick: -1,
+        };
+      }
       return {
         ...state,
+        stopCount: nextStopCount,
         playing: false,
       };
     }

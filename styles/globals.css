@@ -14,10 +14,8 @@
 
   --layout-nav-height: 48px;
   --scroll-x-height: 40px;
-}
 
-:root {
-  --slice-size: 70px;
+  --slice-size: 80px;
 }
 
 html {
@@ -34,6 +32,7 @@ body {
   /* overflow-x: hidden; */
 }
 
+/* i don't remember why i have this in here */
 #__next {
   overflow: hidden;
   overflow-x: auto;

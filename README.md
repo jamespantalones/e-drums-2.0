@@ -1,11 +1,11 @@
 # Todo
 
-- [ ] rename
-- [ ] hot keys
-- [ ] click twice on stop, to move back to start
+- [x] rename
+- [x] hot keys
+- [x] click twice on stop, to move back to start
 - [ ] master volume
 - [ ] pwa
-- [ ] color selector
+- [x] color selector!
 - [ ] less transitions
 - [ ] add createdAt/updatedAt
 - [ ] change idb-keyval store name

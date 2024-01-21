@@ -54,24 +54,14 @@ export function Slice({
     [removeNote, index]
   );
 
-  const handlePointerDown = useCallback(
-    (ev: PointerEvent<HTMLElement>) => {
-      x.current = ev.clientX;
-      y.current = ev.clientY;
-
-      // @ts-expect-error
-      window.onpointerup = handlePointerUp;
-    },
-    [handlePointerUp]
-  );
-
   return (
     <div key={`${rhythm.id}-${index}-${id}`} className={styles['slice-outer']}>
       {!editPitch && (
         <button
           key={index}
           className={clsx(styles.slice, {
-            [styles.active]: tick % length === index,
+            [styles.active]:
+              tick % length === index || (index === 0 && tick === -1),
             [styles.enabled]: rhythm.pattern[index],
           })}
           type="button"

@@ -11,7 +11,8 @@ import { generateTrack } from '../lib/utils';
 const Home: NextPage = () => {
   const router = useRouter();
 
-  const { projects, removeFromCache, saveProjectToCache } = useOfflineStorage();
+  const { projects, removeFromCache, saveProjectToCache, fetchIndexCache } =
+    useOfflineStorage();
 
   /**
    * Create a new sequencer
@@ -39,10 +40,58 @@ const Home: NextPage = () => {
 
   return (
     <section className="p-4">
-      <h1 className="text-8xl">
-        <span className="inline-block">E</span>-Drums
-      </h1>
-      <ul>
+      <nav className="flex w-full justify-between items-center">
+        <h1 className="text-5xl mb-8">
+          <span className="inline-block">E</span>-Drums
+        </h1>
+        <div>
+          <Link href="/about" className="border-b">
+            About
+          </Link>
+        </div>
+      </nav>
+      {/* 
+      <table className="w-full text-left text-xs">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {projects.map((p) => (
+            <tr key={p.id}>
+              <td>{p.name}</td>
+              <td>{p.updatedAt}</td>
+              <td>
+                <button
+                  className="border border-current p-1 hover:bg-alert text-xs rounded"
+                  onClick={async (ev) => {
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                    await removeFromCache(p.id);
+                    await fetchIndexCache();
+                  }}
+                >
+                  DEL
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table> */}
+
+      <ul className="text-xs">
+        <li className="my-1 flex items-center justify-between p-2 border-b">
+          <div className="w-1/2 text-xs">Name</div>
+          <div className="text-xs w-1/3">Updated</div>
+          <button
+            disabled
+            className="opacity-0 border border-current p-1 text-xs"
+          >
+            DEL
+          </button>
+        </li>
         {projects.map((p) => (
           <Link href={`/${p.id}`} className="block " passHref key={p.id}>
             <li
@@ -50,13 +99,14 @@ const Home: NextPage = () => {
               className="my-1 flex items-center justify-between p-2 hover:bg-foreground hover:text-background"
             >
               <div className="w-1/2">{p.name}</div>
-              <div className="text-xs">{p.updatedAt}</div>
+              <div className="text-xs w-1/3">{p.updatedAt}</div>
               <button
-                className="border border-current p-1 hover:bg-alert text-xs"
-                onClick={(ev) => {
+                className="border border-current p-1 hover:bg-alert text-xs rounded"
+                onClick={async (ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
-                  removeFromCache(p.id);
+                  await removeFromCache(p.id);
+                  await fetchIndexCache();
                 }}
               >
                 DEL
@@ -66,7 +116,7 @@ const Home: NextPage = () => {
         ))}
       </ul>
       <button
-        className="fixed bottom-8 right-8 border border-current p-2 rounded hover:bg-foreground hover:text-background"
+        className="fixed bottom-8 right-8 border border-current p-2 rounded hover:bg-foreground hover:text-background text-xs"
         onClick={createNew}
       >
         + Create New

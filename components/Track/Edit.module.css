@@ -66,6 +66,18 @@
   }
 }
 
+.toggle-color {
+  background: hsl(
+    var(--color-track-h) var(--color-track-s) calc(var(--color-track-l))
+  );
+  &:hover {
+    background: hsl(
+      var(--color-track-h) calc(var(--color-track-s) - 40%)
+        calc(var(--color-track-l) - 2%)
+    ) !important;
+  }
+}
+
 .knob-group {
   @apply pt-2;
   @apply flex w-full items-center justify-between px-2;

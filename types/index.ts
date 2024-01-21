@@ -17,6 +17,10 @@ export type IndexTrack = {
 
 export type TrackAction =
   | {
+      method: 'changeColor';
+      value: [number, number, number];
+    }
+  | {
       method: 'addNote';
       value?: undefined;
     }
@@ -74,6 +78,7 @@ export type AudioContextType = {
   name: string | null;
   initialized: boolean;
   playing: boolean;
+  stopCount: number;
   tick: number;
   tracks: Track[];
 };
@@ -173,6 +178,7 @@ export type SerializedSequencer = {
 };
 
 export enum SequencerPlayState {
+  'STOPPED_AND_RESET',
   'STOPPED',
   'STARTED',
 }

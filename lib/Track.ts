@@ -222,6 +222,12 @@ export class Track {
     return this;
   }
 
+  public async changeColor(value: [number, number, number]): Promise<Track> {
+    this.color = value;
+    this.updateSelfInParent(this, { needsReconnect: undefined });
+    return this;
+  }
+
   public async changeInstrument(value: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;

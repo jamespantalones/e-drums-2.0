@@ -18,6 +18,7 @@ const OfflineStorageContext = createContext<
         id: string
       ) => Promise<SerializedSequencer | undefined>;
       projects: SerializedSequencer[];
+      fetchIndexCache: () => void;
       saveProjectToCache: (id: string, data: any) => Promise<void>;
     }
   | undefined
@@ -55,13 +56,17 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
     return await values<SerializedSequencer>();
   }, []);
 
-  useEffect(() => {
+  const fetchIndexCache = useCallback(async () => {
     retrieveIndexCache().then((cache) => {
       if (cache) {
         setProjects(cache);
       }
     });
-  }, [retrieveIndexCache, router.asPath]);
+  }, [retrieveIndexCache]);
+
+  useEffect(() => {
+    fetchIndexCache();
+  }, [fetchIndexCache, router.asPath]);
 
   return (
     <OfflineStorageContext.Provider
@@ -70,6 +75,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
         loadProjectFromCache,
         saveProjectToCache,
         removeFromCache,
+        fetchIndexCache,
       }}
     >
       {children}

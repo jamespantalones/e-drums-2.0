@@ -38,6 +38,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     name: null,
     tick: -1,
     tracks: [],
+    stopCount: 0,
   });
 
   /**
@@ -120,7 +121,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
    * Stops playback
    */
   const stop = useCallback(async () => {
+    // call stop on the sequencer
     seq.current?.stop();
+
+    // and on react state
     dispatch({ type: '_STOP' });
   }, []);
 

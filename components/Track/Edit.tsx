@@ -13,6 +13,7 @@ import { Track } from '../../lib/Track';
 import { Config, SOUNDS } from '../../config';
 import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
+import { generateRandomColor } from '../../lib/utils';
 
 export function Edit({
   dragControls,
@@ -29,11 +30,9 @@ export function Edit({
 }) {
   const {
     methods: { setTrackVal, deleteTrack },
-    sequencer,
   } = useAudioContext();
 
   const [muted, setMuted] = useState(rhythm.muted);
-  const [soloed, setSoloed] = useState(rhythm.soloed);
 
   const addNote = useCallback(() => {
     setTrackVal(rhythm, { method: 'addNote' });
@@ -41,7 +40,7 @@ export function Edit({
 
   const toggleEditPitch = useCallback(() => {
     setEditPitch((p) => !p);
-  }, []);
+  }, [setEditPitch]);
 
   const toggleMute = useCallback(() => {
     rhythm.toggleMute();
@@ -86,17 +85,15 @@ export function Edit({
     [setTrackVal, rhythm]
   );
 
-  const toggleSolo = useCallback(() => {
-    sequencer?.clearSolos();
-
-    setSoloed((m) => {
-      const s = !m;
-      if (s) {
-        setMuted(false);
-      }
-      return s;
-    });
-  }, [sequencer]);
+  const toggleColor = useCallback(
+    (_ev: React.MouseEvent<HTMLButtonElement>) => {
+      setTrackVal(rhythm, {
+        method: 'changeColor',
+        value: generateRandomColor(),
+      });
+    },
+    [setTrackVal, rhythm]
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -142,14 +139,12 @@ export function Edit({
         {/* mute/solo */}
         <div className={styles['poly-button-group']}>
           <button
-            onClick={toggleSolo}
+            onClick={toggleColor}
+            style={{ backgroundColor: `hsl(${rhythm.color.join(' ')})` }}
             className={clsx({
-              [styles['toggle-solo']]: true,
-              [styles.solo]: soloed,
+              [styles['toggle-color']]: true,
             })}
-          >
-            S
-          </button>
+          ></button>
           <button
             onClick={toggleMute}
             className={clsx(styles.toggle, {

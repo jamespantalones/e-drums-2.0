@@ -7,6 +7,7 @@ import { useAudioContext } from '../contexts/AudioContext';
 import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
+import { useHotKeys } from '../hooks/useHotKeys';
 
 /**
  *
@@ -68,6 +69,9 @@ const Track: NextPage = () => {
       }
     }
   }
+
+  // all hot-keys require commande
+  useHotKeys({ s: save });
 
   return (
     <>

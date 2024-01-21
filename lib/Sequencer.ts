@@ -63,7 +63,7 @@ export class Sequencer {
       }),
     };
 
-    this.playState = SequencerPlayState.STOPPED;
+    this.playState = SequencerPlayState.STOPPED_AND_RESET;
   }
 
   async init() {
@@ -101,12 +101,24 @@ export class Sequencer {
 
   stop_all() {
     this.transport?.stop();
-    this.playState = SequencerPlayState.STOPPED;
+    this.playState = SequencerPlayState.STOPPED_AND_RESET;
   }
 
   // stop the transport
   stop() {
     this.transport?.pause();
+    if (this.playState === SequencerPlayState.STARTED) {
+      this.playState = SequencerPlayState.STOPPED;
+      return;
+    }
+
+    if (this.playState === SequencerPlayState.STOPPED) {
+      this.playState = SequencerPlayState.STOPPED_AND_RESET;
+      // rewind everything
+      this.state.rhythmIndex = -1;
+
+      return;
+    }
   }
 
   private _setupTransport() {
@@ -163,6 +175,9 @@ export class Sequencer {
     }
 
     Tone.Transport.start();
+    this.playState = SequencerPlayState.STARTED;
+
+    console.log(this.playState);
   }
 
   public async addNewRhythm(rhythm: SerializedTrack): Promise<Track> {
