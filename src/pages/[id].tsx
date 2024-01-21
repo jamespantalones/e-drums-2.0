@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import * as React from 'react';
+import { useSignals } from '@preact/signals-react/runtime';
 import { Reorder, useDragControls } from 'framer-motion';
 import { Nav } from '../components/Nav/Nav';
 import { TrackItem } from '../components/Track/Track';
@@ -8,19 +9,20 @@ import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 import { useHotKeys } from '../hooks/useHotKeys';
+import { SIG_NAME } from '../state/track';
 
 /**
  *
  * @returns
  */
 const Track: NextPage = () => {
+  useSignals();
   const {
     query: { id },
   } = useRouter();
 
   const {
     state: { tracks },
-    state,
     initialize,
     sequencer,
     methods,
@@ -33,11 +35,10 @@ const Track: NextPage = () => {
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
   const save = async (localName?: string) => {
-    console.log({ localName });
     if (!sequencer) return;
     await saveProjectToCache(id as string, {
       ...sequencer.exportJSON(),
-      name: localName || state.name,
+      name: SIG_NAME.value,
       updatedAt: new Date().toISOString(),
     });
   };
@@ -54,14 +55,10 @@ const Track: NextPage = () => {
   }, [id, loadProjectFromCache, initialize]);
 
   async function updateName(ev: React.ChangeEvent<HTMLInputElement>) {
-    if (!sequencer) return;
-    methods.changeName(ev);
-    // send copy to sequencer for serialization on save
-    sequencer.name = ev.target.value;
-
-    save(ev.target.value);
+    SIG_NAME.value = ev.target.value;
   }
 
+  // allow enter key to blur input
   function handleKeyDown(ev: React.KeyboardEvent<HTMLInputElement>) {
     if (ev.key === 'Enter') {
       if (ev.target) {
@@ -82,7 +79,7 @@ const Track: NextPage = () => {
             className="text-xs block py-1 bg-transparent border-b border-current"
             type="text"
             placeholder={id as string}
-            defaultValue={state.name || ''}
+            defaultValue={SIG_NAME.value || id}
             onChange={updateName}
             onKeyDown={handleKeyDown}
           />

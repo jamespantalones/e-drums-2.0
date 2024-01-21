@@ -42,6 +42,7 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
 
   async function saveProjectToCache(id: string, data: SerializedSequencer) {
     console.log(`Saving`, { data });
+
     await set(`${Config.CACHE_PREFIX}/${id}`, data);
   }
 

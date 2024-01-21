@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSignals } from '@preact/signals-react/runtime';
 import {
   Save as SaveIcon,
   Plus as NewIcon,
@@ -12,7 +13,7 @@ import { Config } from '../../config';
 import { TempoInput } from './TempoInput';
 import Link from 'next/link';
 import clsx from 'clsx';
-
+import { SIG_BPM } from '../../state/track';
 export function Nav({
   save,
   children,
@@ -20,11 +21,14 @@ export function Nav({
   save: () => Promise<void>;
   children: React.ReactNode;
 }) {
-  const {
-    state,
-    methods,
-    methods: { changeBpm },
-  } = useAudioContext();
+  const { state, methods } = useAudioContext();
+
+  useSignals();
+
+  function handleBPMChange(bpm: number) {
+    // changeBpm(bpm);
+    SIG_BPM.value = bpm;
+  }
 
   return (
     <nav className={styles.nav}>
@@ -67,7 +71,11 @@ export function Nav({
           </IconButton>
 
           <div className="-translate-y-1">
-            <TempoInput onChange={changeBpm} label="BPM" value={state.bpm} />
+            <TempoInput
+              onChange={handleBPMChange}
+              label="BPM"
+              value={SIG_BPM.value}
+            />
           </div>
         </div>
 

@@ -1,5 +1,7 @@
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
+import { batch } from '@preact/signals-react';
+import { useSignals } from '@preact/signals-react/runtime';
 import {
   AudioContextReturnType,
   SerializedSequencer,
@@ -19,6 +21,7 @@ import {
 import { generateTrack } from '../lib/utils';
 import { Config } from '../config';
 import { generateId } from '../utils';
+import { SIG_BPM, SIG_NAME } from '../state/track';
 
 /**
  * Main goal of this AudioContext is
@@ -30,7 +33,8 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 );
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
-  // audio state
+  useSignals();
+  // // audio state
   const [state, dispatch] = useReducer(audioContextReducer, {
     bpm: Config.DEFAULT_BPM,
     initialized: false,
@@ -52,8 +56,10 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   const changeName = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
     if (!seq.current) return;
 
+    SIG_NAME.value = ev.target.value;
+
     // change in state
-    dispatch({ type: 'CHANGE_NAME', value: ev.target.value });
+    //dispatch({ type: 'CHANGE_NAME', value: ev.target.value });
   }, []);
 
   /**
@@ -70,9 +76,14 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       try {
         // if pulling from offline storage
         if (data) {
-          // set local state bpm
-          dispatch({ type: 'SET_BPM', value: data.bpm });
-          dispatch({ type: 'CHANGE_NAME', value: data.name });
+          // set all values here
+          batch(() => {
+            // set signals here!
+            SIG_BPM.value = data.bpm;
+            SIG_NAME.value = data.name;
+          });
+
+          console.log({ data });
 
           // TODO: Deal with updatedAt/createdAt here...
 
@@ -179,7 +190,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const changeBpm = useCallback((bpm: number) => {
-    dispatch({ type: 'SET_BPM', value: bpm });
+    //dispatch({ type: 'SET_BPM', value: bpm });
   }, []);
 
   const decrementBpm = useCallback(() => {
@@ -206,10 +217,6 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     // send to UI
     dispatch({ type: 'UPDATE_TRACKS', value: tracks });
   }, []);
-
-  useEffect(() => {
-    seq.current?.setBpm(state.bpm);
-  }, [state.bpm]);
 
   const value = {
     state,

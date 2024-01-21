@@ -6,6 +6,8 @@ import {
   SerializedTrack,
 } from '../types';
 import { Track } from './Track';
+import { effect } from '@preact/signals-react';
+import { SIG_BPM, SIG_NAME } from '../state/track';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
@@ -23,10 +25,8 @@ export class Sequencer {
     tracks: Track[];
   };
 
-  public bpm: number;
-
   public name: string | null;
-
+  public bpm: number;
   public createdAt: string;
   public updatedAt: string;
 
@@ -45,10 +45,11 @@ export class Sequencer {
 
   constructor(opts: SequencerOpts & { onTick: (tickVal: number) => void }) {
     this.isInit = false;
-    this.bpm = opts.bpm;
+    this.bpm = SIG_BPM.value;
 
     this.onTick = opts.onTick;
     this.id = opts.id;
+    // set initial name to the track id
     this.name = this.id;
     this.createdAt = new Date().toISOString();
     this.updatedAt = new Date().toISOString();
@@ -62,6 +63,13 @@ export class Sequencer {
         });
       }),
     };
+
+    // listen for signal changes
+    effect(() => {
+      if (this.bpm !== SIG_BPM.value) {
+        this.setBpm(SIG_BPM.value);
+      }
+    });
 
     this.playState = SequencerPlayState.STOPPED_AND_RESET;
   }
@@ -156,7 +164,7 @@ export class Sequencer {
       // use the callback time to schedule events
     }, '16n');
 
-    Tone.Transport.bpm.value = this.bpm;
+    Tone.Transport.bpm.value = SIG_BPM.value;
     Tone.Transport.swing = 0.0167;
   }
 
@@ -240,7 +248,7 @@ export class Sequencer {
     return [rhythmTarget, this.state.tracks];
   }
 
-  public setBpm(val: number) {
+  private setBpm(val: number) {
     this.bpm = val;
     if (this.transport) {
       this.transport.bpm.value = val;
@@ -288,8 +296,8 @@ export class Sequencer {
         rhythmIndex: this.state.rhythmIndex,
         tracks: this.state.tracks.map((t) => t.exportJSON()),
       },
-      bpm: this.bpm,
-      name: this.name || '',
+      bpm: SIG_BPM.value,
+      name: SIG_NAME.value || this.id,
       createdAt: this.createdAt,
       updatedAt: new Date().toISOString(),
     };

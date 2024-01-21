@@ -1,18 +1,18 @@
 # Todo
 
-- [x] rename
-- [x] hot keys
-- [x] click twice on stop, to move back to start
 - [ ] master volume
-- [ ] pwa
-- [x] color selector!
+- [ ] pwa (offline)
+- [ ] mobile
 - [ ] less transitions
 - [ ] add createdAt/updatedAt
 - [ ] change idb-keyval store name
 - [ ] clear sequencer on route change
-- [ ] Delete from index page does not immediately clear
 - [ ] add sub menu on index page
 - [ ] allow rename from index page
+- [x] rename
+- [x] hot keys, cmd+s to save
+- [x] click twice on stop, to move back to start
+- [x] color selector!
 - [x] increase max bpm
 - [x] allow pitching individual slices
 - [x] allow delete of slice via button
@@ -22,3 +22,4 @@
 - [x] muted tracks need opacity change
 - [x] make separate page for landing
 - [x] print name of track near nav
+- [x] Delete from index page does not immediately clear
