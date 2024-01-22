@@ -74,26 +74,21 @@ export type TrackOpts = {
  * Main State
  */
 export type AudioContextType = {
-  bpm: number;
-  name: string | null;
   initialized: boolean;
   playing: boolean;
   stopCount: number;
-  tick: number;
   tracks: Track[];
 };
 
 export type AudioContextReturnType = {
-  state: AudioContextType;
-  dispatch: React.Dispatch<AudioContextAction>;
-  initialize: (data?: SerializedSequencer) => Promise<Sequencer | null>;
-  sequencer: Sequencer | undefined;
+  initialize: (
+    data?: SerializedSequencer
+  ) => Promise<Sequencer | null | undefined>;
   methods: {
     play: () => Promise<void>;
     stop: () => void;
     clear: () => void;
     deleteTrack: (id: string) => void;
-    changeBpm: (bpm: number) => void;
     changeName: (ev: React.ChangeEvent<HTMLInputElement>) => void;
     incrementBpm: () => void;
     decrementBpm: () => void;
@@ -108,51 +103,6 @@ export type AudioContextReturnType = {
     setTrackVal: (track: Track, action: TrackAction) => Promise<Track>;
   };
 };
-
-export type AudioContextAction =
-  | {
-      type: 'INITIALIZE';
-      value: Track[];
-    }
-  | {
-      type: 'CHANGE_NAME';
-      value: string;
-    }
-  | {
-      type: '_PLAY';
-    }
-  | {
-      type: '_STOP';
-    }
-  | {
-      type: 'ADD_TRACK';
-      value: Track;
-    }
-  | {
-      type: 'SAVE';
-    }
-  | {
-      type: 'DELETE_TRACK';
-      value: string;
-    }
-  | {
-      type: 'INCREMENT_TICK';
-      value: number;
-    }
-  | {
-      type: 'SET_BPM';
-      value: number;
-    }
-  | { type: 'DECREMENT_BPM' }
-  | { type: 'INCREMENT_BPM' }
-  | {
-      type: 'UPDATE_TRACKS';
-      value: Track[];
-    }
-  | {
-      type: 'UPDATE_TRACK';
-      value: Track;
-    };
 
 export type SerializedTrack = {
   id: string;
@@ -194,8 +144,6 @@ export enum SequencerEvents {
   DECREMENT_TICK = 'DECREMENT_TICK',
 
   INCREMENT_BEAT = 'INCREMENT_BEAT',
-
-  INCREMENT_TICK = 'INCREMENT_TICK',
 
   REMOVE_RHYTHM = 'REMOVE_RHYTHM',
 

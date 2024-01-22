@@ -36,11 +36,18 @@
 
   button {
     @apply w-1/2 h-4 flex items-center justify-center;
-    @apply border border-current;
+
     @apply text-xxs;
     @apply mr-1;
     @apply cursor-pointer;
     @apply hover:bg-neutral-600;
+  }
+
+  .add-button {
+    @apply bg-green-400 text-background;
+  }
+  .subtract-button {
+    @apply bg-orange-400 text-background;
   }
 
   &.large {

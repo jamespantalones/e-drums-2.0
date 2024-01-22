@@ -1,28 +1,31 @@
 import clsx from 'clsx';
+import { useSignals } from '@preact/signals-react/runtime';
 import styles from './Slice.module.css';
 import { Plus as Add, Minus as Remove } from 'lucide-react';
 import { Track } from '../../lib/Track';
 import { useAudioContext } from '../../contexts/AudioContext';
-import { PointerEvent, useCallback, useId, useMemo, useRef } from 'react';
+import { useCallback, useId, useRef } from 'react';
+import { SIG_TICK } from '../../state/track';
 
 export function Slice({
   index,
   editPitch,
   length,
   rhythm,
-  removeNote,
 }: {
   editPitch?: boolean;
   length: number;
   index: number;
   rhythm: Track;
   mobile: boolean;
-  removeNote?: (index: number) => void;
 }) {
+  useSignals();
+
   const {
-    state: { tick },
     methods: { toggleTick, repitchTick },
   } = useAudioContext();
+
+  const tick = SIG_TICK.value;
 
   const id = useId();
   const x = useRef<number>();
@@ -39,20 +42,6 @@ export function Slice({
   const incrementPitch = useCallback(() => {
     repitchTick(rhythm.id, index, 'INCREMENT');
   }, [rhythm, repitchTick, index]);
-
-  const handlePointerUp = useCallback(
-    (ev: PointerEvent) => {
-      if (
-        Math.abs(ev.clientX - x.current!) > 20 ||
-        Math.abs(ev.clientY - y.current!) > 20
-      ) {
-        removeNote && removeNote(index);
-      }
-
-      window.onpointerup = null;
-    },
-    [removeNote, index]
-  );
 
   return (
     <div key={`${rhythm.id}-${index}-${id}`} className={styles['slice-outer']}>

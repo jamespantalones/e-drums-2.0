@@ -1,13 +1,12 @@
 import { Sequencer } from '../lib/Sequencer';
 import { Track } from '../lib/Track';
-import { batch } from '@preact/signals-react';
+import { batch, computed } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 import {
   AudioContextReturnType,
   SerializedSequencer,
   TrackAction,
 } from '../types';
-import { audioContextReducer } from './AudioContext.reducer';
 import * as Tone from 'tone';
 import {
   ReactNode,
@@ -20,8 +19,14 @@ import {
 } from 'react';
 import { generateTrack } from '../lib/utils';
 import { Config } from '../config';
-import { generateId } from '../utils';
-import { SIG_BPM, SIG_NAME } from '../state/track';
+import {
+  SIG_BPM,
+  SIG_INITIALIZED,
+  SIG_NAME,
+  SIG_SEQUENCER,
+  SIG_SERIALIZED_TRACKS,
+  SIG_TRACKS,
+} from '../state/track';
 
 /**
  * Main goal of this AudioContext is
@@ -34,98 +39,52 @@ const AudioContext = createContext<AudioContextReturnType | undefined>(
 
 export function AudioContextProvider({ children }: { children: ReactNode }) {
   useSignals();
-  // // audio state
-  const [state, dispatch] = useReducer(audioContextReducer, {
-    bpm: Config.DEFAULT_BPM,
-    initialized: false,
-    playing: false,
-    name: null,
-    tick: -1,
-    tracks: [],
-    stopCount: 0,
-  });
-
-  /**
-   * Holds local ref to sequencer class instance
-   */
-  const seq = useRef<Sequencer>();
 
   /**
    * Allows name change
    */
   const changeName = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
-    if (!seq.current) return;
-
     SIG_NAME.value = ev.target.value;
-
-    // change in state
-    //dispatch({ type: 'CHANGE_NAME', value: ev.target.value });
-  }, []);
-
-  /**
-   * when we receive a message from the sequencer
-   * update the tick in the UI
-   */
-  const incrementTick = useCallback((tick: number) => {
-    dispatch({ type: 'INCREMENT_TICK', value: tick });
   }, []);
 
   // make sure the AudioContext is initialized
-  const initialize = useCallback(
-    async (data?: SerializedSequencer) => {
-      try {
-        // if pulling from offline storage
-        if (data) {
-          // set all values here
-          batch(() => {
-            // set signals here!
-            SIG_BPM.value = data.bpm;
-            SIG_NAME.value = data.name;
-          });
-
-          console.log({ data });
-
-          // TODO: Deal with updatedAt/createdAt here...
-
-          seq.current = new Sequencer({
+  const initialize = useCallback(async (data?: SerializedSequencer) => {
+    try {
+      // if pulling from offline storage
+      if (data) {
+        // set all values here
+        batch(() => {
+          // set signals here!
+          SIG_BPM.value = data.bpm;
+          SIG_NAME.value = data.name;
+          SIG_SERIALIZED_TRACKS.value = data.state.tracks;
+          SIG_SEQUENCER.value = new Sequencer({
             ...data,
-            initialTracks: data.state.tracks,
-            bpm: data.bpm,
             // TODO Fix
             id: data.id,
-            name: data.name,
-            onTick: incrementTick,
           });
-        }
-        // otherwise, create a new track
-        else {
-          throw new Error('No data passed');
-        }
-
-        const s = await seq.current.init();
-
-        dispatch({ type: 'INITIALIZE', value: s.state.tracks });
-
-        return seq.current;
-      } catch (err) {
-        console.log(err);
-        return null;
+        });
       }
-    },
-    [incrementTick]
-  );
+      // otherwise, create a new track
+      else {
+        throw new Error('No data passed');
+      }
+
+      await SIG_SEQUENCER.value?.init();
+
+      SIG_INITIALIZED.value = true;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  }, []);
 
   /**
    * Starts playback
    */
   const play = useCallback(async () => {
-    if (seq.current && !seq.current.isInit) {
-      await seq.current.init();
-    }
-
     // start the AudioContext engine (on user interactive only)
-    seq.current?.start();
-    dispatch({ type: '_PLAY' });
+    SIG_SEQUENCER.value?.start();
   }, []);
 
   /**
@@ -133,44 +92,25 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
    */
   const stop = useCallback(async () => {
     // call stop on the sequencer
-    seq.current?.stop();
-
-    // and on react state
-    dispatch({ type: '_STOP' });
+    SIG_SEQUENCER.value?.stop();
   }, []);
 
   const createTrack = useCallback(async () => {
     // add to Sequencer
-    const track = await seq.current?.addNewRhythm(
-      generateTrack(state.tracks.length)
+    await SIG_SEQUENCER.value?.addNewRhythm(
+      generateTrack(SIG_TRACKS.value.length)
     );
-
-    if (track) {
-      // add to state
-      dispatch({ type: 'ADD_TRACK', value: track });
-    }
-  }, [state.tracks]);
+  }, []);
 
   const repitchTick = useCallback(
     (id: string, index: number, type: 'INCREMENT' | 'DECREMENT') => {
-      if (seq.current) {
-        const [_track, tracks] = seq.current.repitchTick(id, index, type);
-
-        // update in state
-        dispatch({ type: 'UPDATE_TRACKS', value: tracks || [] });
-      }
+      SIG_SEQUENCER.value?.repitchTick(id, index, type);
     },
     []
   );
 
   const toggleTick = useCallback((id: string, index: number) => {
-    if (seq.current) {
-      const [_track, tracks] = seq.current.toggleTick(id, index);
-
-      // update in state
-      dispatch({ type: 'UPDATE_TRACKS', value: tracks });
-    }
-    // update in sequencer
+    SIG_SEQUENCER.value?.toggleTick(id, index);
   }, []);
 
   const setTrackVal = useCallback(
@@ -179,50 +119,41 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
         throw new Error(`${action.method} not implemented on Track`);
       }
       const v = await track[action.method](action.value as any);
-      dispatch({ type: 'UPDATE_TRACK', value: v });
       return v;
     },
     []
   );
 
   const clear = useCallback(() => {
-    seq.current?.clear();
-  }, []);
-
-  const changeBpm = useCallback((bpm: number) => {
-    //dispatch({ type: 'SET_BPM', value: bpm });
+    SIG_SEQUENCER.value?.clear();
   }, []);
 
   const decrementBpm = useCallback(() => {
-    dispatch({ type: 'DECREMENT_BPM' });
+    const curr = SIG_BPM.value;
+    if (curr - 1 >= Config.MIN_BPM) {
+      SIG_BPM.value--;
+    }
   }, []);
 
   const incrementBpm = useCallback(() => {
-    dispatch({ type: 'INCREMENT_BPM' });
+    SIG_BPM.value++;
+    const curr = SIG_BPM.value;
+    if (curr + 1 <= Config.MAX_BPM) {
+      SIG_BPM.value++;
+    }
   }, []);
 
-  const deleteTrack = useCallback(
-    (id: string) => {
-      if (seq.current) {
-        const [_id, tracks] = seq.current.deleteTrack(id);
-        dispatch({ type: 'DELETE_TRACK', value: id });
-      }
-    },
-    [dispatch]
-  );
+  const deleteTrack = useCallback((id: string) => {
+    SIG_SEQUENCER.value?.deleteTrack(id);
+  }, []);
 
   const reorderTracks = useCallback((tracks: Track[]) => {
     // send copy to sequencer for serialization on save
-    seq.current?.updateTracks(tracks);
-    // send to UI
-    dispatch({ type: 'UPDATE_TRACKS', value: tracks });
+    SIG_SEQUENCER.value?.updateTracks(tracks);
   }, []);
 
   const value = {
-    state,
-    dispatch,
     initialize,
-    sequencer: seq.current,
     methods: {
       deleteTrack,
       reorderTracks,
@@ -230,7 +161,6 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       play,
       stop,
       clear,
-      changeBpm,
       incrementBpm,
       decrementBpm,
       createTrack,

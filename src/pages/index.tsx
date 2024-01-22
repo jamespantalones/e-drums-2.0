@@ -20,9 +20,6 @@ const Home: NextPage = () => {
   async function createNew() {
     const id = generateId();
     const seq = new Sequencer({
-      name: id,
-      onTick: noop,
-      bpm: Config.DEFAULT_BPM,
       initialTracks: [generateTrack(0)],
       id,
     });

@@ -122,6 +122,7 @@ export function Edit({
           <button
             onClick={() => removeNote(rhythm.pattern.length - 1)}
             disabled={rhythm.pattern.length <= 1}
+            className={styles['subtract-button']}
           >
             <div>
               <span>-</span>
@@ -129,6 +130,7 @@ export function Edit({
           </button>
           <button
             onClick={addNote}
+            className={styles['add-button']}
             disabled={rhythm.totalNotes >= Config.MAX_SLICES}
           >
             <div>

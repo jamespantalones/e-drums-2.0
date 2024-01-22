@@ -19,6 +19,11 @@ export const Config = {
 
 export const SOUNDS: SoundFile[] = [
   {
+    name: 'EMPTY',
+    defaultFreqRange: [20, 80],
+    files: [],
+  },
+  {
     name: 'BASS',
     defaultFreqRange: [20, 80],
     files: ['1_FM_BASS.wav'],

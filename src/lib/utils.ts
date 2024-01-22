@@ -14,7 +14,7 @@ export function randomRange(min: number, max: number) {
 export function generateRandomColor(): [number, number, number] {
   const hue = randomRange(0, 360);
   const saturation = randomRange(45, 97);
-  const lightness = randomRange(49, 90);
+  const lightness = randomRange(52, 90);
 
   return [hue, saturation, lightness];
 }
@@ -34,7 +34,9 @@ export function generateTrack(index = 0) {
   const id = generateId();
 
   const soundIndex = Math.floor(Math.random() * (SOUNDS.length - 1));
-  const sound = SOUNDS[soundIndex];
+  //const sound = SOUNDS[soundIndex];
+
+  const sound = SOUNDS[0];
 
   if (!sound) {
     throw new Error(`Missing sound ${soundIndex}`);

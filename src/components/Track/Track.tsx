@@ -70,7 +70,6 @@ export function TrackItem({
               rhythm={rhythm}
               length={length}
               editPitch={editPitch}
-              removeNote={removeNote}
               mobile={mobile}
             />
           </div>

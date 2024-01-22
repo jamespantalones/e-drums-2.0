@@ -7,12 +7,18 @@ import {
 } from '../types';
 import { Track } from './Track';
 import { effect } from '@preact/signals-react';
-import { SIG_BPM, SIG_NAME } from '../state/track';
+import {
+  SIG_BPM,
+  SIG_INITIALIZED,
+  SIG_NAME,
+  SIG_PLAY_STATE,
+  SIG_SERIALIZED_TRACKS,
+  SIG_TICK,
+  SIG_TRACKS,
+} from '../state/track';
 
 export interface SequencerOpts {
   initialTracks?: SerializedTrack[];
-  name: string;
-  bpm: number;
   id: string;
 }
 
@@ -20,11 +26,6 @@ export interface SequencerOpts {
 // Sequencer Class
 // ------------------------------------------------------------
 export class Sequencer {
-  public state: {
-    rhythmIndex: number;
-    tracks: Track[];
-  };
-
   public name: string | null;
   public bpm: number;
   public createdAt: string;
@@ -32,46 +33,35 @@ export class Sequencer {
 
   public id: string;
 
-  public onTick: (tick: number) => void;
-
-  public isInit: boolean;
-
   private reverb!: Tone.Reverb;
   private chain!: Tone.Gain;
 
   private transport!: Transport;
 
-  playState: SequencerPlayState;
-
-  constructor(opts: SequencerOpts & { onTick: (tickVal: number) => void }) {
-    this.isInit = false;
+  constructor(opts: SequencerOpts) {
     this.bpm = SIG_BPM.value;
 
-    this.onTick = opts.onTick;
     this.id = opts.id;
     // set initial name to the track id
     this.name = this.id;
     this.createdAt = new Date().toISOString();
     this.updatedAt = new Date().toISOString();
 
-    this.state = {
-      rhythmIndex: -1,
-      tracks: (opts.initialTracks || []).map((track) => {
-        return new Track({
-          ...track,
-          updateSelfInParent: this.updateChild,
-        });
-      }),
-    };
+    SIG_TRACKS.value = (SIG_SERIALIZED_TRACKS.value || []).map((track) => {
+      return new Track({
+        ...track,
+        updateSelfInParent: this.updateChild,
+      });
+    });
 
-    // listen for signal changes
+    SIG_TICK.value = -1;
+
+    // listen fsor signal changes
     effect(() => {
       if (this.bpm !== SIG_BPM.value) {
         this.setBpm(SIG_BPM.value);
       }
     });
-
-    this.playState = SequencerPlayState.STOPPED_AND_RESET;
   }
 
   async init() {
@@ -85,7 +75,7 @@ export class Sequencer {
       this.chain.chain(this.reverb, Tone.Destination);
 
       // load all initial tracks
-      const trackPromises = this.state.tracks.map((t) => t.init());
+      const trackPromises = SIG_TRACKS.value.map((t) => t.init());
       const resolvedTracks = await Promise.all(trackPromises);
 
       // loop through each resolved track and connect to chain
@@ -94,9 +84,9 @@ export class Sequencer {
           track.sampler.connect(this.chain);
         }
       });
-      this.state.tracks = resolvedTracks;
+      SIG_TRACKS.value = resolvedTracks;
 
-      this.isInit = true;
+      SIG_INITIALIZED.value = true;
 
       // for each track, create it
 
@@ -107,23 +97,18 @@ export class Sequencer {
     }
   }
 
-  stop_all() {
-    this.transport?.stop();
-    this.playState = SequencerPlayState.STOPPED_AND_RESET;
-  }
-
   // stop the transport
   stop() {
     this.transport?.pause();
-    if (this.playState === SequencerPlayState.STARTED) {
-      this.playState = SequencerPlayState.STOPPED;
+    if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
+      SIG_PLAY_STATE.value = SequencerPlayState.STOPPED;
       return;
     }
 
-    if (this.playState === SequencerPlayState.STOPPED) {
-      this.playState = SequencerPlayState.STOPPED_AND_RESET;
+    if (SIG_PLAY_STATE.value === SequencerPlayState.STOPPED) {
+      SIG_PLAY_STATE.value = SequencerPlayState.STOPPED_AND_RESET;
       // rewind everything
-      this.state.rhythmIndex = -1;
+      SIG_TICK.value = -1;
 
       return;
     }
@@ -139,7 +124,7 @@ export class Sequencer {
     // on every 16th note...
     this.transport.scheduleRepeat((time) => {
       // increment rhythm index
-      this.state.rhythmIndex += 1;
+      SIG_TICK.value += 1;
 
       Tone.Draw.anticipation = 0.23;
 
@@ -147,13 +132,14 @@ export class Sequencer {
       // here to not block main thread
       Tone.Draw.schedule(() => {
         // call the current tick increment
-        this.onTick(this.state.rhythmIndex);
+        // SIG_TICK.value = this.state.rhythmIndex;
+        // this.onTick(this.state.rhythmIndex);
       }, time);
 
       // get the next index
-      let nextIndex = this.state.rhythmIndex + 1;
+      let nextIndex = SIG_TICK.value + 1;
 
-      this.state.tracks.forEach((track) => {
+      SIG_TRACKS.value.forEach((track) => {
         const currentTick = nextIndex % track.pattern.length;
         if (track.pattern[currentTick] > 0) {
           // normal time
@@ -169,11 +155,15 @@ export class Sequencer {
   }
 
   async start() {
-    const context = Tone.getContext();
-
-    if (!this.isInit) {
+    if (!SIG_INITIALIZED.value) {
       await this.init();
     }
+
+    if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
+      return;
+    }
+
+    const context = Tone.getContext();
 
     // if transport hasn't been set up.. set it up
     this._setupTransport();
@@ -183,13 +173,11 @@ export class Sequencer {
     }
 
     Tone.Transport.start();
-    this.playState = SequencerPlayState.STARTED;
-
-    console.log(this.playState);
+    SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
   }
 
   public async addNewRhythm(rhythm: SerializedTrack): Promise<Track> {
-    if (!this.isInit) {
+    if (!SIG_INITIALIZED.value) {
       await this.init();
     }
 
@@ -204,8 +192,12 @@ export class Sequencer {
       nextTrack.sampler.connect(this.chain);
     }
 
-    // add
-    this.state.tracks = this.state.tracks.concat(nextTrack);
+    // update in state
+    SIG_TRACKS.value = [...SIG_TRACKS.value, nextTrack];
+    SIG_SERIALIZED_TRACKS.value = [
+      ...SIG_SERIALIZED_TRACKS.value,
+      nextTrack.exportJSON(),
+    ];
 
     return nextTrack;
   }
@@ -217,7 +209,7 @@ export class Sequencer {
   ) {
     let rhythmTarget: Track | undefined = undefined;
 
-    this.state.tracks = this.state.tracks.map((rhythm) => {
+    SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
       // if we have a target
       if (rhythm.id === id) {
         const track = rhythm.repitchNote(index, type);
@@ -228,13 +220,13 @@ export class Sequencer {
       return rhythm;
     });
 
-    return [rhythmTarget, this.state.tracks];
+    return [rhythmTarget, SIG_TRACKS.value];
   }
 
   public toggleTick(id: string, index: number): [Track | undefined, Track[]] {
     let rhythmTarget: Track | undefined = undefined;
 
-    this.state.tracks = this.state.tracks.map((rhythm) => {
+    SIG_TRACKS.value = SIG_TRACKS.value.map((rhythm) => {
       // if we have a target
       if (rhythm.id === id) {
         const track = rhythm.toggleNote(index);
@@ -245,7 +237,7 @@ export class Sequencer {
       return rhythm;
     });
 
-    return [rhythmTarget, this.state.tracks];
+    return [rhythmTarget, SIG_TRACKS.value];
   }
 
   private setBpm(val: number) {
@@ -256,22 +248,23 @@ export class Sequencer {
   }
 
   public clearSolos() {
-    this.state.tracks = this.state.tracks.map((t) => t.clearSolo());
+    SIG_TRACKS.value = SIG_TRACKS.value.map((t) => t.clearSolo());
   }
 
   public clear() {
-    this.state.tracks = this.state.tracks.map((t) => t.noteOff());
+    SIG_TRACKS.value = SIG_TRACKS.value.map((t) => t.noteOff());
   }
 
   public updateTracks(tracks: Track[]) {
-    this.state.tracks = tracks;
+    SIG_TRACKS.value = tracks;
+    SIG_SERIALIZED_TRACKS.value = tracks.map((t) => t.exportJSON());
   }
 
   updateChild = (
     child: Track,
     { needsReconnect }: { needsReconnect?: boolean }
   ) => {
-    this.state.tracks = this.state.tracks.map((track) => {
+    SIG_TRACKS.value = SIG_TRACKS.value.map((track) => {
       if (track.id === child.id) {
         if (needsReconnect) {
           child.sampler.connect(this.chain);
@@ -283,8 +276,8 @@ export class Sequencer {
   };
 
   public deleteTrack(id: string): [string, Track[]] {
-    this.state.tracks = this.state.tracks.filter((r) => r.id !== id);
-    return [id, this.state.tracks];
+    SIG_TRACKS.value = SIG_TRACKS.value.filter((r) => r.id !== id);
+    return [id, SIG_TRACKS.value];
   }
 
   public exportJSON(): SerializedSequencer {
@@ -293,8 +286,8 @@ export class Sequencer {
     return {
       id: this.id,
       state: {
-        rhythmIndex: this.state.rhythmIndex,
-        tracks: this.state.tracks.map((t) => t.exportJSON()),
+        rhythmIndex: SIG_TICK.value,
+        tracks: SIG_TRACKS.value.map((t) => t.exportJSON()),
       },
       bpm: SIG_BPM.value,
       name: SIG_NAME.value || this.id,

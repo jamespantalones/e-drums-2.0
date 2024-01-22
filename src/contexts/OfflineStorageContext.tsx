@@ -24,8 +24,6 @@ const OfflineStorageContext = createContext<
   | undefined
 >(undefined);
 
-const INDEX = `${Config.CACHE_PREFIX}/${Config.CACHE_MASTER}`;
-
 export function OfflineStorageProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
@@ -36,14 +34,14 @@ export function OfflineStorageProvider({ children }: { children: ReactNode }) {
   ): Promise<SerializedSequencer | undefined> {
     const val = await get<SerializedSequencer>(`${Config.CACHE_PREFIX}/${id}`);
 
-    console.log({ load: val, id });
+    console.log({ loaded_from_cache: val, id });
     return val;
   }
 
   async function saveProjectToCache(id: string, data: SerializedSequencer) {
-    console.log(`Saving`, { data });
-
     await set(`${Config.CACHE_PREFIX}/${id}`, data);
+
+    console.log(`Saved`, { data });
   }
 
   async function removeFromCache(id: string) {

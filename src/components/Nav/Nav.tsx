@@ -13,7 +13,13 @@ import { Config } from '../../config';
 import { TempoInput } from './TempoInput';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { SIG_BPM } from '../../state/track';
+import {
+  SIG_BPM,
+  SIG_INITIALIZED,
+  SIG_PLAY_STATE,
+  SIG_TRACKS,
+} from '../../state/track';
+import { SequencerPlayState } from '../../types';
 export function Nav({
   save,
   children,
@@ -21,12 +27,11 @@ export function Nav({
   save: () => Promise<void>;
   children: React.ReactNode;
 }) {
-  const { state, methods } = useAudioContext();
+  const { methods } = useAudioContext();
 
   useSignals();
 
   function handleBPMChange(bpm: number) {
-    // changeBpm(bpm);
     SIG_BPM.value = bpm;
   }
 
@@ -59,13 +64,17 @@ export function Nav({
 
           {children}
 
-          <IconButton small onClick={methods.play} disabled={state.playing}>
+          <IconButton
+            small
+            onClick={methods.play}
+            disabled={SIG_PLAY_STATE.value === SequencerPlayState.STARTED}
+          >
             <PlayIcon strokeWidth={1} />
           </IconButton>
           <IconButton
             small
             onClick={methods.stop}
-            disabled={!state.initialized}
+            disabled={!SIG_INITIALIZED.value}
           >
             <StopIcon strokeWidth={1} />
           </IconButton>
@@ -84,7 +93,8 @@ export function Nav({
             onClick={methods.createTrack}
             small
             disabled={
-              state.tracks.length === Config.MAX_TRACKS || !state.initialized
+              SIG_TRACKS.value.length === Config.MAX_TRACKS ||
+              !SIG_INITIALIZED.value
             }
           >
             <NewIcon strokeWidth={1} />

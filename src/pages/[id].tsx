@@ -9,7 +9,7 @@ import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 import { useHotKeys } from '../hooks/useHotKeys';
-import { SIG_NAME } from '../state/track';
+import { SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
 
 /**
  *
@@ -17,16 +17,12 @@ import { SIG_NAME } from '../state/track';
  */
 const Track: NextPage = () => {
   useSignals();
+
   const {
     query: { id },
   } = useRouter();
 
-  const {
-    state: { tracks },
-    initialize,
-    sequencer,
-    methods,
-  } = useAudioContext();
+  const { initialize, methods } = useAudioContext();
 
   const [mobile] = React.useState(isMobile());
 
@@ -34,10 +30,11 @@ const Track: NextPage = () => {
 
   const { loadProjectFromCache, saveProjectToCache } = useOfflineStorage();
 
-  const save = async (localName?: string) => {
-    if (!sequencer) return;
+  const save = async (_localName?: string) => {
+    if (!SIG_SEQUENCER.value) return;
+
     await saveProjectToCache(id as string, {
-      ...sequencer.exportJSON(),
+      ...SIG_SEQUENCER.value.exportJSON(),
       name: SIG_NAME.value,
       updatedAt: new Date().toISOString(),
     });
@@ -46,7 +43,7 @@ const Track: NextPage = () => {
   React.useEffect(() => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
-      let _song = await initialize(project);
+      await initialize(project);
     }
 
     if (!id) return;
@@ -68,7 +65,7 @@ const Track: NextPage = () => {
   }
 
   // all hot-keys require commande
-  useHotKeys({ s: save });
+  useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
 
   return (
     <>
@@ -90,9 +87,9 @@ const Track: NextPage = () => {
           axis="y"
           className="edit__area"
           onReorder={methods.reorderTracks}
-          values={tracks}
+          values={SIG_TRACKS.value}
         >
-          {tracks.map((rhythm, index) => (
+          {SIG_TRACKS.value.map((rhythm, index) => (
             <TrackItem
               key={rhythm.id}
               rhythm={rhythm}

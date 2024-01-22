@@ -88,9 +88,7 @@ export class Track {
   public async init(): Promise<Track> {
     if (this.instrument) {
       if (!this.instrument.sound?.files[0]) {
-        throw new Error(
-          `Missing instrument ${JSON.stringify(this.instrument)}`
-        );
+        return this;
       }
       this.sampler = await createAsyncSampler(
         `/sounds/${this.instrument.sound.files[0]}`
@@ -103,7 +101,7 @@ export class Track {
 
   private _createSoundFile(value?: SoundFile): Instrument {
     // placeholder for final sound
-    let sound = value || SOUNDS[Math.floor(Math.random() * SOUNDS.length)];
+    let sound = value;
 
     this.instrument = {
       sound: sound as SoundFile,
@@ -231,6 +229,7 @@ export class Track {
   public async changeInstrument(value: SoundFile): Promise<Track> {
     // get the selected instrument from the sound files
     this.isReady = false;
+
     const file = `/sounds/${this._createSoundFile(value).sound.files[0]}`;
 
     // dispose of old audio file
