@@ -67,6 +67,15 @@ const Track: NextPage = () => {
   // all hot-keys require commande
   useHotKeys({ 'Meta+s': save, 'Ctrl+n': methods.createTrack });
 
+  // unmount effect
+  React.useEffect(() => {
+    return () => {
+      console.log('UNNMOUNT');
+      methods.destroy();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <Nav save={() => save()}>

@@ -87,6 +87,7 @@ export type AudioContextReturnType = {
   methods: {
     play: () => Promise<void>;
     stop: () => void;
+    destroy: () => void;
     clear: () => void;
     deleteTrack: (id: string) => void;
     changeName: (ev: React.ChangeEvent<HTMLInputElement>) => void;

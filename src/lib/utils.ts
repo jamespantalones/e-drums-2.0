@@ -34,9 +34,8 @@ export function generateTrack(index = 0) {
   const id = generateId();
 
   const soundIndex = Math.floor(Math.random() * (SOUNDS.length - 1));
-  //const sound = SOUNDS[soundIndex];
 
-  const sound = SOUNDS[0];
+  const sound = SOUNDS[1];
 
   if (!sound) {
     throw new Error(`Missing sound ${soundIndex}`);

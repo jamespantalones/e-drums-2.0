@@ -44,7 +44,12 @@ export function Slice({
   }, [rhythm, repitchTick, index]);
 
   return (
-    <div key={`${rhythm.id}-${index}-${id}`} className={styles['slice-outer']}>
+    <div
+      key={`${rhythm.id}-${index}-${id}`}
+      className={clsx(styles['slice-outer'], {
+        [styles.muted]: rhythm.muted,
+      })}
+    >
       {!editPitch && (
         <button
           key={index}

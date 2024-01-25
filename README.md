@@ -1,12 +1,13 @@
 # Todo
 
+- [ ] mute state does not persist on save
+- [ ] fix engine issues on back button
+- [ ] clear sequencer on route change
 - [ ] master volume
 - [ ] pwa (offline)
 - [ ] mobile
-- [ ] less transitions
 - [ ] add createdAt/updatedAt
-- [ ] change idb-keyval store name
-- [ ] clear sequencer on route change
+- [ ] change idb-keyval store name``````
 - [ ] add sub menu on index page
 - [ ] allow rename from index page
 - [x] rename
@@ -23,3 +24,4 @@
 - [x] make separate page for landing
 - [x] print name of track near nav
 - [x] Delete from index page does not immediately clear
+- [x] less transitions

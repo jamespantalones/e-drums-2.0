@@ -7,6 +7,9 @@
   width: var(--slice-size);
   height: var(--slice-size);
   @apply mx-1 my-0;
+  &.muted {
+    @apply opacity-20;
+  }
 }
 
 /* default slice */

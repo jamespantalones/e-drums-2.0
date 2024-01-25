@@ -1,4 +1,4 @@
-import { DragControls, useDragControls } from 'framer-motion';
+import { DragControls } from 'framer-motion';
 import { Knob } from '../inputs/Knob';
 import styles from './Edit.module.css';
 import {
@@ -14,6 +14,9 @@ import { Config, SOUNDS } from '../../config';
 import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
 import { generateRandomColor } from '../../lib/utils';
+import { padNumber } from '../../utils';
+import { Minus, Plus } from 'lucide-react';
+import { Slider } from '../inputs/Slider';
 
 export function Edit({
   dragControls,
@@ -96,71 +99,97 @@ export function Edit({
   );
 
   return (
-    <div className={styles.wrapper}>
-      <section>
+    <>
+      <div>
+        {/* left panel */}
         <div className="flex">
-          <ReorderIcon dragControls={dragControls} />
-          <section className={styles.total}>
-            {rhythm.totalNotes < 10
-              ? `0${rhythm.totalNotes}`
-              : rhythm.totalNotes}
+          <section className="w-24">
+            <div className="flex">
+              <ReorderIcon dragControls={dragControls} />
+              <section className={styles.total}>
+                {padNumber(rhythm.totalNotes)}
+              </section>
+            </div>
+            <select
+              value={rhythm.instrument?.sound.name}
+              className={styles['instrument-select']}
+              onChange={handleInstrumentChange}
+            >
+              {SOUNDS.map((sound) => (
+                <option key={sound.name} value={sound.name}>
+                  {sound.name}
+                </option>
+              ))}
+            </select>
+
+            {/* mute/solo */}
+            <div className={styles['poly-button-group']}>
+              <button
+                onClick={toggleColor}
+                style={{ backgroundColor: `hsl(${rhythm.color.join(' ')})` }}
+                className={clsx({
+                  [styles['toggle-color']]: true,
+                })}
+              ></button>
+              <button
+                onClick={toggleMute}
+                className={clsx(styles.toggle, {
+                  [styles['toggle-mute']]: true,
+                  [styles.muted]: muted,
+                })}
+              >
+                MUTE
+              </button>
+              <button
+                onClick={toggleEditPitch}
+                className={clsx(styles.toggle, {
+                  [styles.active]: editPitch,
+                  [styles['toggle-pitch']]: true,
+                })}
+              >
+                PITCH
+              </button>
+            </div>
+          </section>
+
+          <section className={styles['length-panel']}>
+            <button
+              onClick={addNote}
+              className={styles['add-button']}
+              disabled={rhythm.totalNotes >= Config.MAX_SLICES}
+            >
+              <Plus size={16} />
+            </button>
+            <button
+              onClick={() => {
+                if (rhythm.pattern.length - 1 === 0) {
+                  deleteTrack(rhythm.id);
+                  return;
+                }
+                removeNote(rhythm.pattern.length - 1);
+              }}
+              className={styles['subtract-button']}
+            >
+              <Minus size={16} />
+            </button>
           </section>
         </div>
-        <select
-          value={rhythm.instrument?.sound.name}
-          className={styles['instrument-select']}
-          onChange={handleInstrumentChange}
-        >
-          {SOUNDS.map((sound) => (
-            <option key={sound.name} value={sound.name}>
-              {sound.name}
-            </option>
-          ))}
-        </select>
-        {/* Add/subtract */}
-        <div className={clsx(styles['poly-button-group'], styles.large)}>
-          <button
-            onClick={() => removeNote(rhythm.pattern.length - 1)}
-            disabled={rhythm.pattern.length <= 1}
-            className={styles['subtract-button']}
-          >
-            <div>
-              <span>-</span>
-            </div>
-          </button>
-          <button
-            onClick={addNote}
-            className={styles['add-button']}
-            disabled={rhythm.totalNotes >= Config.MAX_SLICES}
-          >
-            <div>
-              <span>+</span>
-            </div>
-          </button>
-        </div>
-        {/* mute/solo */}
-        <div className={styles['poly-button-group']}>
-          <button
-            onClick={toggleColor}
-            style={{ backgroundColor: `hsl(${rhythm.color.join(' ')})` }}
-            className={clsx({
-              [styles['toggle-color']]: true,
-            })}
-          ></button>
-          <button
-            onClick={toggleMute}
-            className={clsx(styles.toggle, {
-              [styles['toggle-mute']]: true,
-              [styles.muted]: muted,
-            })}
-          >
-            M
-          </button>
-        </div>
-      </section>
-      <section className="flex flex-col justify-between">
-        <div className={styles['knob-group']}>
-          <Knob
+        <section className="block">
+          <div className={styles['knob-group']}>
+            <Slider
+              min={30}
+              max={70}
+              value={rhythm.pitch}
+              onChange={handlePitchChange}
+            />
+            <Slider
+              value={rhythm.prevVolume}
+              onChange={handleVolumeChange}
+              min={0}
+              max={100}
+              step={1}
+            />
+            {/* <Knob
             label="tone"
             step={1}
             onChange={handlePitchChange}
@@ -175,25 +204,10 @@ export function Edit({
             min={0}
             max={100}
             step={1}
-          />
-        </div>
-        <div className={styles['poly-button-group']}>
-          <button
-            onClick={toggleEditPitch}
-            className={clsx({
-              [styles.active]: editPitch,
-            })}
-          >
-            PITCH
-          </button>
-          <button
-            onClick={() => deleteTrack(rhythm.id)}
-            className={styles['delete-slice-button']}
-          >
-            DEL
-          </button>
-        </div>
-      </section>
-    </div>
+          /> */}
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

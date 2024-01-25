@@ -26,6 +26,7 @@ export interface SequencerOpts {
 // Sequencer Class
 // ------------------------------------------------------------
 export class Sequencer {
+  public context: Tone.BaseContext | null;
   public name: string | null;
   public bpm: number;
   public createdAt: string;
@@ -40,7 +41,7 @@ export class Sequencer {
 
   constructor(opts: SequencerOpts) {
     this.bpm = SIG_BPM.value;
-
+    this.context = null;
     this.id = opts.id;
     // set initial name to the track id
     this.name = this.id;
@@ -97,6 +98,26 @@ export class Sequencer {
     }
   }
 
+  async start() {
+    if (!SIG_INITIALIZED.value) {
+      await this.init();
+    }
+
+    if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
+      return;
+    }
+
+    // if transport hasn't been set up.. set it up
+    this._setupTransport();
+
+    if (this.context?.state === 'suspended') {
+      await this.context.resume();
+    }
+
+    Tone.Transport.start();
+    SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
+  }
+
   // stop the transport
   stop() {
     this.transport?.pause();
@@ -118,14 +139,17 @@ export class Sequencer {
     this.transport = Tone.Transport;
     this.transport.cancel();
 
+    this.context = Tone.getContext();
+
     // ************************************************************
     // main loop
     // ************************************************************
     // on every 16th note...
-    this.transport.scheduleRepeat((time) => {
+    this.transport?.scheduleRepeat((time) => {
       // increment rhythm index
       SIG_TICK.value += 1;
 
+      // TODO: check
       Tone.Draw.anticipation = 0.23;
 
       // IMPORTANT: any UI updates need to be called
@@ -152,28 +176,6 @@ export class Sequencer {
 
     Tone.Transport.bpm.value = SIG_BPM.value;
     Tone.Transport.swing = 0.0167;
-  }
-
-  async start() {
-    if (!SIG_INITIALIZED.value) {
-      await this.init();
-    }
-
-    if (SIG_PLAY_STATE.value === SequencerPlayState.STARTED) {
-      return;
-    }
-
-    const context = Tone.getContext();
-
-    // if transport hasn't been set up.. set it up
-    this._setupTransport();
-
-    if (context.state === 'suspended') {
-      await context.resume();
-    }
-
-    Tone.Transport.start();
-    SIG_PLAY_STATE.value = SequencerPlayState.STARTED;
   }
 
   public async addNewRhythm(rhythm: SerializedTrack): Promise<Track> {
@@ -278,6 +280,10 @@ export class Sequencer {
   public deleteTrack(id: string): [string, Track[]] {
     SIG_TRACKS.value = SIG_TRACKS.value.filter((r) => r.id !== id);
     return [id, SIG_TRACKS.value];
+  }
+
+  public destroy() {
+    this.transport?.stop();
   }
 
   public exportJSON(): SerializedSequencer {

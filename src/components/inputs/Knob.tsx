@@ -23,7 +23,7 @@ export function Knob(props: KnobProps) {
     min,
     max,
     step,
-    radius = 12.8,
+    radius = 15,
     degrees = 270,
     label = '',
   } = props;
@@ -31,11 +31,12 @@ export function Knob(props: KnobProps) {
   let { value } = props;
 
   const [localValue, setLocalValue] = useState(value);
+
   let startAngle = (360 - degrees) / 2;
   let endAngle = startAngle + degrees;
 
   let [deg, setDeg] = useState(
-    convertRange(min, max, startAngle, endAngle, value)
+    convertRange(min, max, startAngle, endAngle, localValue)
   );
 
   const dom = useRef<HTMLDivElement | null>(null);

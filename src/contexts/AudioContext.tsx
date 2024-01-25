@@ -95,6 +95,11 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
     SIG_SEQUENCER.value?.stop();
   }, []);
 
+  const destroy = useCallback(() => {
+    SIG_SEQUENCER.value?.destroy();
+    SIG_SEQUENCER.value = null;
+  }, []);
+
   const createTrack = useCallback(async () => {
     // add to Sequencer
     await SIG_SEQUENCER.value?.addNewRhythm(
@@ -158,6 +163,7 @@ export function AudioContextProvider({ children }: { children: ReactNode }) {
       deleteTrack,
       reorderTracks,
       changeName,
+      destroy,
       play,
       stop,
       clear,

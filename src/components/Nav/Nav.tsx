@@ -35,6 +35,13 @@ export function Nav({
     SIG_BPM.value = bpm;
   }
 
+  function play() {
+    if (SIG_PLAY_STATE.value !== SequencerPlayState.STARTED) {
+      methods.stop();
+    }
+    methods.play();
+  }
+
   return (
     <nav className={styles.nav}>
       <section className={styles.section}>
@@ -64,11 +71,7 @@ export function Nav({
 
           {children}
 
-          <IconButton
-            small
-            onClick={methods.play}
-            disabled={SIG_PLAY_STATE.value === SequencerPlayState.STARTED}
-          >
+          <IconButton small onClick={play}>
             <PlayIcon strokeWidth={1} />
           </IconButton>
           <IconButton
