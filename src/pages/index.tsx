@@ -38,7 +38,7 @@ const Home: NextPage = () => {
   return (
     <section className="p-4">
       <nav className="flex w-full justify-between items-center">
-        <h1 className="text-5xl mb-8">
+        <h1 className="text-8xl mb-8">
           <span className="inline-block">E</span>-Drums
         </h1>
         <div>

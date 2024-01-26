@@ -17,10 +17,8 @@
 
 .track-wrapper {
   @apply relative;
-  width: var(--slice-size);
   transition: transform 0.2s ease;
   height: auto;
-  width: unset;
   @apply flex items-start justify-start;
 }
 

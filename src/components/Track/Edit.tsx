@@ -1,5 +1,5 @@
 import { DragControls } from 'framer-motion';
-import { Knob } from '../inputs/Knob';
+
 import styles from './Edit.module.css';
 import {
   ChangeEvent,
@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
 import { generateRandomColor } from '../../lib/utils';
 import { padNumber } from '../../utils';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Music2, Plus, Volume, Volume1 } from 'lucide-react';
 import { Slider } from '../inputs/Slider';
 
 export function Edit({
@@ -100,16 +100,10 @@ export function Edit({
 
   return (
     <>
-      <div>
+      <div className="mr-2">
         {/* left panel */}
         <div className="flex">
           <section className="w-24">
-            <div className="flex">
-              <ReorderIcon dragControls={dragControls} />
-              <section className={styles.total}>
-                {padNumber(rhythm.totalNotes)}
-              </section>
-            </div>
             <select
               value={rhythm.instrument?.sound.name}
               className={styles['instrument-select']}
@@ -121,6 +115,12 @@ export function Edit({
                 </option>
               ))}
             </select>
+            <div className="flex">
+              <ReorderIcon dragControls={dragControls} />
+              <section className={styles.total}>
+                – {padNumber(rhythm.totalNotes)}
+              </section>
+            </div>
 
             {/* mute/solo */}
             <div className={styles['poly-button-group']}>
@@ -138,16 +138,18 @@ export function Edit({
                   [styles.muted]: muted,
                 })}
               >
-                MUTE
+                {muted && <Volume size={12} />}
+                {!muted && <Volume1 size={12} />}
               </button>
               <button
                 onClick={toggleEditPitch}
                 className={clsx(styles.toggle, {
                   [styles.active]: editPitch,
                   [styles['toggle-pitch']]: true,
+                  [styles['pitch']]: false,
                 })}
               >
-                PITCH
+                <Music2 size={12} />
               </button>
             </div>
           </section>
@@ -189,22 +191,23 @@ export function Edit({
               max={100}
               step={1}
             />
+
             {/* <Knob
-            label="tone"
-            step={1}
-            onChange={handlePitchChange}
-            value={rhythm.pitch}
-            min={30}
-            max={70}
-          />
-          <Knob
-            onChange={handleVolumeChange}
-            value={rhythm.prevVolume}
-            label="vol"
-            min={0}
-            max={100}
-            step={1}
-          /> */}
+              label="tone"
+              step={1}
+              onChange={handlePitchChange}
+              value={rhythm.pitch}
+              min={30}
+              max={70}
+            />
+            <Knob
+              onChange={handleVolumeChange}
+              value={rhythm.prevVolume}
+              label="vol"
+              min={0}
+              max={100}
+              step={1}
+            /> */}
           </div>
         </section>
       </div>

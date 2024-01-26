@@ -27,6 +27,7 @@
     "momentum.js": "^1.2.2",
     "nanoid": "^4.0.2",
     "next": "^14.0.4",
+    "rc-knob": "https://github.com/szilard-dobai/rc-knob",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-range": "^1.8.14",

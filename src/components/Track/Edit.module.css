@@ -55,15 +55,16 @@
 }
 
 .toggle-mute {
-  @apply border;
   &.muted {
-    @apply bg-red-500;
+    @apply bg-red-400;
     @apply border-transparent;
-    @apply hover:bg-red-600;
+    @apply hover:bg-red-500;
   }
 }
 .toggle-pitch {
-  @apply border;
+  &.pitch {
+    @apply bg-green-300;
+  }
 }
 
 .toggle-color {
@@ -79,12 +80,9 @@
 }
 
 .knob-group {
-  @apply flex w-full items-center justify-center;
+  /* @apply flex w-full items-center justify-center;
   @apply flex-col;
-  @apply w-full;
-  input {
-    @apply w-full h-1/2 block;
-  }
+  @apply w-full; */
 }
 
 .delete-slice-button {
