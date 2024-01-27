@@ -17,9 +17,13 @@ import {
   SIG_BPM,
   SIG_INITIALIZED,
   SIG_PLAY_STATE,
+  SIG_REVERB,
+  SIG_SWING,
   SIG_TRACKS,
+  SIG_VOLUME,
 } from '../../state/track';
 import { SequencerPlayState } from '../../types';
+import { Slider } from '../inputs/Slider';
 export function Nav({
   save,
   children,
@@ -33,6 +37,18 @@ export function Nav({
 
   function handleBPMChange(bpm: number) {
     SIG_BPM.value = bpm;
+  }
+
+  function handleSwingChange(swing: number) {
+    SIG_SWING.value = swing;
+  }
+
+  function handleVolumeChange(vol: number) {
+    SIG_VOLUME.value = vol;
+  }
+
+  function handleReverbChange(rev: number) {
+    SIG_REVERB.value = rev;
   }
 
   function play() {
@@ -82,12 +98,46 @@ export function Nav({
             <StopIcon strokeWidth={1} />
           </IconButton>
 
-          <div className="-translate-y-1">
-            <TempoInput
-              onChange={handleBPMChange}
-              label="BPM"
-              value={SIG_BPM.value}
-            />
+          <div className="w-[50vw] ml-16 flex flex-wrap">
+            <div className={styles.slidecontainer}>
+              <Slider
+                onChange={handleBPMChange}
+                label="BPM"
+                value={SIG_BPM.value}
+                min={Config.MIN_BPM}
+                max={Config.MAX_BPM}
+              />
+            </div>
+            <div className={styles.slidecontainer}>
+              <Slider
+                onChange={handleSwingChange}
+                label="Swing"
+                value={SIG_SWING.value}
+                min={0}
+                max={100}
+                step={1}
+              />
+            </div>
+            <div className={styles.slidecontainer}>
+              <Slider
+                onChange={handleVolumeChange}
+                label="Vol"
+                value={SIG_VOLUME.value}
+                min={Config.MIN_VOLUME}
+                max={Config.MAX_VOLUME}
+                step={0.1}
+              />
+            </div>
+            <div className={styles.slidecontainer}>
+              <Slider
+                label="Reverb"
+                onChange={handleReverbChange}
+                value={SIG_REVERB.value}
+                min={Config.MIN_REVERB}
+                max={Config.MAX_REVERB}
+                step={0.01}
+              />
+            </div>
           </div>
         </div>
 

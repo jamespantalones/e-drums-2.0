@@ -2,8 +2,13 @@ import { SoundFile } from '../types';
 
 export const Config = {
   DEFAULT_BPM: 102,
-  MAX_BPM: 300,
-  MIN_BPM: 60,
+  MAX_BPM: 280,
+  MIN_BPM: 50,
+  DEFAULT_VOLUME: -6,
+  MIN_VOLUME: -24,
+  MIN_REVERB: 0,
+  MAX_REVERB: 1,
+  MAX_VOLUME: 12,
   MIN_SLICES: 0,
   MAX_SLICES: 16,
   MAX_TRACKS: 16,
@@ -19,20 +24,26 @@ export const Config = {
 
 export const SOUNDS: SoundFile[] = [
   {
-    name: 'EMPTY',
+    name: 'KICK',
     defaultFreqRange: [20, 80],
-    files: [],
+    files: ['2_FM_KICK.wav'],
+  },
+  {
+    name: 'SNR',
+    defaultFreqRange: [40, 80],
+    files: ['23_FM_SNR.wav'],
+  },
+  {
+    name: 'HAT1',
+    defaultFreqRange: [20, 80],
+    files: ['8_FM_HH.wav'],
   },
   {
     name: 'BASS',
     defaultFreqRange: [20, 80],
     files: ['1_FM_BASS.wav'],
   },
-  {
-    name: 'KICK',
-    defaultFreqRange: [20, 80],
-    files: ['2_FM_KICK.wav'],
-  },
+
   {
     name: 'BONGO',
     defaultFreqRange: [20, 80],
@@ -61,12 +72,6 @@ export const SOUNDS: SoundFile[] = [
     name: 'DOG',
     defaultFreqRange: [20, 80],
     files: ['7_FM_DOG.wav'],
-  },
-
-  {
-    name: 'HAT1',
-    defaultFreqRange: [20, 80],
-    files: ['8_FM_HH.wav'],
   },
 
   {
@@ -139,11 +144,7 @@ export const SOUNDS: SoundFile[] = [
     defaultFreqRange: [40, 80],
     files: ['22_FM_SWEEP.wav'],
   },
-  {
-    name: 'SNR',
-    defaultFreqRange: [40, 80],
-    files: ['23_FM_SNR.wav'],
-  },
+
   {
     name: 'STAB',
     defaultFreqRange: [40, 80],

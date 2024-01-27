@@ -9,7 +9,14 @@ import { useOfflineStorage } from '../contexts/OfflineStorageContext';
 import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 import { useHotKeys } from '../hooks/useHotKeys';
-import { SIG_NAME, SIG_SEQUENCER, SIG_TRACKS } from '../state/track';
+import {
+  SIG_NAME,
+  SIG_SEQUENCER,
+  SIG_TRACKS,
+  SIG_VOLUME,
+  destroy,
+  state,
+} from '../state/track';
 
 /**
  *
@@ -22,6 +29,7 @@ const Track: NextPage = () => {
     query: { id },
   } = useRouter();
 
+  let loaded = React.useRef(false);
   const { initialize, methods } = useAudioContext();
 
   const [mobile] = React.useState(isMobile());
@@ -44,9 +52,11 @@ const Track: NextPage = () => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
       await initialize(project);
+      loaded.current = true;
+      console.log('HIT');
     }
 
-    if (!id) return;
+    if (!id || loaded.current) return;
 
     load();
   }, [id, loadProjectFromCache, initialize]);
@@ -70,11 +80,14 @@ const Track: NextPage = () => {
   // unmount effect
   React.useEffect(() => {
     return () => {
-      console.log('UNNMOUNT');
       methods.destroy();
+      // destroy all signals
+      destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log(SIG_VOLUME.value);
 
   return (
     <>
@@ -82,7 +95,7 @@ const Track: NextPage = () => {
         <label className="block text-xxs">
           Name
           <input
-            className="text-xs block py-1 bg-transparent border-b border-current"
+            className="text-xs block py-1 bg-transparent border-b border-current w-48 mr-16"
             type="text"
             placeholder={id as string}
             defaultValue={SIG_NAME.value || id}

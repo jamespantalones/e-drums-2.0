@@ -1,22 +1,27 @@
 .slider {
   --radius: 8px;
   --thumb: rgba(255, 255, 255, 0.2);
-  @apply w-16;
+  @apply w-full;
+  @apply mt-2 block;
+
+  span {
+    @apply text-xxs;
+    @apply block mt-1 p-0;
+    line-height: 1;
+    @apply select-none uppercase;
+  }
   input[type='range'] {
     /* removing default appearance */
     -webkit-appearance: none;
     appearance: none;
     /* creating a custom design */
-    @apply w-36;
+    @apply w-full;
     @apply block;
-    @apply mb-3;
+    @apply mb-1;
     cursor: pointer;
     outline: none;
     height: 1px;
     background: #ccc;
-    &:first-child {
-      @apply mt-3;
-    }
   }
 
   /* Thumb: webkit */

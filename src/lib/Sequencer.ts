@@ -12,9 +12,12 @@ import {
   SIG_INITIALIZED,
   SIG_NAME,
   SIG_PLAY_STATE,
+  SIG_REVERB,
   SIG_SERIALIZED_TRACKS,
+  SIG_SWING,
   SIG_TICK,
   SIG_TRACKS,
+  SIG_VOLUME,
 } from '../state/track';
 
 export interface SequencerOpts {
@@ -35,7 +38,7 @@ export class Sequencer {
   public id: string;
 
   private reverb!: Tone.Reverb;
-  private chain!: Tone.Gain;
+  private chain!: Tone.Volume;
 
   private transport!: Transport;
 
@@ -47,6 +50,8 @@ export class Sequencer {
     this.name = this.id;
     this.createdAt = new Date().toISOString();
     this.updatedAt = new Date().toISOString();
+    this.reverb = new Tone.Reverb();
+    this.chain = new Tone.Volume(SIG_VOLUME.value);
 
     SIG_TRACKS.value = (SIG_SERIALIZED_TRACKS.value || []).map((track) => {
       return new Track({
@@ -62,6 +67,9 @@ export class Sequencer {
       if (this.bpm !== SIG_BPM.value) {
         this.setBpm(SIG_BPM.value);
       }
+
+      this.chain.volume.value = SIG_VOLUME.value;
+      this.reverb.wet.value = SIG_REVERB.value;
     });
   }
 
@@ -69,10 +77,10 @@ export class Sequencer {
     try {
       // TODO: move this out
       // create an audio chain
-      this.reverb = new Tone.Reverb();
-      this.reverb.wet.value = 0.1;
 
-      this.chain = new Tone.Gain();
+      this.reverb.wet.value = SIG_REVERB.value;
+      this.reverb.decay = '1m';
+
       this.chain.chain(this.reverb, Tone.Destination);
 
       // load all initial tracks
@@ -149,6 +157,10 @@ export class Sequencer {
       // increment rhythm index
       SIG_TICK.value += 1;
 
+      Tone.Transport.swingSubdivision = '16t';
+      Tone.Transport.swing = SIG_SWING.value / 100;
+      Tone.Transport.bpm.value = SIG_BPM.value;
+
       // TODO: check
       Tone.Draw.anticipation = 0.23;
 
@@ -173,9 +185,6 @@ export class Sequencer {
 
       // use the callback time to schedule events
     }, '16n');
-
-    Tone.Transport.bpm.value = SIG_BPM.value;
-    Tone.Transport.swing = 0.0167;
   }
 
   public async addNewRhythm(rhythm: SerializedTrack): Promise<Track> {

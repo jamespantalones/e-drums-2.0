@@ -32,38 +32,30 @@
 
   button {
     @apply w-1/2 h-4 flex items-center justify-center;
-
     @apply text-xxs;
     @apply mr-1;
     @apply cursor-pointer;
-    @apply hover:bg-neutral-600;
   }
 }
 
 .instrument-select {
-  @apply text-xs;
   width: calc(100% - 4px);
   @apply bg-transparent border;
+  @apply text-xs;
 }
 
-.toggle-solo {
-  &.solo {
-    @apply bg-yellow-300;
-    @apply text-background border-transparent;
-    @apply hover:bg-yellow-400;
+.toggle {
+  @apply bg-neutral-800;
+  &:active {
+    @apply bg-neutral-600;
   }
-}
-
-.toggle-mute {
   &.muted {
     @apply bg-red-400;
     @apply border-transparent;
-    @apply hover:bg-red-500;
+    @apply hover:bg-red-500 text-background;
   }
-}
-.toggle-pitch {
   &.pitch {
-    @apply bg-green-300;
+    @apply bg-neutral-300 text-background;
   }
 }
 
@@ -76,18 +68,6 @@
       var(--color-track-h) calc(var(--color-track-s) - 40%)
         calc(var(--color-track-l) - 2%)
     ) !important;
-  }
-}
-
-.knob-group {
-  /* @apply flex w-full items-center justify-center;
-  @apply flex-col;
-  @apply w-full; */
-}
-
-.delete-slice-button {
-  &:hover {
-    @apply !bg-red-500;
   }
 }
 

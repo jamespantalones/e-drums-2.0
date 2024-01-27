@@ -29,7 +29,7 @@ html {
 
 body {
   width: 100%;
-  /* overflow-x: hidden; */
+  min-width: 750px;
 }
 
 /* i don't remember why i have this in here */

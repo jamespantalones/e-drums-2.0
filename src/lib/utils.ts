@@ -20,29 +20,20 @@ export function generateRandomColor(): [number, number, number] {
 }
 
 export function generateTrack(index = 0) {
-  let random: number;
-  if (window.innerWidth >= Config.MOBILE_CUTOFF) {
-    random =
-      Math.floor(Math.random() * Config.SEED_SLICES_MAX_DESKTOP) +
-      Config.SEED_SLICES_MIN_DESKTOP;
-  } else {
-    random =
-      Math.floor(Math.random() * Config.SEED_SLICES_MAX_MOBILE) +
-      Config.SEED_SLICES_MIN_MOBILE;
-  }
-
-  const id = generateId();
+  let random =
+    Math.floor(Math.random() * Config.SEED_SLICES_MAX_DESKTOP) +
+    Config.SEED_SLICES_MIN_DESKTOP;
 
   const soundIndex = Math.floor(Math.random() * (SOUNDS.length - 1));
 
-  const sound = SOUNDS[1];
+  const sound = SOUNDS[0];
 
   if (!sound) {
     throw new Error(`Missing sound ${soundIndex}`);
   }
 
   const track: SerializedTrack & { instrument: Instrument } = {
-    id,
+    id: generateId(),
     index,
     onNotes: Math.floor(random / 2),
     totalNotes: random,

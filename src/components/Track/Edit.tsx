@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import { ReorderIcon } from './ReorderIcon';
 import { generateRandomColor } from '../../lib/utils';
 import { padNumber } from '../../utils';
-import { Minus, Music2, Plus, Volume, Volume1 } from 'lucide-react';
+import { Minus, Music2, Music3, Plus, Volume, Volume2 } from 'lucide-react';
 import { Slider } from '../inputs/Slider';
 
 export function Edit({
@@ -134,19 +134,16 @@ export function Edit({
               <button
                 onClick={toggleMute}
                 className={clsx(styles.toggle, {
-                  [styles['toggle-mute']]: true,
                   [styles.muted]: muted,
                 })}
               >
                 {muted && <Volume size={12} />}
-                {!muted && <Volume1 size={12} />}
+                {!muted && <Volume2 size={12} />}
               </button>
               <button
                 onClick={toggleEditPitch}
                 className={clsx(styles.toggle, {
-                  [styles.active]: editPitch,
-                  [styles['toggle-pitch']]: true,
-                  [styles['pitch']]: false,
+                  [styles.pitch]: editPitch,
                 })}
               >
                 <Music2 size={12} />
@@ -179,12 +176,14 @@ export function Edit({
         <section className="block">
           <div className={styles['knob-group']}>
             <Slider
+              label="Pitch"
               min={30}
               max={70}
               value={rhythm.pitch}
               onChange={handlePitchChange}
             />
             <Slider
+              label="Vol"
               value={rhythm.prevVolume}
               onChange={handleVolumeChange}
               min={0}

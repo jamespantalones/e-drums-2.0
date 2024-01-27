@@ -31,3 +31,8 @@
   overscroll-behavior: none;
   touch-action: none;
 }
+
+.slidecontainer {
+  width: calc(50% - 8px);
+  @apply mr-2;
+}
