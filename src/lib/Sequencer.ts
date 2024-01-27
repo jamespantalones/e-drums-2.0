@@ -69,7 +69,7 @@ export class Sequencer {
       }
 
       this.chain.volume.value = SIG_VOLUME.value;
-      this.reverb.wet.value = SIG_REVERB.value;
+      this.reverb.wet.value = SIG_REVERB.value / 100;
     });
   }
 

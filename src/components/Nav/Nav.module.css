@@ -4,7 +4,7 @@
   @apply flex items-center;
   background: var(--color-bg);
   z-index: 999;
-  border-bottom: 1px solid;
+  @apply border-b border-neutral-700;
 }
 
 .link {

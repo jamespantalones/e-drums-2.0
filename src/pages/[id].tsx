@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import isMobile from 'is-mobile';
 import { useHotKeys } from '../hooks/useHotKeys';
 import {
+  SIG_BPM,
   SIG_NAME,
   SIG_SEQUENCER,
   SIG_TRACKS,
@@ -17,6 +18,7 @@ import {
   destroy,
   state,
 } from '../state/track';
+import { Config } from '../config';
 
 /**
  *
@@ -29,7 +31,6 @@ const Track: NextPage = () => {
     query: { id },
   } = useRouter();
 
-  let loaded = React.useRef(false);
   const { initialize, methods } = useAudioContext();
 
   const [mobile] = React.useState(isMobile());
@@ -51,6 +52,7 @@ const Track: NextPage = () => {
   React.useEffect(() => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
+      SIG_BPM.value = project?.bpm || Config.DEFAULT_BPM;
       await initialize(project);
     }
 
@@ -91,7 +93,7 @@ const Track: NextPage = () => {
         <label className="block text-xxs">
           Name
           <input
-            className="text-xs block py-1 bg-transparent border-b border-current w-48 mr-16"
+            className="text-xs block py-1 bg-transparent border-b border-neutral-700 w-48 mr-16"
             type="text"
             placeholder={id as string}
             defaultValue={SIG_NAME.value || id}

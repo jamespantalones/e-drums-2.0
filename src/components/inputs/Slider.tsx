@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './slider.module.css';
 import { padNumber } from '../../utils';
+import { useSignals } from '@preact/signals-react/runtime';
+import { effect } from '@preact/signals-react';
 
 export type Props = {
-  value: number;
+  value?: number;
+  defaultValue?: number;
   label: string;
   onChange: (val: number) => void;
   min?: number;
@@ -12,11 +15,13 @@ export type Props = {
 };
 
 export function Slider(props: Props) {
-  const [val, setVal] = useState<number>(props.value);
+  useSignals();
+
+  const [val, setVal] = useState<number | undefined>(props.defaultValue);
 
   function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    setVal(+ev.target.value);
     props.onChange(+ev.target.value);
+    setVal(+ev.target.value);
   }
 
   const attrs = {
@@ -33,7 +38,17 @@ export function Slider(props: Props) {
 
   return (
     <label className={styles.slider}>
-      <input type="range" onChange={handleChange} value={val} {...attrs} />
+      <input
+        type="range"
+        onChange={handleChange}
+        {...(props.value && {
+          value: props.value,
+        })}
+        {...(props.defaultValue && {
+          defaultValue: val,
+        })}
+        {...attrs}
+      />
       <span>
         {props.label} {padNumber(val)}
       </span>

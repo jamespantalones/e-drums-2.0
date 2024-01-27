@@ -135,7 +135,7 @@ export function Nav({
                 value={SIG_REVERB.value}
                 min={Config.MIN_REVERB}
                 max={Config.MAX_REVERB}
-                step={0.01}
+                step={1}
               />
             </div>
           </div>

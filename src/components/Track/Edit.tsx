@@ -17,6 +17,7 @@ import { generateRandomColor } from '../../lib/utils';
 import { padNumber } from '../../utils';
 import { Minus, Music2, Music3, Plus, Volume, Volume2 } from 'lucide-react';
 import { Slider } from '../inputs/Slider';
+import { useSignals } from '@preact/signals-react/runtime';
 
 export function Edit({
   dragControls,
@@ -31,6 +32,8 @@ export function Edit({
   removeNote: (index: number) => void;
   setEditPitch: Dispatch<SetStateAction<boolean>>;
 }) {
+  useSignals();
+
   const {
     methods: { setTrackVal, deleteTrack },
   } = useAudioContext();
@@ -75,18 +78,12 @@ export function Edit({
     [setTrackVal, rhythm]
   );
 
-  const handleVolumeChange = useCallback(
-    (val: number) => {
-      if (val) {
-        // scale the value
-        setTrackVal(rhythm, {
-          method: 'changeVolume',
-          value: val,
-        });
-      }
-    },
-    [setTrackVal, rhythm]
-  );
+  async function handleVolumeChange(val: number) {
+    await setTrackVal(rhythm, {
+      method: 'changeVolume',
+      value: val,
+    });
+  }
 
   const toggleColor = useCallback(
     (_ev: React.MouseEvent<HTMLButtonElement>) => {
@@ -179,12 +176,12 @@ export function Edit({
               label="Pitch"
               min={30}
               max={70}
-              value={rhythm.pitch}
+              defaultValue={rhythm.pitch}
               onChange={handlePitchChange}
             />
             <Slider
               label="Vol"
-              value={rhythm.prevVolume}
+              defaultValue={rhythm.prevVolume}
               onChange={handleVolumeChange}
               min={0}
               max={100}

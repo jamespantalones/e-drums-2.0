@@ -1,5 +1,6 @@
 # Todo
 
+- [ ] add signals for each track
 - [ ] mute state does not persist on save
 - [ ] persist master vol, swing, reverb
 - [ ] pwa (offline)

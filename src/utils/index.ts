@@ -8,7 +8,9 @@ export function randomIntFromInterval(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export function padNumber(num: number): string {
+export function padNumber(num?: number): string {
+  if (!num) return '00';
+
   if (num < 10 && num > -1) {
     return `0${num}`;
   }
@@ -16,7 +18,7 @@ export function padNumber(num: number): string {
   if (num < 0 && num > -10) {
     return `-0${Math.abs(num)}`;
   }
-  return num.toString();
+  return `${num}`;
 }
 
 export function noop() {

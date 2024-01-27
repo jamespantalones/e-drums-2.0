@@ -7,7 +7,7 @@ export const Config = {
   DEFAULT_VOLUME: -6,
   MIN_VOLUME: -24,
   MIN_REVERB: 0,
-  MAX_REVERB: 1,
+  MAX_REVERB: 100,
   MAX_VOLUME: 12,
   MIN_SLICES: 0,
   MAX_SLICES: 16,
