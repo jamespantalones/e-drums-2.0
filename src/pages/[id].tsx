@@ -52,11 +52,9 @@ const Track: NextPage = () => {
     async function load() {
       const project = await loadProjectFromCache(id as string);
       await initialize(project);
-      loaded.current = true;
-      console.log('HIT');
     }
 
-    if (!id || loaded.current) return;
+    if (!id) return;
 
     load();
   }, [id, loadProjectFromCache, initialize]);
@@ -86,8 +84,6 @@ const Track: NextPage = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(SIG_VOLUME.value);
 
   return (
     <>

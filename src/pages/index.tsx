@@ -20,15 +20,11 @@ const Home: NextPage = () => {
    */
   async function createNew() {
     const id = generateId();
-    const track = generateTrack(0);
-
-    SIG_SERIALIZED_TRACKS.value = [track];
+    SIG_SERIALIZED_TRACKS.value = [generateTrack(0)];
 
     const seq = new Sequencer({ id });
 
     const json = await seq.exportJSON();
-
-    console.log({ json, track });
 
     await saveProjectToCache(id, {
       ...json,

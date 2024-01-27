@@ -34,8 +34,6 @@ export function TrackItem({
 
   const dragControls = useDragControls();
 
-  // console.log({ color: rhythm.color });
-
   const style: React.CSSProperties = {
     '--color-track-h': rhythm.color[0],
     '--color-track-s': `${rhythm.color[1]}%`,

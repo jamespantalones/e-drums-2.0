@@ -49,7 +49,6 @@ export class Track {
   ) => void;
 
   constructor(opts: TrackOpts) {
-    console.log({ opts });
     const [hue, saturation, lightness] = generateRandomColor();
     this.index = opts.index;
     this.id = opts.id || generateId();
@@ -96,6 +95,9 @@ export class Track {
       );
       this.isReady = true;
     }
+
+    // handle initial val
+    this.handleMuteChange();
 
     return this;
   }
